@@ -7,9 +7,11 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="light">
-    <div class="backdrop"></div> 
-
-    <div id="gradient-overlay"></div>
+    
+    <div class="bg-layer">
+        <div class="backdrop-img"></div>
+        <div class="gradient-fade"></div>
+    </div>
 
     <header class="top-header">
         <div class="location-pill">Tilburg Vossenberg</div>
@@ -17,11 +19,12 @@
     </header>
 
     <main class="app-container">
-        <section class="column block-selection">
-            <div class="column-header">
+        
+        <section class="column">
+            <div class="floating-header">
                 <h2>BLOK SELECTIE</h2>
             </div>
-            <div class="grid-blocks">
+            <div class="scroll-content grid-blocks">
                 <div class="card theme-card-light">Arbo Mededelingen</div>
                 <div class="card theme-card-light">Communicatie</div>
                 <div class="card theme-card-light">Evenementen</div>
@@ -36,33 +39,155 @@
             </div>
         </section>
 
-        <section class="column journal-sequence">
-            <div class="column-header center-title">
+        <section class="column glass-panel">
+            <div class="panel-header center-title">
                 <h2>DAGJOURNAAL</h2>
             </div>
-            <div class="sequence-list">
+            <div class="scroll-content sequence-list">
                 <div class="card active-card gold">Ploeg indeling <span class="badge red-bg">10</span></div>
-                
-                <div class="card sequence-card">Alarmen vorige dienst <span class="badge red-bg">3</span></div>
-                <div class="card sequence-card">Status voertuigen <span class="badge red-bg">1</span></div>
-                <div class="card sequence-card">Topdesk <span class="badge red-bg">5</span></div>
-                <div class="card sequence-card">Mobiliteit <span class="badge red-bg">1</span></div>
-                <div class="card sequence-card">Ploeg afspraken</div>
-                <div class="card sequence-card">Kazerne Nieuws</div>
-                <div class="card sequence-card">Gepland onderhoud voertuigen <span class="badge red-bg">4</span></div>
-                <div class="card sequence-card">Alg. Werkzaamheden <span class="badge red-bg">4</span></div>
-                <div class="card sequence-card">Ademlucht Werkzaamheden <span class="badge red-bg">1</span></div>
-                <div class="card sequence-card">Vakbekwaam AG5 <span class="badge red-bg">1</span></div>
+                <div class="card dark sequence-card">Alarmen vorige dienst <span class="badge red-bg">3</span></div>
+                <div class="card dark sequence-card">Status voertuigen <span class="badge red-bg">1</span></div>
+                <div class="card dark sequence-card">Topdesk <span class="badge red-bg">5</span></div>
+                <div class="card dark sequence-card">Mobiliteit <span class="badge red-bg">1</span></div>
+                <div class="card dark sequence-card">Ploeg afspraken</div>
+                <div class="card dark sequence-card">Kazerne Nieuws</div>
+                <div class="card dark sequence-card">Gepland onderhoud voertuigen <span class="badge red-bg">4</span></div>
+                <div class="card dark sequence-card">Alg. Werkzaamheden <span class="badge red-bg">4</span></div>
+                <div class="card dark sequence-card">Ademlucht Werkzaamheden <span class="badge red-bg">1</span></div>
+                <div class="card dark sequence-card">Vakbekwaam AG5 <span class="badge red-bg">1</span></div>
             </div>
         </section>
 
-        <section class="column content-editor">
-            <div class="column-header space-between">
+        <section class="column solid-panel">
+            <div class="panel-header space-between">
                 <h2>PLOEG INDELING</h2>
                 <button class="btn-preview">Preview</button>
             </div>
             
-            <div class="editor-panel">
+            <div class="scroll-content editor-form">
+                <div class="form-group">
+                    <label>Kazernes in Roosterplanning</label>
+                    <div class="dropdown-input">
+                        <span class="tag">Bergen op Zoom <span class="close">&times;</span></span>
+                        <span class="chevron"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Dienstlijst MWB in Roosterplanning</label>
+                    <div class="dropdown-input placeholder">
+                        Voeg een kazerne toe om standaard naam te overschrijven...
+                        <span class="chevron"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Dienstlijst ZLD in Roosterplanning</label>
+                    <div class="dropdown-input placeholder">
+                        Voeg een kazerne toe om standaard naam te overschrijven...
+                        <span class="chevron"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Ticker rooster in Roosterplanning</label>
+                    <div class="dropdown-input">
+                        Bergen op Zoom
+                        <span class="chevron"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bottom-bar">
+        <div class="logo-section">
+            <div class="title-logo">
+                <strong>OPERATIONEEL</strong>
+                DAGJOURNAAL
+            </div>
+        </div>
+        
+        <div class="date-controls">
+            <button id="btn-prev-day" class="nav-btn">&lt;</button>
+            <button id="btn-today" class="nav-btn-text">Vandaag</button>
+            <button id="btn-next-day" class="nav-btn">&gt;</button>
+        </div>
+        
+        <div class="status-clock" id="datetime-display">
+            Laden...
+        </div>
+    </footer>
+    
+    <script src="script.js"></script>
+</body>
+</html><!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operationeel Dagjournaal - VRMWB</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="light">
+    
+    <div class="bg-layer">
+        <div class="backdrop-img"></div>
+        <div class="gradient-fade"></div>
+    </div>
+
+    <header class="top-header">
+        <div class="location-pill">Tilburg Vossenberg</div>
+        <button id="theme-toggle" class="theme-btn">🌙 Dark Mode</button>
+    </header>
+
+    <main class="app-container">
+        
+        <section class="column">
+            <div class="floating-header">
+                <h2>BLOK SELECTIE</h2>
+            </div>
+            <div class="scroll-content grid-blocks">
+                <div class="card theme-card-light">Arbo Mededelingen</div>
+                <div class="card theme-card-light">Communicatie</div>
+                <div class="card theme-card-light">Evenementen</div>
+                <div class="card theme-card-light">IBOA Mededelingen</div>
+                <div class="card theme-card-light">Object van de Maand<br>(RB)</div>
+                <div class="card theme-card-light">OCB Mededelingen</div>
+                <div class="card theme-card-light">RB/CB Mededelingen</div>
+                <div class="card theme-card-light">Stratenkennis</div>
+                <div class="card theme-card-light">TFL Mededelingen</div>
+                <div class="card theme-card-light">VKB Mededelingen</div>
+                <div class="card theme-card-light">Waarschuwingen &<br>Operationele Fases</div>
+            </div>
+        </section>
+
+        <section class="column glass-panel">
+            <div class="panel-header center-title">
+                <h2>DAGJOURNAAL</h2>
+            </div>
+            <div class="scroll-content sequence-list">
+                <div class="card active-card gold">Ploeg indeling <span class="badge red-bg">10</span></div>
+                <div class="card dark sequence-card">Alarmen vorige dienst <span class="badge red-bg">3</span></div>
+                <div class="card dark sequence-card">Status voertuigen <span class="badge red-bg">1</span></div>
+                <div class="card dark sequence-card">Topdesk <span class="badge red-bg">5</span></div>
+                <div class="card dark sequence-card">Mobiliteit <span class="badge red-bg">1</span></div>
+                <div class="card dark sequence-card">Ploeg afspraken</div>
+                <div class="card dark sequence-card">Kazerne Nieuws</div>
+                <div class="card dark sequence-card">Gepland onderhoud voertuigen <span class="badge red-bg">4</span></div>
+                <div class="card dark sequence-card">Alg. Werkzaamheden <span class="badge red-bg">4</span></div>
+                <div class="card dark sequence-card">Ademlucht Werkzaamheden <span class="badge red-bg">1</span></div>
+                <div class="card dark sequence-card">Vakbekwaam AG5 <span class="badge red-bg">1</span></div>
+            </div>
+        </section>
+
+        <section class="column solid-panel">
+            <div class="panel-header space-between">
+                <h2>PLOEG INDELING</h2>
+                <button class="btn-preview">Preview</button>
+            </div>
+            
+            <div class="scroll-content editor-form">
                 <div class="form-group">
                     <label>Kazernes in Roosterplanning</label>
                     <div class="dropdown-input">

@@ -1,136 +1,108 @@
-/* -- RESET: Voorkomt padding/margin problemen -- */
+/* -- RESET -- */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
 
-/* -- INLADEN VAN JOUW HUISSTIJL FONT -- */
-@font-face {
-    font-family: 'Mariné UP';
-    src: url('Marine-UPLight.ttf') format('truetype');
-    font-weight: 300; 
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Mariné UP';
-    src: url('Marine-UPRegular.ttf') format('truetype');
-    font-weight: 400; 
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Mariné UP';
-    src: url('Marine-UPBold.ttf') format('truetype');
-    font-weight: 700; 
-    font-style: normal;
-}
-@font-face {
-    font-family: 'Mariné UP';
-    src: url('Marine-UPBlack.ttf') format('truetype');
-    font-weight: 900; 
-    font-style: normal;
-}
+/* -- FONTS -- */
+@font-face { font-family: 'Mariné UP'; src: url('Marine-UPLight.ttf') format('truetype'); font-weight: 300; font-style: normal; }
+@font-face { font-family: 'Mariné UP'; src: url('Marine-UPRegular.ttf') format('truetype'); font-weight: 400; font-style: normal; }
+@font-face { font-family: 'Mariné UP'; src: url('Marine-UPBold.ttf') format('truetype'); font-weight: 700; font-style: normal; }
+@font-face { font-family: 'Mariné UP'; src: url('Marine-UPBlack.ttf') format('truetype'); font-weight: 900; font-style: normal; }
 
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
 
 :root {
-    /* Brand Colors VRMWB - Constant in beide thema's */
+    /* Brand Colors */
     --vrmwb-navy: #17428C;
-    --vrmwb-dark-navy: #122053;
     --vrmwb-red: #D2100B;
-    --vrmwb-dark-red: #AE1F1B;
     --vrmwb-gold: #CC9933;
 
     /* LIGHT MODE VARIABELEN */
     --text-main: #1E1E1E;
     --text-muted: #707172;
     
-    /* AANGEPAST: De exacte lineaire gradiënt kleuren voor Light Mode */
-    --bg-gradient-top: #F6F6F6;
-    --bg-gradient-transparent: rgba(246, 246, 246, 0);
+    /* GRADIENT KLEUREN: Solide bovenaan, transparant halverwege */
+    --bg-grad-solid: #F6F6F6;
+    --bg-grad-trans: rgba(246, 246, 246, 0);
     
-    --glass-overlay: rgba(255, 255, 255, 0.5); 
-    --glass-border: rgba(255, 255, 255, 0.1);
-    
-    --sequence-card-bg: rgba(255, 255, 255, 0.9);
-    --sequence-card-border: rgba(0, 0, 0, 0.05);
-    --sequence-card-text: #1E1E1E;
-
-    --card-bg-light: rgba(255, 255, 255, 0.95); 
+    /* Panelen */
+    --glass-bg: rgba(255, 255, 255, 0.4); 
+    --glass-border: rgba(255, 255, 255, 0.3);
     --panel-bg: rgba(255, 255, 255, 0.95); 
+    --card-bg-light: #FFFFFF; 
+    
     --input-bg: #F6F6F6;
     --input-border: #E6E6E6;
+    
+    /* Bottom Bar */
     --bottom-bar-bg: #FFFFFF;
     --bottom-bar-text: #1E1E1E;
     --nav-block-bg: #1E1E1E; 
     --nav-block-text: #FFFFFF;
-    --scrollbar-thumb: #1E1E1E; 
     
+    --scrollbar-thumb: #1E1E1E; 
     --radius-outer: 16px;
     --radius-inner: 12px;
 }
 
-/* DARK MODE OVERRIDES */
 [data-theme="dark"] {
     --text-main: #FFFFFF;
     --text-muted: #E6E6E6;
     
-    /* AANGEPAST: De exacte lineaire gradiënt kleuren voor Dark Mode */
-    --bg-gradient-top: #1E1E1E;
-    --bg-gradient-transparent: rgba(30, 30, 30, 0);
+    /* GRADIENT KLEUREN DARK: Solide zwart/grijs bovenaan, transparant halverwege */
+    --bg-grad-solid: #1E1E1E;
+    --bg-grad-trans: rgba(30, 30, 30, 0);
     
-    --glass-overlay: rgba(0, 0, 0, 0.4);
+    --glass-bg: rgba(0, 0, 0, 0.4);
     --glass-border: rgba(255, 255, 255, 0.05);
-    
-    --sequence-card-bg: rgba(43, 45, 49, 0.9);
-    --sequence-card-border: rgba(255, 255, 255, 0.05);
-    --sequence-card-text: #FFFFFF;
-
+    --panel-bg: #2B2D31; 
     --card-bg-light: #707172; 
-    --panel-bg: #1E1E1E; 
-    --input-bg: #2B2D31;
+    
+    --input-bg: #1E1E1E;
     --input-border: #444;
+    
     --bottom-bar-bg: #1E1E1E;
     --bottom-bar-text: #FFFFFF;
     --nav-block-bg: #FFFFFF; 
     --nav-block-text: #1E1E1E;
+    
     --scrollbar-thumb: #FFFFFF; 
 }
 
 body {
     font-family: 'Mariné UP', 'Open Sans', sans-serif; 
     font-weight: 400; 
-    margin: 0;
-    padding: 0;
     height: 100vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: var(--vrmwb-navy); /* Fallback */
+    background-color: var(--bg-grad-solid); 
     color: var(--text-main);
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* --- DE BACKDROP --- */
-.backdrop {
+/* --- ACHTERGROND & GRADIENT (HET FIGMA EFFECT) --- */
+.bg-layer {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url('./backdrop_odj.png'); 
-    background-color: transparent; 
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
     z-index: -1;
 }
 
-/* --- AANGEPAST: DE LINEAIRE GRADIENT OVERLAY --- */
-#gradient-overlay {
-    position: fixed;
+.backdrop-img {
+    position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    /* Lineaire gradiënt van volledig gevuld bovenaan (0%) naar transparant halverwege (50%) */
-    background: linear-gradient(to bottom, var(--bg-gradient-top) 0%, var(--bg-gradient-transparent) 50%);
-    z-index: 0; 
-    pointer-events: none; 
+    background-image: url('./backdrop_odj.png'); 
+    background-size: cover;
+    background-position: center;
+}
+
+.gradient-fade {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* Lineair verloop: 0% t/m 15% is compleet effen kleur, vervaagt tot 55% */
+    background: linear-gradient(to bottom, var(--bg-grad-solid) 0%, var(--bg-grad-solid) 15%, var(--bg-grad-trans) 55%);
 }
 
 /* --- HEADER --- */
@@ -139,19 +111,18 @@ body {
     justify-content: center;
     align-items: center;
     padding-top: 20px;
-    position: relative;
-    z-index: 10;
     height: 80px;
+    z-index: 10;
 }
 
 .location-pill {
     background-color: var(--vrmwb-gold);
     color: #000;
-    font-size: 32px;
+    font-size: 36px; /* Iets groter volgens stijlrichtlijnen */
     font-weight: 900; 
     padding: 10px 40px;
     border-radius: 20px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .theme-btn {
@@ -165,7 +136,6 @@ body {
     font-weight: 700; 
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: all 0.2s;
 }
 
 /* --- HOOFD GRID --- */
@@ -182,19 +152,44 @@ body {
 .column {
     display: flex;
     flex-direction: column;
-    min-height: 0;
+    min-height: 0; /* Cruciaal voor scrollen! */
 }
 
-/* --- KOPJES UITLIJNING --- */
-.column-header {
+/* --- PANELEN (Figma Opmaak) --- */
+.glass-panel {
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(15px);
+    backdrop-filter: blur(15px);
+    border-radius: var(--radius-outer);
+    border: 1px solid var(--glass-border);
+    padding: 25px 20px 0 20px;
+}
+
+.solid-panel {
+    background: var(--panel-bg);
+    border-radius: var(--radius-outer);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    padding: 25px 30px 0 30px;
+}
+
+/* --- KOPPEN UITLIJNING --- */
+/* Zwevende header krijgt margin om op dezelfde lijn te komen als de panel headers */
+.floating-header {
+    height: 40px;
+    margin-top: 25px; /* Compenseert voor de padding-top van de panelen */
+    margin-bottom: 20px;
     display: flex;
     align-items: center;
-    height: 50px;
-    margin-bottom: 20px;
-    flex-shrink: 0;
 }
-.column-header.center-title { justify-content: center; }
-.column-header.space-between { justify-content: space-between; }
+
+.panel-header {
+    height: 40px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+.panel-header.center-title { justify-content: center; }
+.panel-header.space-between { justify-content: space-between; }
 
 h2 {
     font-size: 24px;
@@ -203,18 +198,14 @@ h2 {
     font-weight: 900; 
 }
 
-/* --- LINKER KOLOM --- */
-.block-selection .grid-blocks {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    overflow-y: auto;
-    padding-right: 15px;
-    align-content: start;
+/* --- SCROLL CONTENT BINNEN KOLOMMEN --- */
+.scroll-content {
     flex: 1;
-    min-height: 0;
+    overflow-y: auto;
+    padding-bottom: 30px; /* Ruimte onderaan bij het scrollen */
 }
 
+/* Kaarten algemeen */
 .card {
     border-radius: var(--radius-inner);
     padding: 20px 15px;
@@ -226,7 +217,16 @@ h2 {
     justify-content: center;
     align-items: center;
     border: none;
-    transition: background-color 0.3s, color 0.3s;
+    flex-shrink: 0;
+}
+
+/* Linker Kolom Grid */
+.grid-blocks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    padding-right: 15px;
+    align-content: start;
 }
 
 .theme-card-light {
@@ -235,26 +235,12 @@ h2 {
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* --- MIDDELSTE KOLOM --- */
-.journal-sequence {
-    background: var(--glass-overlay);
-    -webkit-backdrop-filter: blur(15px);
-    backdrop-filter: blur(15px);
-    border-radius: var(--radius-outer);
-    padding: 20px 20px 0 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border: 1px solid var(--glass-border);
-}
-
+/* Middelste Kolom Lijst */
 .sequence-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    overflow-y: auto;
     padding-right: 10px; 
-    padding-bottom: 20px;
-    flex: 1; 
-    min-height: 0;
 }
 
 .sequence-list .card {
@@ -262,29 +248,16 @@ h2 {
     padding: 20px 25px;
     font-size: 16px;
     color: white;
-    flex-shrink: 0;
 }
 
-.card.sequence-card {
-    background-color: var(--sequence-card-bg);
-    color: var(--sequence-card-text);
-    border: 1px solid var(--sequence-card-border);
-}
-
+/* De donkere kaarten uit je Figma (blijven donker in beide thema's) */
+.card.dark { background-color: #2B2D31; color: white; }
 .card.gold { background-color: var(--vrmwb-gold); color: #000; font-weight: 700; }
 .badge.red-bg { background-color: var(--vrmwb-red); color: white; padding: 4px 10px; border-radius: 20px; font-weight: 700; }
 
-/* --- RECHTER KOLOM --- */
-.editor-panel {
-    background: var(--panel-bg);
-    border-radius: var(--radius-outer);
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    flex: 1;
-    color: var(--text-main);
-    transition: background-color 0.3s, color 0.3s;
-    overflow-y: auto;
-    min-height: 0;
+/* Rechter Kolom Formulieren */
+.editor-form {
+    padding-right: 15px;
 }
 
 .btn-preview { 
@@ -330,15 +303,9 @@ h2 {
 
 
 /* --- CUSTOM SCROLLBARS --- */
-.sequence-list::-webkit-scrollbar,
-.block-selection .grid-blocks::-webkit-scrollbar,
-.editor-panel::-webkit-scrollbar { width: 8px; }
-.sequence-list::-webkit-scrollbar-track,
-.block-selection .grid-blocks::-webkit-scrollbar-track,
-.editor-panel::-webkit-scrollbar-track { background: transparent; }
-.sequence-list::-webkit-scrollbar-thumb,
-.block-selection .grid-blocks::-webkit-scrollbar-thumb,
-.editor-panel::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 10px; }
+.scroll-content::-webkit-scrollbar { width: 8px; }
+.scroll-content::-webkit-scrollbar-track { background: transparent; }
+.scroll-content::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 10px; }
 
 
 /* --- BOTTOM BAR --- */
@@ -353,7 +320,7 @@ h2 {
     position: relative;
     z-index: 20; 
     transition: background-color 0.3s, color 0.3s;
-    flex-shrink: 0;
+    flex-shrink: 0; /* Balk mag niet krimpen */
 }
 
 .title-logo { 
@@ -366,6 +333,7 @@ h2 {
 }
 .title-logo strong { font-weight: 900; }
 
+/* Perfecte pil in het midden, exacte hoogte als bottom-bar */
 .date-controls {
     display: flex;
     align-items: center;
@@ -373,12 +341,11 @@ h2 {
     background-color: var(--nav-block-bg);
     height: 80px; 
     width: 320px; 
-    border-radius: 40px; 
+    border-radius: 40px; /* Maakt de zijkanten 100% rond */
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     padding: 0 30px; 
-    transition: background-color 0.3s;
 }
 
 .nav-btn, .nav-btn-text { 
