@@ -1,18 +1,30 @@
 /* -- INLADEN VAN JOUW HUISSTIJL FONT -- */
 @font-face {
     font-family: 'Mariné UP';
-    src: url('marine-up.ttf') format('truetype');
-    font-weight: normal;
+    src: url('Marine-UPLight.ttf') format('truetype');
+    font-weight: 300; /* Light */
     font-style: normal;
 }
 @font-face {
     font-family: 'Mariné UP';
-    src: url('marine-up.ttf') format('truetype');
-    font-weight: bold;
+    src: url('Marine-UPRegular.ttf') format('truetype');
+    font-weight: 400; /* Regular */
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Mariné UP';
+    src: url('Marine-UPBold.ttf') format('truetype');
+    font-weight: 700; /* Bold */
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Mariné UP';
+    src: url('Marine-UPBlack.ttf') format('truetype');
+    font-weight: 900; /* Black */
     font-style: normal;
 }
 
-@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
 
 :root {
     /* Brand Colors VRMWB - Constant in beide thema's */
@@ -55,6 +67,7 @@
 
 body {
     font-family: 'Mariné UP', 'Open Sans', sans-serif; 
+    font-weight: 400; /* Standaardtekst is Regular */
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -73,9 +86,8 @@ body {
     left: 0; 
     right: 0; 
     bottom: 0;
-    /* De ./ dwingt de browser om in de huidige map te zoeken */
     background-image: url('./backdrop_odj.png'); 
-    background-color: transparent; /* Zorgt dat de blauwe kleur er niet per ongeluk overheen valt */
+    background-color: transparent; 
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -94,7 +106,7 @@ body {
     background-color: var(--vrmwb-gold);
     color: #000;
     font-size: 32px;
-    font-weight: bold; 
+    font-weight: 900; /* Aangepast naar Black (dikst) */
     padding: 10px 40px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -108,7 +120,7 @@ body {
     border: none;
     padding: 10px 20px;
     border-radius: 20px;
-    font-weight: bold;
+    font-weight: 700; /* Bold */
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: all 0.2s;
@@ -134,7 +146,7 @@ h2 {
     margin-bottom: 20px;
     color: var(--text-main);
     text-transform: uppercase;
-    font-weight: bold; 
+    font-weight: 900; /* Aangepast naar Black */
 }
 
 /* Linker Kolom met custom scrollbar */
@@ -150,7 +162,7 @@ h2 {
     border-radius: var(--radius-inner);
     padding: 20px 15px;
     text-align: center;
-    font-weight: normal; 
+    font-weight: 400; /* Regular voor standaard kaarten */
     font-size: 14px;
     cursor: pointer;
     display: flex;
@@ -198,14 +210,14 @@ h2 {
 .card.gold { 
     background-color: var(--vrmwb-gold); 
     color: #000; 
-    font-weight: bold; 
+    font-weight: 700; /* Actieve kaart is Bold */
 }
 .badge.red-bg { 
     background-color: var(--vrmwb-red); 
     color: white; 
     padding: 4px 10px; 
     border-radius: 20px; 
-    font-weight: bold; 
+    font-weight: 700; /* Badges zijn Bold */
 }
 
 /* --- CUSTOM SCROLLBARS --- */
@@ -245,13 +257,13 @@ h2 {
     border: none; 
     padding: 10px 25px; 
     border-radius: 20px; 
-    font-weight: bold; 
+    font-weight: 700; /* Preview knop is Bold */
     font-size: 16px; 
     cursor: pointer; 
 }
 
 .form-group { margin-bottom: 25px; }
-.form-group label { display: block; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
+.form-group label { display: block; font-weight: 700; /* Labels zijn Bold */ font-size: 16px; margin-bottom: 10px; }
 
 .dropdown-input { 
     background-color: var(--input-bg); 
@@ -277,7 +289,7 @@ h2 {
     color: var(--text-main); 
     border: 1px solid var(--input-border);
 }
-.tag .close { color: var(--text-muted); cursor: pointer; font-weight: bold; }
+.tag .close { color: var(--text-muted); cursor: pointer; font-weight: 700; }
 .chevron { width: 10px; height: 10px; border-right: 2px solid var(--text-muted); border-bottom: 2px solid var(--text-muted); transform: rotate(45deg); }
 
 /* Bottom Bar */
@@ -293,8 +305,9 @@ h2 {
     z-index: 10;
     transition: background-color 0.3s, color 0.3s;
 }
-.title-logo { font-size: 14px; line-height: 1.2; color: var(--bottom-bar-text); }
-.title-logo strong { font-weight: bold; }
+
+.title-logo { font-size: 14px; line-height: 1.2; color: var(--bottom-bar-text); font-weight: 400; /* Dagjournaal is Regular */ }
+.title-logo strong { font-weight: 900; /* Operationeel is Black */ }
 
 .date-controls {
     display: flex;
@@ -307,7 +320,7 @@ h2 {
     left: 50%;
     transform: translateX(-50%);
 }
-.nav-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; font-weight: bold; }
-.nav-btn-text { background: none; border: none; color: white; cursor: pointer; font-size: 20px; font-weight: bold; min-width: 160px; text-align: center; }
+.nav-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; font-weight: 700; }
+.nav-btn-text { background: none; border: none; color: white; cursor: pointer; font-size: 20px; font-weight: 700; /* Vandaag is Bold */ min-width: 160px; text-align: center; }
 
-.status-clock { font-size: 22px; color: var(--text-muted); font-weight: normal; }
+.status-clock { font-size: 22px; color: var(--text-muted); font-weight: 300; /* Klok is subtiel (Light) */ }
