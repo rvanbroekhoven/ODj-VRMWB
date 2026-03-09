@@ -51,7 +51,7 @@
     --text-main: #FFFFFF;
     --text-muted: #E6E6E6;
     
-    /* GRADIENT KLEUREN DARK: Solide zwart/grijs bovenaan, transparant halverwege */
+    /* GRADIENT KLEUREN DARK */
     --bg-grad-solid: #1E1E1E;
     --bg-grad-trans: rgba(30, 30, 30, 0);
     
@@ -83,7 +83,7 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* --- ACHTERGROND & GRADIENT (HET FIGMA EFFECT) --- */
+/* --- ACHTERGROND & GRADIENT --- */
 .bg-layer {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -101,7 +101,6 @@ body {
 .gradient-fade {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    /* Lineair verloop: 0% t/m 15% is compleet effen kleur, vervaagt tot 55% */
     background: linear-gradient(to bottom, var(--bg-grad-solid) 0%, var(--bg-grad-solid) 15%, var(--bg-grad-trans) 55%);
 }
 
@@ -113,12 +112,13 @@ body {
     padding-top: 20px;
     height: 80px;
     z-index: 10;
+    flex-shrink: 0; /* FIX: Voorkomt dat de header platgedrukt wordt */
 }
 
 .location-pill {
     background-color: var(--vrmwb-gold);
     color: #000;
-    font-size: 36px; /* Iets groter volgens stijlrichtlijnen */
+    font-size: 36px;
     font-weight: 900; 
     padding: 10px 40px;
     border-radius: 20px;
@@ -147,39 +147,40 @@ body {
     padding: 30px 50px;
     overflow: hidden;
     z-index: 10;
+    min-height: 0; /* FIX: Essentieel zodat het grid niet buiten het scherm groeit */
 }
 
 .column {
     display: flex;
     flex-direction: column;
-    min-height: 0; /* Cruciaal voor scrollen! */
+    min-height: 0; 
 }
 
-/* --- PANELEN (Figma Opmaak) --- */
+/* --- PANELEN --- */
 .glass-panel {
     background: var(--glass-bg);
     -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     border-radius: var(--radius-outer);
     border: 1px solid var(--glass-border);
-    padding: 25px 20px 0 20px;
+    padding: 25px 20px 20px 20px; /* Padding bottom toegevoegd */
 }
 
 .solid-panel {
     background: var(--panel-bg);
     border-radius: var(--radius-outer);
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    padding: 25px 30px 0 30px;
+    padding: 25px 30px 20px 30px; /* Padding bottom toegevoegd */
 }
 
 /* --- KOPPEN UITLIJNING --- */
-/* Zwevende header krijgt margin om op dezelfde lijn te komen als de panel headers */
 .floating-header {
     height: 40px;
-    margin-top: 25px; /* Compenseert voor de padding-top van de panelen */
+    margin-top: 25px; 
     margin-bottom: 20px;
     display: flex;
     align-items: center;
+    flex-shrink: 0; /* FIX: Koppen mogen nooit krimpen */
 }
 
 .panel-header {
@@ -187,6 +188,7 @@ body {
     margin-bottom: 20px;
     display: flex;
     align-items: center;
+    flex-shrink: 0; /* FIX: Koppen mogen nooit krimpen */
 }
 .panel-header.center-title { justify-content: center; }
 .panel-header.space-between { justify-content: space-between; }
@@ -202,7 +204,8 @@ h2 {
 .scroll-content {
     flex: 1;
     overflow-y: auto;
-    padding-bottom: 30px; /* Ruimte onderaan bij het scrollen */
+    min-height: 0; /* FIX: Geforceerd scrollen toestaan */
+    padding-bottom: 10px;
 }
 
 /* Kaarten algemeen */
@@ -217,7 +220,8 @@ h2 {
     justify-content: center;
     align-items: center;
     border: none;
-    flex-shrink: 0;
+    flex-shrink: 0; /* FIX: Kaarten mogen niet platgedrukt worden */
+    min-height: 60px; /* FIX: Zorgt voor een minimum dikte */
 }
 
 /* Linker Kolom Grid */
@@ -250,7 +254,7 @@ h2 {
     color: white;
 }
 
-/* De donkere kaarten uit je Figma (blijven donker in beide thema's) */
+/* Donkere kaarten */
 .card.dark { background-color: #2B2D31; color: white; }
 .card.gold { background-color: var(--vrmwb-gold); color: #000; font-weight: 700; }
 .badge.red-bg { background-color: var(--vrmwb-red); color: white; padding: 4px 10px; border-radius: 20px; font-weight: 700; }
@@ -270,9 +274,10 @@ h2 {
     font-size: 16px; 
     cursor: pointer; 
     height: 40px;
+    flex-shrink: 0;
 }
 
-.form-group { margin-bottom: 25px; }
+.form-group { margin-bottom: 25px; flex-shrink: 0; }
 .form-group label { display: block; font-weight: 700; font-size: 16px; margin-bottom: 10px; }
 
 .dropdown-input { 
@@ -320,7 +325,7 @@ h2 {
     position: relative;
     z-index: 20; 
     transition: background-color 0.3s, color 0.3s;
-    flex-shrink: 0; /* Balk mag niet krimpen */
+    flex-shrink: 0; /* FIX: Bottom bar mag nooit krimpen! */
 }
 
 .title-logo { 
@@ -333,7 +338,6 @@ h2 {
 }
 .title-logo strong { font-weight: 900; }
 
-/* Perfecte pil in het midden, exacte hoogte als bottom-bar */
 .date-controls {
     display: flex;
     align-items: center;
@@ -341,7 +345,7 @@ h2 {
     background-color: var(--nav-block-bg);
     height: 80px; 
     width: 320px; 
-    border-radius: 40px; /* Maakt de zijkanten 100% rond */
+    border-radius: 40px; 
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
