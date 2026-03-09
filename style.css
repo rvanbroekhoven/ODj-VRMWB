@@ -66,13 +66,19 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
+/* --- FOOLPROOF BACKDROP --- */
 .backdrop {
     position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    /* --- HIER IS DE NIEUWE BESTANDSNAAM AANGEPAST --- */
-    background-image: url("backdrop_odj.png"); 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0;
+    /* De ./ dwingt de browser om in de huidige map te zoeken */
+    background-image: url('./backdrop_odj.png'); 
+    background-color: transparent; /* Zorgt dat de blauwe kleur er niet per ongeluk overheen valt */
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
     z-index: -1;
 }
 
