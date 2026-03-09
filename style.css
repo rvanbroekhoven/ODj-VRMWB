@@ -34,31 +34,35 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700;800&display=swap');
 
 :root {
-    /* Brand Colors VRMWB */
+    /* Brand Colors VRMWB - Constant in beide thema's */
     --vrmwb-navy: #17428C;
     --vrmwb-dark-navy: #122053;
     --vrmwb-red: #D2100B;
     --vrmwb-dark-red: #AE1F1B;
     --vrmwb-gold: #CC9933;
 
-    /* LIGHT MODE VARIABELEN */
+    /* LIGHT MODE VARIABELEN (Standaard) */
     --text-main: #1E1E1E;
     --text-muted: #707172;
-    /* FIX: Duidelijke gradiënt overgang voor Light Mode */
-    --bg-overlay: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.1) 100%); 
-    --glass-border: rgba(255, 255, 255, 0.3);
+    /* NIEUW: Duidelijke transparante witte glass-kaart voor de central column */
+    --glass-overlay: rgba(255, 255, 255, 0.5); 
+    --glass-border: rgba(255, 255, 255, 0.1);
     
+    /* NIEUW: Variabelen voor de kaarten in de central column */
+    --sequence-card-bg: rgba(255, 255, 255, 0.9);
+    --sequence-card-border: rgba(0, 0, 0, 0.05);
+    --sequence-card-text: #1E1E1E;
+
     --card-bg-light: rgba(255, 255, 255, 0.95); 
     --panel-bg: rgba(255, 255, 255, 0.95); 
     --input-bg: #F6F6F6;
     --input-border: #E6E6E6;
     --bottom-bar-bg: #FFFFFF;
     --bottom-bar-text: #1E1E1E;
-    --nav-block-bg: #1E1E1E; 
+    --nav-block-bg: #1E1E1E; /* Het Vandaag blokje is zwart in light */
     --nav-block-text: #FFFFFF;
     --scrollbar-thumb: #1E1E1E; 
     
-    --card-dark-fill: #2B2D31; 
     --radius-outer: 16px;
     --radius-inner: 12px;
 }
@@ -67,17 +71,22 @@
 [data-theme="dark"] {
     --text-main: #FFFFFF;
     --text-muted: #E6E6E6;
-    /* FIX: Duidelijke gradiënt overgang voor Dark Mode */
-    --bg-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.1) 100%);
+    /* NIEUW: Duidelijke transparante donkere glass-kaart voor de central column */
+    --glass-overlay: rgba(0, 0, 0, 0.4);
     --glass-border: rgba(255, 255, 255, 0.05);
     
+    /* NIEUW: Variabelen voor de kaarten in de central column in dark mode */
+    --sequence-card-bg: rgba(43, 45, 49, 0.9);
+    --sequence-card-border: rgba(255, 255, 255, 0.05);
+    --sequence-card-text: #FFFFFF;
+
     --card-bg-light: #707172; 
     --panel-bg: #1E1E1E; 
     --input-bg: #2B2D31;
     --input-border: #444;
     --bottom-bar-bg: #1E1E1E;
     --bottom-bar-text: #FFFFFF;
-    --nav-block-bg: #FFFFFF; 
+    --nav-block-bg: #FFFFFF; /* Het Vandaag blokje is wit in dark */
     --nav-block-text: #1E1E1E;
     --scrollbar-thumb: #FFFFFF; 
 }
@@ -85,11 +94,13 @@
 body {
     font-family: 'Mariné UP', 'Open Sans', sans-serif; 
     font-weight: 400; 
+    margin: 0;
+    padding: 0;
     height: 100vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: var(--vrmwb-navy); 
+    background-color: var(--vrmwb-navy); /* Fallback */
     color: var(--text-main);
     transition: background-color 0.3s, color 0.3s;
 }
@@ -106,6 +117,16 @@ body {
     z-index: -1;
 }
 
+/* --- NIEUW: DE GRADIENT OVERLAY (Figma-effect) --- */
+#gradient-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    /* Duidelijke radiale gradiënt die vanuit het midden naar de randen loopt */
+    background: radial-gradient(circle at center, transparent 0%, rgba(18, 20, 53, 0.2) 20%, rgba(18, 20, 53, 0.6) 60%, rgba(18, 20, 53, 0.9) 100%);
+    z-index: 0; /* Boven de backdrop, onder de content */
+    pointer-events: none; /* Klikken gaat er doorheen */
+}
+
 /* --- HEADER --- */
 .top-header {
     display: flex;
@@ -113,6 +134,7 @@ body {
     align-items: center;
     padding-top: 20px;
     position: relative;
+    z-index: 10;
     height: 80px;
 }
 
@@ -147,23 +169,23 @@ body {
     grid-template-columns: 1fr 1fr 1.3fr;
     gap: 40px;
     padding: 30px 50px;
-    overflow: hidden; /* Houdt alles netjes binnen het scherm */
+    overflow: hidden;
+    z-index: 10;
 }
 
-/* FIX VOOR HET SCROLLEN: min-height: 0 dwingt de kolom om niet uit het scherm te groeien */
 .column {
     display: flex;
     flex-direction: column;
-    min-height: 0; 
 }
 
-/* --- KOPJES UITLIJNING --- */
+/* --- KOPJES UITLIJNING (Fix Padding/Flexbox) --- */
+/* Dit dwingt alle h2 kopjes op dezelfde baseline, ongeacht de knop ernaast */
 .column-header {
     display: flex;
     align-items: center;
     height: 50px;
     margin-bottom: 20px;
-    flex-shrink: 0; /* Voorkomt dat het kopje in elkaar drukt */
+    flex-shrink: 0;
 }
 .column-header.center-title { justify-content: center; }
 .column-header.space-between { justify-content: space-between; }
@@ -183,8 +205,6 @@ h2 {
     overflow-y: auto;
     padding-right: 15px;
     align-content: start;
-    flex: 1;
-    min-height: 0; /* CRUCIAAL voor scrollen */
 }
 
 .card {
@@ -207,16 +227,15 @@ h2 {
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* --- MIDDELSTE KOLOM (Glass Overlay Fix) --- */
+/* --- MIDDELSTE KOLOM (Glass Overlay & Lichte Kaarten in Light Mode) --- */
 .journal-sequence {
-    /* FIX: Dwingt de browser om het als een gradiënt afbeelding te zien */
-    background-image: var(--bg-overlay);
-    -webkit-backdrop-filter: blur(15px);
+    /* Nu een duidelijke, frosted white kaart voor central column */
+    background: var(--glass-overlay);
     backdrop-filter: blur(15px);
     border-radius: var(--radius-outer);
-    padding: 20px 20px 0 20px; /* Padding onder is 0 zodat lijst strak doorloopt */
+    padding: 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    border: 1px solid var(--glass-border); /* Geeft extra definitie aan de rand */
+    border: 1px solid var(--glass-border);
 }
 
 .sequence-list {
@@ -225,9 +244,7 @@ h2 {
     gap: 15px;
     overflow-y: auto;
     padding-right: 10px; 
-    padding-bottom: 20px; /* Ruimte aan de onderkant van de scroll-lijst */
     flex: 1; 
-    min-height: 0; /* CRUCIAAL voor scrollen */
 }
 
 .sequence-list .card {
@@ -235,10 +252,16 @@ h2 {
     padding: 20px 25px;
     font-size: 16px;
     color: white;
-    flex-shrink: 0; /* Zorgt dat kaarten niet in elkaar proppen */
+    flex-shrink: 0;
 }
 
-.card.dark { background-color: var(--card-dark-fill); }
+/* AANGEPAST: De kaarten zijn nu licht met een rand in light mode, en donker in dark */
+.card.sequence-card {
+    background-color: var(--sequence-card-bg);
+    color: var(--sequence-card-text);
+    border: 1px solid var(--sequence-card-border);
+}
+
 .card.gold { background-color: var(--vrmwb-gold); color: #000; font-weight: 700; }
 .badge.red-bg { background-color: var(--vrmwb-red); color: white; padding: 4px 10px; border-radius: 20px; font-weight: 700; }
 
@@ -252,7 +275,6 @@ h2 {
     color: var(--text-main);
     transition: background-color 0.3s, color 0.3s;
     overflow-y: auto;
-    min-height: 0; /* CRUCIAAL voor scrollen */
 }
 
 .btn-preview { 
@@ -309,7 +331,7 @@ h2 {
 .editor-panel::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 10px; }
 
 
-/* --- BOTTOM BAR --- */
+/* --- BOTTOM BAR (Perfecte Uitlijning & Hoogte) --- */
 .bottom-bar {
     height: 80px;
     background-color: var(--bottom-bar-bg);
@@ -319,9 +341,8 @@ h2 {
     padding: 0 50px;
     box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
     position: relative;
-    z-index: 10;
+    z-index: 20; /* Zorgt dat het over de gradiënt valt */
     transition: background-color 0.3s, color 0.3s;
-    flex-shrink: 0; /* Voorkomt dat de footer kleiner wordt gedrukt */
 }
 
 .title-logo { 
@@ -330,15 +351,17 @@ h2 {
     justify-content: center;
     font-size: 14px; 
     color: var(--bottom-bar-text); 
+    font-weight: 400; /* Dagjournaal is Regular */ 
 }
-.title-logo strong { font-weight: 900; }
-.title-logo span { font-weight: 400; }
+.title-logo strong { font-weight: 900; /* Operationeel is Black */ }
 
+/* --- AANGEPAST: date-controls en knoppen herzien voor hoogte matching en pili-vorm --- */
 .date-controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: var(--nav-block-bg);
+    /* AANGEPAST: Hoogte matched nu exact de 80px van de bottom bar, en is een pil */
     height: 80px; 
     width: 320px; 
     border-radius: 40px; 
