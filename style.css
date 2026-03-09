@@ -32,7 +32,7 @@
     --input-border: #E6E6E6;
     --bottom-bar-bg: #FFFFFF;
     --bottom-bar-text: #1E1E1E;
-    --scrollbar-thumb: #1E1E1E; /* Donkere scrollbar uit je design */
+    --scrollbar-thumb: #1E1E1E; 
     
     --card-dark-fill: #2B2D31; 
     --radius-outer: 16px;
@@ -50,7 +50,7 @@
     --input-border: #444;
     --bottom-bar-bg: #1E1E1E;
     --bottom-bar-text: #FFFFFF;
-    --scrollbar-thumb: #FFFFFF; /* Witte scrollbar in dark mode (optioneel, of laat hem #1E1E1E) */
+    --scrollbar-thumb: #FFFFFF; 
 }
 
 body {
@@ -69,7 +69,8 @@ body {
 .backdrop {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url("ODj%20Backdrop%20V2.1.jpg"); 
+    /* --- HIER IS DE NIEUWE BESTANDSNAAM AANGEPAST --- */
+    background-image: url("backdrop_odj.png"); 
     background-size: cover;
     background-position: center;
     z-index: -1;
@@ -87,7 +88,7 @@ body {
     background-color: var(--vrmwb-gold);
     color: #000;
     font-size: 32px;
-    font-weight: bold; /* Vetgedrukt gemaakt */
+    font-weight: bold; 
     padding: 10px 40px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -119,7 +120,7 @@ body {
 .column {
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Belangrijk voor scrollende inhoud */
+    overflow: hidden; 
 }
 
 h2 {
@@ -127,7 +128,7 @@ h2 {
     margin-bottom: 20px;
     color: var(--text-main);
     text-transform: uppercase;
-    font-weight: bold; /* Vetgedrukt gemaakt */
+    font-weight: bold; 
 }
 
 /* Linker Kolom met custom scrollbar */
@@ -143,7 +144,7 @@ h2 {
     border-radius: var(--radius-inner);
     padding: 20px 15px;
     text-align: center;
-    font-weight: normal; /* Basis tekst niet-vet */
+    font-weight: normal; 
     font-size: 14px;
     cursor: pointer;
     display: flex;
@@ -176,8 +177,8 @@ h2 {
     flex-direction: column;
     gap: 15px;
     overflow-y: auto;
-    padding-right: 15px; /* Ruimte voor de scrollbar */
-    flex: 1; /* Laat lijst de rest van de ruimte vullen */
+    padding-right: 15px; 
+    flex: 1; 
 }
 
 .sequence-list .card {
@@ -191,31 +192,31 @@ h2 {
 .card.gold { 
     background-color: var(--vrmwb-gold); 
     color: #000; 
-    font-weight: bold; /* Vetgedrukt volgens ontwerp */
+    font-weight: bold; 
 }
 .badge.red-bg { 
     background-color: var(--vrmwb-red); 
     color: white; 
     padding: 4px 10px; 
     border-radius: 20px; 
-    font-weight: bold; /* Vetgedrukt */
+    font-weight: bold; 
 }
 
-/* --- CUSTOM SCROLLBARS (WebKit: Chrome, Safari, Edge) --- */
+/* --- CUSTOM SCROLLBARS --- */
 .sequence-list::-webkit-scrollbar,
 .block-selection .grid-blocks::-webkit-scrollbar {
-    width: 8px; /* Dikte van de scrollbar */
+    width: 8px; 
 }
 
 .sequence-list::-webkit-scrollbar-track,
 .block-selection .grid-blocks::-webkit-scrollbar-track {
-    background: transparent; /* Geen achtergrond spoor */
+    background: transparent; 
 }
 
 .sequence-list::-webkit-scrollbar-thumb,
 .block-selection .grid-blocks::-webkit-scrollbar-thumb {
-    background-color: var(--scrollbar-thumb); /* Zwart/wit afhankelijk van thema */
-    border-radius: 10px; /* Mooie afgeronde hoeken */
+    background-color: var(--scrollbar-thumb); 
+    border-radius: 10px; 
 }
 /* -------------------------------------------------------- */
 
