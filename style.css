@@ -37,6 +37,7 @@
     /* LIGHT MODE VARIABELEN (Standaard) */
     --text-main: #1E1E1E;
     --text-muted: #707172;
+    /* AANGEPAST: Meer gedefinieerde semi-transparante achtergrond */
     --bg-overlay: rgba(255, 255, 255, 0.4); 
     --card-bg-light: rgba(255, 255, 255, 0.95); 
     --panel-bg: rgba(255, 255, 255, 0.95); 
@@ -55,6 +56,7 @@
 [data-theme="dark"] {
     --text-main: #FFFFFF;
     --text-muted: #E6E6E6;
+    /* AANGEPAST: Donkerdere gradiënt voor dark mode */
     --bg-overlay: rgba(0, 0, 0, 0.4);
     --card-bg-light: #707172; 
     --panel-bg: #1E1E1E; 
@@ -67,7 +69,7 @@
 
 body {
     font-family: 'Mariné UP', 'Open Sans', sans-serif; 
-    font-weight: 400; /* Standaardtekst is Regular */
+    font-weight: 400; 
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -106,7 +108,7 @@ body {
     background-color: var(--vrmwb-gold);
     color: #000;
     font-size: 32px;
-    font-weight: 900; /* Aangepast naar Black (dikst) */
+    font-weight: 900; 
     padding: 10px 40px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -120,12 +122,13 @@ body {
     border: none;
     padding: 10px 20px;
     border-radius: 20px;
-    font-weight: 700; /* Bold */
+    font-weight: 700; 
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     transition: all 0.2s;
 }
 
+/* AANGEPAST: De app-container krijgt nu de gradiënt overlay */
 .app-container {
     flex: 1;
     display: grid;
@@ -133,6 +136,8 @@ body {
     gap: 30px;
     padding: 20px 50px;
     overflow: hidden;
+    /* De gradiënt balk uit je screenshots */
+    background: linear-gradient(to bottom, transparent 0%, var(--bg-overlay) 20%, var(--bg-overlay) 80%, transparent 100%);
 }
 
 .column {
@@ -146,7 +151,7 @@ h2 {
     margin-bottom: 20px;
     color: var(--text-main);
     text-transform: uppercase;
-    font-weight: 900; /* Aangepast naar Black */
+    font-weight: 900; 
 }
 
 /* Linker Kolom met custom scrollbar */
@@ -162,7 +167,7 @@ h2 {
     border-radius: var(--radius-inner);
     padding: 20px 15px;
     text-align: center;
-    font-weight: 400; /* Regular voor standaard kaarten */
+    font-weight: 400; 
     font-size: 14px;
     cursor: pointer;
     display: flex;
@@ -180,8 +185,7 @@ h2 {
 
 /* Middelste Kolom (Dagjournaal) met custom scrollbar */
 .journal-sequence {
-    background: var(--bg-overlay);
-    backdrop-filter: blur(10px);
+    /* De achtergrond is nu gedefinieerd in .app-container */
     border-radius: var(--radius-outer);
     padding: 20px;
     display: flex;
@@ -210,14 +214,14 @@ h2 {
 .card.gold { 
     background-color: var(--vrmwb-gold); 
     color: #000; 
-    font-weight: 700; /* Actieve kaart is Bold */
+    font-weight: 700; 
 }
 .badge.red-bg { 
     background-color: var(--vrmwb-red); 
     color: white; 
     padding: 4px 10px; 
     border-radius: 20px; 
-    font-weight: 700; /* Badges zijn Bold */
+    font-weight: 700; 
 }
 
 /* --- CUSTOM SCROLLBARS --- */
@@ -239,6 +243,18 @@ h2 {
 /* -------------------------------------------------------- */
 
 /* Rechter Kolom (Editor) */
+/* AANGEPAST: Styling voor de header die nu buiten het panel staat */
+.outside-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px; /* Zelfde marge als h2 normaal gesproken heeft */
+}
+
+.outside-header h2 {
+    margin-bottom: 0; /* Verwijder standaard h2 marge */
+}
+
 .editor-panel {
     background: var(--panel-bg);
     border-radius: var(--radius-outer);
@@ -250,20 +266,19 @@ h2 {
     overflow-y: auto;
 }
 
-.header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
 .btn-preview { 
     background-color: var(--vrmwb-red); 
     color: white; 
     border: none; 
     padding: 10px 25px; 
     border-radius: 20px; 
-    font-weight: 700; /* Preview knop is Bold */
+    font-weight: 700; 
     font-size: 16px; 
     cursor: pointer; 
 }
 
 .form-group { margin-bottom: 25px; }
-.form-group label { display: block; font-weight: 700; /* Labels zijn Bold */ font-size: 16px; margin-bottom: 10px; }
+.form-group label { display: block; font-weight: 700; font-size: 16px; margin-bottom: 10px; }
 
 .dropdown-input { 
     background-color: var(--input-bg); 
@@ -293,6 +308,7 @@ h2 {
 .chevron { width: 10px; height: 10px; border-right: 2px solid var(--text-muted); border-bottom: 2px solid var(--text-muted); transform: rotate(45deg); }
 
 /* Bottom Bar */
+/* AANGEPAST: Hoogte expliciet vastgezet op 80px */
 .bottom-bar {
     height: 80px;
     background-color: var(--bottom-bar-bg);
@@ -306,21 +322,39 @@ h2 {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.title-logo { font-size: 14px; line-height: 1.2; color: var(--bottom-bar-text); font-weight: 400; /* Dagjournaal is Regular */ }
-.title-logo strong { font-weight: 900; /* Operationeel is Black */ }
+.title-logo { font-size: 14px; line-height: 1.2; color: var(--bottom-bar-text); font-weight: 400; }
+.title-logo strong { font-weight: 900; }
 
+/* AANGEPAST: date-controls en knoppen herzien voor hoogte matching */
 .date-controls {
     display: flex;
     align-items: center;
-    background-color: #1E1E1E; 
+    justify-content: center;
+    background-color: #1E1E1E; /* Dit zwarte blokje is altijd zwart */
     border-radius: 40px;
-    padding: 5px 20px;
-    gap: 20px;
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
+    /* AANGEPAST: Hoogte matched nu exact de 80px van de bottom bar */
+    height: 80px; 
+    width: auto;
+    padding: 0; /* Padding verwijderd voor hoogte matching */
 }
-.nav-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; font-weight: 700; }
-.nav-btn-text { background: none; border: none; color: white; cursor: pointer; font-size: 20px; font-weight: 700; /* Vandaag is Bold */ min-width: 160px; text-align: center; }
 
-.status-clock { font-size: 22px; color: var(--text-muted); font-weight: 300; /* Klok is subtiel (Light) */ }
+/* AANGEPAST: Knoppen herzien zodat ze de volledige hoogte vullen en tekst centreren */
+.nav-btn, .nav-btn-text { 
+    background: none; 
+    border: none; 
+    color: white; 
+    cursor: pointer; 
+    height: 100%; /* Vul volledige hoogte */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+.nav-btn { font-size: 24px; font-weight: 700; padding: 0 20px; }
+.nav-btn-text { font-size: 20px; font-weight: 700; min-width: 160px; text-align: center; }
+
+.status-clock { font-size: 22px; color: var(--text-muted); font-weight: 300; }
