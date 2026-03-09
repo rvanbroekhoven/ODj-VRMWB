@@ -5,9 +5,6 @@
     font-weight: normal;
     font-style: normal;
 }
-
-/* Fallback voor als je tekst dikgedrukt (bold) maakt. 
-   Als je geen apart marine-up-bold.ttf bestand hebt, forceert de browser het zelf. */
 @font-face {
     font-family: 'Mariné UP';
     src: url('marine-up.ttf') format('truetype');
@@ -28,18 +25,16 @@
     /* LIGHT MODE VARIABELEN (Standaard) */
     --text-main: #1E1E1E;
     --text-muted: #707172;
-    --bg-overlay: rgba(255, 255, 255, 0.4); /* Transparante strook midden */
-    --card-bg-light: rgba(255, 255, 255, 0.95); /* Linker blokken */
-    --panel-bg: rgba(255, 255, 255, 0.95); /* Rechter venster */
+    --bg-overlay: rgba(255, 255, 255, 0.4); 
+    --card-bg-light: rgba(255, 255, 255, 0.95); 
+    --panel-bg: rgba(255, 255, 255, 0.95); 
     --input-bg: #F6F6F6;
     --input-border: #E6E6E6;
     --bottom-bar-bg: #FFFFFF;
     --bottom-bar-text: #1E1E1E;
+    --scrollbar-thumb: #1E1E1E; /* Donkere scrollbar uit je design */
     
-    /* Center Cards dark mode blijven dark in light mode (zie design) */
     --card-dark-fill: #2B2D31; 
-
-    /* Corner Radius Keuze: 16 & 12 */
     --radius-outer: 16px;
     --radius-inner: 12px;
 }
@@ -49,16 +44,16 @@
     --text-main: #FFFFFF;
     --text-muted: #E6E6E6;
     --bg-overlay: rgba(0, 0, 0, 0.4);
-    --card-bg-light: #707172; /* Donkergrijs uit je styleguide */
-    --panel-bg: #1E1E1E; /* Rechter venster donker */
+    --card-bg-light: #707172; 
+    --panel-bg: #1E1E1E; 
     --input-bg: #2B2D31;
     --input-border: #444;
     --bottom-bar-bg: #1E1E1E;
     --bottom-bar-text: #FFFFFF;
+    --scrollbar-thumb: #FFFFFF; /* Witte scrollbar in dark mode (optioneel, of laat hem #1E1E1E) */
 }
 
 body {
-    /* Nu staat Mariné UP als eerste keus! */
     font-family: 'Mariné UP', 'Open Sans', sans-serif; 
     margin: 0;
     padding: 0;
@@ -66,12 +61,11 @@ body {
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: var(--vrmwb-navy); /* Fallback kleur */
+    background-color: var(--vrmwb-navy); 
     color: var(--text-main);
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* De Backdrop integratie - Nu kogelvrij met %20 voor spaties */
 .backdrop {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
@@ -81,7 +75,6 @@ body {
     z-index: -1;
 }
 
-/* Gouden Titel Balk & Theme Switch */
 .top-header {
     display: flex;
     justify-content: center;
@@ -94,7 +87,7 @@ body {
     background-color: var(--vrmwb-gold);
     color: #000;
     font-size: 32px;
-    font-weight: bold;
+    font-weight: bold; /* Vetgedrukt gemaakt */
     padding: 10px 40px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
@@ -114,7 +107,6 @@ body {
     transition: all 0.2s;
 }
 
-/* 3 Kolommen Grid */
 .app-container {
     flex: 1;
     display: grid;
@@ -127,6 +119,7 @@ body {
 .column {
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Belangrijk voor scrollende inhoud */
 }
 
 h2 {
@@ -134,22 +127,23 @@ h2 {
     margin-bottom: 20px;
     color: var(--text-main);
     text-transform: uppercase;
+    font-weight: bold; /* Vetgedrukt gemaakt */
 }
 
-/* Linker Kolom */
+/* Linker Kolom met custom scrollbar */
 .block-selection .grid-blocks {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     overflow-y: auto;
-    padding-right: 10px;
+    padding-right: 15px;
 }
 
 .card {
     border-radius: var(--radius-inner);
     padding: 20px 15px;
     text-align: center;
-    font-weight: 600;
+    font-weight: normal; /* Basis tekst niet-vet */
     font-size: 14px;
     cursor: pointer;
     display: flex;
@@ -165,13 +159,16 @@ h2 {
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* Middelste Kolom (Dagjournaal) met transparantie */
+/* Middelste Kolom (Dagjournaal) met custom scrollbar */
 .journal-sequence {
     background: var(--bg-overlay);
     backdrop-filter: blur(10px);
     border-radius: var(--radius-outer);
     padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
+
 .center-title { text-align: center; }
 
 .sequence-list {
@@ -179,6 +176,8 @@ h2 {
     flex-direction: column;
     gap: 15px;
     overflow-y: auto;
+    padding-right: 15px; /* Ruimte voor de scrollbar */
+    flex: 1; /* Laat lijst de rest van de ruimte vullen */
 }
 
 .sequence-list .card {
@@ -189,8 +188,36 @@ h2 {
 }
 
 .card.dark { background-color: var(--card-dark-fill); }
-.card.gold { background-color: var(--vrmwb-gold); color: #000; }
-.badge.red-bg { background-color: var(--vrmwb-red); color: white; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
+.card.gold { 
+    background-color: var(--vrmwb-gold); 
+    color: #000; 
+    font-weight: bold; /* Vetgedrukt volgens ontwerp */
+}
+.badge.red-bg { 
+    background-color: var(--vrmwb-red); 
+    color: white; 
+    padding: 4px 10px; 
+    border-radius: 20px; 
+    font-weight: bold; /* Vetgedrukt */
+}
+
+/* --- CUSTOM SCROLLBARS (WebKit: Chrome, Safari, Edge) --- */
+.sequence-list::-webkit-scrollbar,
+.block-selection .grid-blocks::-webkit-scrollbar {
+    width: 8px; /* Dikte van de scrollbar */
+}
+
+.sequence-list::-webkit-scrollbar-track,
+.block-selection .grid-blocks::-webkit-scrollbar-track {
+    background: transparent; /* Geen achtergrond spoor */
+}
+
+.sequence-list::-webkit-scrollbar-thumb,
+.block-selection .grid-blocks::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb); /* Zwart/wit afhankelijk van thema */
+    border-radius: 10px; /* Mooie afgeronde hoeken */
+}
+/* -------------------------------------------------------- */
 
 /* Rechter Kolom (Editor) */
 .editor-panel {
@@ -201,6 +228,7 @@ h2 {
     height: 100%;
     color: var(--text-main);
     transition: background-color 0.3s, color 0.3s;
+    overflow-y: auto;
 }
 
 .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
@@ -259,11 +287,12 @@ h2 {
     transition: background-color 0.3s, color 0.3s;
 }
 .title-logo { font-size: 14px; line-height: 1.2; color: var(--bottom-bar-text); }
+.title-logo strong { font-weight: bold; }
 
 .date-controls {
     display: flex;
     align-items: center;
-    background-color: #1E1E1E; /* Dit zwarte blokje is altijd zwart in je design */
+    background-color: #1E1E1E; 
     border-radius: 40px;
     padding: 5px 20px;
     gap: 20px;
@@ -272,6 +301,6 @@ h2 {
     transform: translateX(-50%);
 }
 .nav-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; font-weight: bold; }
-.nav-btn-text { background: none; border: none; color: white; cursor: pointer; font-size: 20px; font-weight: 600; min-width: 160px; text-align: center; }
+.nav-btn-text { background: none; border: none; color: white; cursor: pointer; font-size: 20px; font-weight: bold; min-width: 160px; text-align: center; }
 
-.status-clock { font-size: 22px; color: var(--text-muted); font-weight: 400; }
+.status-clock { font-size: 22px; color: var(--text-muted); font-weight: normal; }
