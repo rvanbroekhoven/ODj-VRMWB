@@ -1,39 +1,96 @@
+/* -- INLADEN VAN JOUW HUISSTIJL FONT --
+   Upload de Mariné UP font bestanden naar je GitHub.
+   Als je ze hebt geüpload, verwijdert dit commentaar en zorg dat de paden kloppen! */
+@font-face {
+    font-family: 'Mariné UP';
+    src: url('MarineUP-Regular.woff2') format('woff2'),
+         url('MarineUP-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Mariné UP';
+    src: url('MarineUP-Bold.woff2') format('woff2'),
+         url('MarineUP-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
 :root {
+    /* Brand Colors VRMWB - Constant in beide thema's */
     --vrmwb-navy: #17428C;
+    --vrmwb-dark-navy: #122053;
     --vrmwb-red: #D2100B;
+    --vrmwb-dark-red: #AE1F1B;
     --vrmwb-gold: #CC9933;
-    --card-dark: #2B2D31;
+
+    /* LIGHT MODE VARIABELEN (Standaard) */
+    --text-main: #1E1E1E;
+    --text-muted: #707172;
+    --bg-overlay: rgba(255, 255, 255, 0.4); /* Transparante strook midden */
+    --card-bg-light: rgba(255, 255, 255, 0.95); /* Linker blokken */
+    --panel-bg: rgba(255, 255, 255, 0.95); /* Rechter venster */
+    --input-bg: #F6F6F6;
+    --input-border: #E6E6E6;
+    --bottom-bar-bg: #FFFFFF;
+    --bottom-bar-text: #1E1E1E;
+    
+    /* Center Cards dark mode blijven dark in light mode (zie design) */
+    --card-dark-fill: #2B2D31; 
+
+    /* Corner Radius Keuze: 16 & 12 */
+    --radius-outer: 16px;
+    --radius-inner: 12px;
+}
+
+/* DARK MODE OVERRIDES */
+[data-theme="dark"] {
+    --text-main: #FFFFFF;
+    --text-muted: #E6E6E6;
+    --bg-overlay: rgba(0, 0, 0, 0.4);
+    --card-bg-light: #707172; /* Donkergrijs uit je styleguide */
+    --panel-bg: #1E1E1E; /* Rechter venster donker */
+    --input-bg: #2B2D31;
+    --input-border: #444;
+    --bottom-bar-bg: #1E1E1E;
+    --bottom-bar-text: #FFFFFF;
 }
 
 body {
-    font-family: 'Mariné UP', 'Open Sans', sans-serif;
+    /* Nu staat Mariné UP als eerste keus! */
+    font-family: 'Mariné UP', 'Open Sans', sans-serif; 
     margin: 0;
     padding: 0;
     height: 100vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    background-color: #f0f0f0;
+    background-color: var(--vrmwb-navy); /* Fallback kleur */
+    color: var(--text-main);
+    transition: background-color 0.3s, color 0.3s;
 }
 
-/* De Backdrop integratie */
+/* De Backdrop integratie - Nu kogelvrij met %20 voor spaties */
 .backdrop {
-    position: absolute;
+    position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url('ODj Backdrop V2.1.jpg'); /* CASE SENSITIVE! */
+    background-image: url("ODj%20Backdrop%20V2.1.jpg"); 
     background-size: cover;
     background-position: center;
     z-index: -1;
 }
 
-/* Gouden Titel Balk */
+/* Gouden Titel Balk & Theme Switch */
 .top-header {
     display: flex;
     justify-content: center;
+    align-items: center;
     padding-top: 15px;
+    position: relative;
 }
+
 .location-pill {
     background-color: var(--vrmwb-gold);
     color: #000;
@@ -42,6 +99,20 @@ body {
     padding: 10px 40px;
     border-radius: 20px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.theme-btn {
+    position: absolute;
+    right: 50px;
+    background-color: var(--bottom-bar-bg);
+    color: var(--text-main);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    transition: all 0.2s;
 }
 
 /* 3 Kolommen Grid */
@@ -62,7 +133,8 @@ body {
 h2 {
     font-size: 22px;
     margin-bottom: 20px;
-    color: #1E1E1E;
+    color: var(--text-main);
+    text-transform: uppercase;
 }
 
 /* Linker Kolom */
@@ -71,69 +143,113 @@ h2 {
     grid-template-columns: 1fr 1fr;
     gap: 15px;
     overflow-y: auto;
+    padding-right: 10px;
 }
 
 .card {
-    border-radius: 16px;
+    border-radius: var(--radius-inner);
     padding: 20px 15px;
     text-align: center;
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     display: flex;
     justify-content: center;
     align-items: center;
     border: none;
+    transition: background-color 0.3s, color 0.3s;
 }
-.card.light { background-color: rgba(255, 255, 255, 0.9); color: #555; }
+
+.theme-card-light {
+    background-color: var(--card-bg-light);
+    color: var(--text-main);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
 
 /* Middelste Kolom (Dagjournaal) met transparantie */
 .journal-sequence {
-    background: rgba(255, 255, 255, 0.3);
-    backdrop-filter: blur(5px);
-    border-radius: 20px;
+    background: var(--bg-overlay);
+    backdrop-filter: blur(10px);
+    border-radius: var(--radius-outer);
     padding: 20px;
 }
-.journal-sequence h2 { text-align: center; }
+.center-title { text-align: center; }
+
 .sequence-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
+    overflow-y: auto;
 }
+
 .sequence-list .card {
     justify-content: space-between;
     padding: 20px 25px;
     font-size: 16px;
     color: white;
 }
-.card.dark { background-color: var(--card-dark); }
+
+.card.dark { background-color: var(--card-dark-fill); }
 .card.gold { background-color: var(--vrmwb-gold); color: #000; }
 .badge.red-bg { background-color: var(--vrmwb-red); color: white; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
 
 /* Rechter Kolom (Editor) */
 .editor-panel {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
+    background: var(--panel-bg);
+    border-radius: var(--radius-outer);
     padding: 30px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     height: 100%;
+    color: var(--text-main);
+    transition: background-color 0.3s, color 0.3s;
 }
+
 .header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
-.btn-preview { background-color: var(--vrmwb-red); color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; font-size: 16px; cursor: pointer; }
+.btn-preview { 
+    background-color: var(--vrmwb-red); 
+    color: white; 
+    border: none; 
+    padding: 10px 25px; 
+    border-radius: 20px; 
+    font-weight: bold; 
+    font-size: 16px; 
+    cursor: pointer; 
+}
 
 .form-group { margin-bottom: 25px; }
-.form-group label { display: block; font-weight: bold; font-size: 16px; margin-bottom: 10px; color: #1E1E1E; }
-.dropdown-input { background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
-.dropdown-input.placeholder { color: #999; }
-.tag { background-color: #e5e5e5; padding: 5px 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; color: #000; }
-.tag .close { color: #888; cursor: pointer; font-weight: bold; }
-.chevron { width: 10px; height: 10px; border-right: 2px solid #888; border-bottom: 2px solid #888; transform: rotate(45deg); }
+.form-group label { display: block; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
+
+.dropdown-input { 
+    background-color: var(--input-bg); 
+    border: 1px solid var(--input-border); 
+    border-radius: var(--radius-inner); 
+    padding: 15px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    font-size: 14px; 
+    color: var(--text-main);
+    transition: background-color 0.3s;
+}
+.dropdown-input.placeholder { color: var(--text-muted); }
+
+.tag { 
+    background-color: var(--panel-bg); 
+    padding: 5px 10px; 
+    border-radius: 8px; 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    color: var(--text-main); 
+    border: 1px solid var(--input-border);
+}
+.tag .close { color: var(--text-muted); cursor: pointer; font-weight: bold; }
+.chevron { width: 10px; height: 10px; border-right: 2px solid var(--text-muted); border-bottom: 2px solid var(--text-muted); transform: rotate(45deg); }
 
 /* Bottom Bar */
 .bottom-bar {
     height: 80px;
-    background-color: white;
+    background-color: var(--bottom-bar-bg);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -141,13 +257,14 @@ h2 {
     box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
     position: relative;
     z-index: 10;
+    transition: background-color 0.3s, color 0.3s;
 }
-.title-logo { font-size: 14px; line-height: 1.2; color: #000; }
+.title-logo { font-size: 14px; line-height: 1.2; color: var(--bottom-bar-text); }
 
 .date-controls {
     display: flex;
     align-items: center;
-    background-color: #1E1E1E;
+    background-color: #1E1E1E; /* Dit zwarte blokje is altijd zwart in je design */
     border-radius: 40px;
     padding: 5px 20px;
     gap: 20px;
@@ -156,17 +273,6 @@ h2 {
     transform: translateX(-50%);
 }
 .nav-btn { background: none; border: none; color: white; cursor: pointer; font-size: 24px; font-weight: bold; }
+.nav-btn-text { background: none; border: none; color: white; cursor: pointer; font-size: 20px; font-weight: 600; min-width: 160px; text-align: center; }
 
-/* AANGEPAST: min-width toegevoegd zodat tekst niet verspringt */
-.nav-btn-text { 
-    background: none; 
-    border: none; 
-    color: white; 
-    cursor: pointer;
-    font-size: 20px; 
-    font-weight: 600; 
-    min-width: 160px; 
-    text-align: center;
-}
-
-.status-clock { font-size: 22px; color: #666; font-weight: 400; }
+.status-clock { font-size: 22px; color: var(--text-muted); font-weight: 400; }

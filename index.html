@@ -6,33 +6,34 @@
     <title>Operationeel Dagjournaal - VRMWB</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body data-theme="light">
     <div class="backdrop"></div> 
 
     <header class="top-header">
         <div class="location-pill">Tilburg Vossenberg</div>
+        <button id="theme-toggle" class="theme-btn">🌙 Dark Mode</button>
     </header>
 
     <main class="app-container">
         <section class="column block-selection">
             <h2>BLOK SELECTIE</h2>
             <div class="grid-blocks">
-                <div class="card light">Arbo Mededelingen</div>
-                <div class="card light">Communicatie</div>
-                <div class="card light">Evenementen</div>
-                <div class="card light">IBOA Mededelingen</div>
-                <div class="card light">Object van de Maand<br>(RB)</div>
-                <div class="card light">OCB Mededelingen</div>
-                <div class="card light">RB/CB Mededelingen</div>
-                <div class="card light">Stratenkennis</div>
-                <div class="card light">TFL Mededelingen</div>
-                <div class="card light">VKB Mededelingen</div>
-                <div class="card light">Waarschuwingen &<br>Operationele Fases</div>
+                <div class="card theme-card-light">Arbo Mededelingen</div>
+                <div class="card theme-card-light">Communicatie</div>
+                <div class="card theme-card-light">Evenementen</div>
+                <div class="card theme-card-light">IBOA Mededelingen</div>
+                <div class="card theme-card-light">Object van de Maand<br>(RB)</div>
+                <div class="card theme-card-light">OCB Mededelingen</div>
+                <div class="card theme-card-light">RB/CB Mededelingen</div>
+                <div class="card theme-card-light">Stratenkennis</div>
+                <div class="card theme-card-light">TFL Mededelingen</div>
+                <div class="card theme-card-light">VKB Mededelingen</div>
+                <div class="card theme-card-light">Waarschuwingen &<br>Operationele Fases</div>
             </div>
         </section>
 
         <section class="column journal-sequence">
-            <h2>DAGJOURNAAL</h2>
+            <h2 class="center-title">DAGJOURNAAL</h2>
             <div class="sequence-list">
                 <div class="card active-card gold">Ploeg indeling <span class="badge red-bg">10</span></div>
                 <div class="card dark">Alarmen vorige dienst <span class="badge red-bg">3</span></div>
