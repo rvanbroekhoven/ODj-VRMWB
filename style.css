@@ -1,17 +1,16 @@
-/* -- INLADEN VAN JOUW HUISSTIJL FONT --
-   Upload de Mariné UP font bestanden naar je GitHub.
-   Als je ze hebt geüpload, verwijdert dit commentaar en zorg dat de paden kloppen! */
+/* -- INLADEN VAN JOUW HUISSTIJL FONT -- */
 @font-face {
     font-family: 'Mariné UP';
-    src: url('MarineUP-Regular.woff2') format('woff2'),
-         url('MarineUP-Regular.woff') format('woff');
+    src: url('marine-up.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
+
+/* Fallback voor als je tekst dikgedrukt (bold) maakt. 
+   Als je geen apart marine-up-bold.ttf bestand hebt, forceert de browser het zelf. */
 @font-face {
     font-family: 'Mariné UP';
-    src: url('MarineUP-Bold.woff2') format('woff2'),
-         url('MarineUP-Bold.woff') format('woff');
+    src: url('marine-up.ttf') format('truetype');
     font-weight: bold;
     font-style: normal;
 }
