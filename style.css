@@ -1,163 +1,162 @@
-/* Gebruik een standaard sans-serif totdat je het Mariné font inlaadt */
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
 
 :root {
-    /* Brand Colors VRMWB */
     --vrmwb-navy: #17428C;
-    --vrmwb-dark-navy: #122053;
     --vrmwb-red: #D2100B;
-    --vrmwb-dark-red: #AE1F1B;
     --vrmwb-gold: #CC9933;
-
-    /* Light Theme Settings */
-    --bg-color: #F6F6F6;
-    --card-bg: #FFFFFF;
-    --card-dark: #333333;
-    --text-primary: #1E1E1E;
-    --text-secondary: #707172;
-    --text-inverse: #FFFFFF;
-    
-    /* Jouw gekozen radius */
-    --border-radius-outer: 16px; 
-    --border-radius-inner: 12px;
+    --card-dark: #2B2D31;
 }
 
 body {
     font-family: 'Mariné UP', 'Open Sans', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: var(--bg-color);
-    color: var(--text-primary);
     height: 100vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    background-color: #f0f0f0;
 }
 
-/* Achtergrond (vervang background later door url('ODj Backdrop V2.1.jpg') ) */
+/* De Backdrop integratie */
 .backdrop {
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, rgba(23,66,140,0.1) 0%, rgba(210,16,11,0.1) 100%);
+    background-image: url('ODj Backdrop V2.1.jpg'); /* CASE SENSITIVE! */
+    background-size: cover;
+    background-position: center;
     z-index: -1;
 }
 
-/* Grid layout voor de 3 kolommen */
+/* Gouden Titel Balk */
+.top-header {
+    display: flex;
+    justify-content: center;
+    padding-top: 15px;
+}
+.location-pill {
+    background-color: var(--vrmwb-gold);
+    color: #000;
+    font-size: 32px;
+    font-weight: bold;
+    padding: 10px 40px;
+    border-radius: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* 3 Kolommen Grid */
 .app-container {
     flex: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr 1.5fr; /* Rechterkolom is iets breder */
+    grid-template-columns: 1fr 1fr 1.3fr;
     gap: 30px;
-    padding: 30px 50px;
-    overflow-y: auto;
+    padding: 20px 50px;
+    overflow: hidden;
 }
 
-.column h2 {
-    font-size: 20px;
+.column {
+    display: flex;
+    flex-direction: column;
+}
+
+h2 {
+    font-size: 22px;
     margin-bottom: 20px;
-    color: var(--text-primary);
+    color: #1E1E1E;
 }
 
-/* Kaarten & Blokken */
-.grid-blocks {
+/* Linker Kolom */
+.block-selection .grid-blocks {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 15px;
+    overflow-y: auto;
 }
 
 .card {
-    background: var(--card-bg);
-    padding: 15px 20px;
-    border-radius: var(--border-radius-inner);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border-radius: 16px;
+    padding: 20px 15px;
     text-align: center;
     font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    border: 1px solid #E6E6E6;
+    border: none;
 }
+.card.light { background-color: rgba(255, 255, 255, 0.9); color: #555; }
 
+/* Middelste Kolom (Dagjournaal) met transparantie */
+.journal-sequence {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    padding: 20px;
+}
+.journal-sequence h2 { text-align: center; }
 .sequence-list {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
-
-.card.dark {
-    background-color: var(--card-dark);
-    color: var(--text-inverse);
-    border: none;
-}
-
-.card.gold {
-    background-color: var(--vrmwb-gold);
-    color: var(--text-primary);
-    border: none;
-}
-
-.badge.red { background-color: var(--vrmwb-red); color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px;}
-.badge { background-color: white; color: var(--vrmwb-red); padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;}
-
-/* Editor Rechterkant */
-.header-flex { display: flex; justify-content: space-between; align-items: center; }
-.btn-preview {
-    background-color: var(--vrmwb-red);
-    color: white;
-    border: none;
-    padding: 10px 24px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
+.sequence-list .card {
+    justify-content: space-between;
+    padding: 20px 25px;
     font-size: 16px;
+    color: white;
 }
+.card.dark { background-color: var(--card-dark); }
+.card.gold { background-color: var(--vrmwb-gold); color: #000; }
+.badge.red-bg { background-color: var(--vrmwb-red); color: white; padding: 4px 10px; border-radius: 20px; font-weight: bold; }
 
-.editor-settings {
-    background: var(--card-bg);
-    padding: 25px;
-    border-radius: var(--border-radius-outer);
-    margin-top: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+/* Rechter Kolom (Editor) */
+.editor-panel {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    height: 100%;
 }
+.header-flex { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+.btn-preview { background-color: var(--vrmwb-red); color: white; border: none; padding: 10px 25px; border-radius: 20px; font-weight: bold; font-size: 16px; cursor: pointer; }
 
-.editor-settings h3 { font-size: 16px; margin: 15px 0 10px 0; color: var(--text-primary); }
-.tag { background-color: var(--bg-color); padding: 8px 15px; border-radius: var(--border-radius-inner); display: inline-block; border: 1px solid #ccc; font-size: 14px;}
-.dropdown { border: 1px solid #ccc; padding: 10px 15px; border-radius: var(--border-radius-inner); color: var(--text-secondary); font-size: 14px;}
+.form-group { margin-bottom: 25px; }
+.form-group label { display: block; font-weight: bold; font-size: 16px; margin-bottom: 10px; color: #1E1E1E; }
+.dropdown-input { background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
+.dropdown-input.placeholder { color: #999; }
+.tag { background-color: #e5e5e5; padding: 5px 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; color: #000; }
+.tag .close { color: #888; cursor: pointer; font-weight: bold; }
+.chevron { width: 10px; height: 10px; border-right: 2px solid #888; border-bottom: 2px solid #888; transform: rotate(45deg); }
 
 /* Bottom Bar */
 .bottom-bar {
     height: 80px;
-    background: var(--card-bg);
+    background-color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 50px;
     box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+    position: relative;
+    z-index: 10;
 }
-
-.title-logo { font-size: 14px; line-height: 1.2; }
+.title-logo { font-size: 14px; line-height: 1.2; color: #000; }
 
 .date-controls {
     display: flex;
     align-items: center;
-    background-color: #1E1E1E; /* Donker blok uit je design */
+    background-color: #1E1E1E;
     border-radius: 40px;
-    padding: 5px 15px;
+    padding: 5px 20px;
+    gap: 20px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
+.nav-btn, .nav-btn-text { background: none; border: none; color: white; cursor: pointer; }
+.nav-btn { font-size: 24px; font-weight: bold; }
+.nav-btn-text { font-size: 20px; font-weight: 600; }
 
-.nav-btn, .nav-btn-text {
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    padding: 10px 20px;
-}
-
-.nav-btn { font-size: 20px; }
-.nav-btn-text { font-weight: 600; font-size: 18px; }
-
-.status-clock {
-    font-size: 20px;
-    color: var(--text-secondary);
-}
+.status-clock { font-size: 22px; color: #666; font-weight: 400; }
