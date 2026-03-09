@@ -1,36 +1,163 @@
+/* Gebruik een standaard sans-serif totdat je het Mariné font inlaadt */
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
 :root {
-    /* Brand Colors */
+    /* Brand Colors VRMWB */
     --vrmwb-navy: #17428C;
     --vrmwb-dark-navy: #122053;
     --vrmwb-red: #D2100B;
     --vrmwb-dark-red: #AE1F1B;
     --vrmwb-gold: #CC9933;
 
-    /* Semantic Colors - Light Mode (Default) */
+    /* Light Theme Settings */
     --bg-color: #F6F6F6;
     --card-bg: #FFFFFF;
+    --card-dark: #333333;
     --text-primary: #1E1E1E;
     --text-secondary: #707172;
-    --border-radius-outer: 16px;
-    --border-radius-inner: 12px;
+    --text-inverse: #FFFFFF;
     
-    /* UI Elements */
-    --sidebar-bg: rgba(255, 255, 255, 0.8);
-}
-
-/* Dark Mode Overrides */
-[data-theme="dark"] {
-    --bg-color: #121212;
-    --card-bg: #1E1E1E;
-    --text-primary: #FFFFFF;
-    --text-secondary: #E6E6E6;
-    --sidebar-bg: rgba(30, 30, 30, 0.8);
+    /* Jouw gekozen radius */
+    --border-radius-outer: 16px; 
+    --border-radius-inner: 12px;
 }
 
 body {
-    font-family: 'Mariné UP', sans-serif; /* Zorg dat je dit font inlaadt via @font-face */
+    font-family: 'Mariné UP', 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
     background-color: var(--bg-color);
     color: var(--text-primary);
-    margin: 0;
-    transition: all 0.3s ease;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Achtergrond (vervang background later door url('ODj Backdrop V2.1.jpg') ) */
+.backdrop {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, rgba(23,66,140,0.1) 0%, rgba(210,16,11,0.1) 100%);
+    z-index: -1;
+}
+
+/* Grid layout voor de 3 kolommen */
+.app-container {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.5fr; /* Rechterkolom is iets breder */
+    gap: 30px;
+    padding: 30px 50px;
+    overflow-y: auto;
+}
+
+.column h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: var(--text-primary);
+}
+
+/* Kaarten & Blokken */
+.grid-blocks {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 15px 20px;
+    border-radius: var(--border-radius-inner);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    text-align: center;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #E6E6E6;
+}
+
+.sequence-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.card.dark {
+    background-color: var(--card-dark);
+    color: var(--text-inverse);
+    border: none;
+}
+
+.card.gold {
+    background-color: var(--vrmwb-gold);
+    color: var(--text-primary);
+    border: none;
+}
+
+.badge.red { background-color: var(--vrmwb-red); color: white; padding: 3px 10px; border-radius: 20px; font-size: 12px;}
+.badge { background-color: white; color: var(--vrmwb-red); padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: bold;}
+
+/* Editor Rechterkant */
+.header-flex { display: flex; justify-content: space-between; align-items: center; }
+.btn-preview {
+    background-color: var(--vrmwb-red);
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.editor-settings {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: var(--border-radius-outer);
+    margin-top: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+.editor-settings h3 { font-size: 16px; margin: 15px 0 10px 0; color: var(--text-primary); }
+.tag { background-color: var(--bg-color); padding: 8px 15px; border-radius: var(--border-radius-inner); display: inline-block; border: 1px solid #ccc; font-size: 14px;}
+.dropdown { border: 1px solid #ccc; padding: 10px 15px; border-radius: var(--border-radius-inner); color: var(--text-secondary); font-size: 14px;}
+
+/* Bottom Bar */
+.bottom-bar {
+    height: 80px;
+    background: var(--card-bg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 50px;
+    box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
+}
+
+.title-logo { font-size: 14px; line-height: 1.2; }
+
+.date-controls {
+    display: flex;
+    align-items: center;
+    background-color: #1E1E1E; /* Donker blok uit je design */
+    border-radius: 40px;
+    padding: 5px 15px;
+}
+
+.nav-btn, .nav-btn-text {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 10px 20px;
+}
+
+.nav-btn { font-size: 20px; }
+.nav-btn-text { font-weight: 600; font-size: 18px; }
+
+.status-clock {
+    font-size: 20px;
+    color: var(--text-secondary);
 }
