@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="nl" data-theme="light">
+<head>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="backdrop"></div> <main class="app-container">
+        <section class="sidebar selection">
+            <h2>Blok Selectie</h2>
+            <div class="grid-blocks">
+                <div class="draggable-card">Arbo Mededelingen</div>
+                <div class="draggable-card">Evenementen</div>
+                </div>
+        </section>
+
+        <section class="sidebar journal-sequence">
+            <h2>Dagjournaal</h2>
+            <div class="sequence-list">
+                <div class="active-item gold">Ploeg indeling <span class="badge">10</span></div>
+                <div class="item">Alarmen vorige dienst <span class="badge">3</span></div>
+            </div>
+        </section>
+
+        <section class="content-editor">
+            <header class="station-header">
+                <h1>Tilburg Vossenberg</h1>
+            </header>
+            <div class="settings-card">
+                <h3>Kazernes in Roosterplanning</h3>
+                <div class="tag-input">Bergen op Zoom <span>&times;</span></div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bottom-bar">
+        <div class="logo-section">
+            <img src="logo-vrmwb.png" alt="VRMWB">
+            <span>Operationeel Dagjournaal</span>
+        </div>
+        <div class="nav-controls">
+            <button id="prev"> < </button>
+            <button id="today">Vandaag</button>
+            <button id="next"> > </button>
+        </div>
+        <div class="status-clock">Di, 3 maart 2026 15:53</div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,36 @@
+:root {
+    /* Brand Colors */
+    --vrmwb-navy: #17428C;
+    --vrmwb-dark-navy: #122053;
+    --vrmwb-red: #D2100B;
+    --vrmwb-dark-red: #AE1F1B;
+    --vrmwb-gold: #CC9933;
+
+    /* Semantic Colors - Light Mode (Default) */
+    --bg-color: #F6F6F6;
+    --card-bg: #FFFFFF;
+    --text-primary: #1E1E1E;
+    --text-secondary: #707172;
+    --border-radius-outer: 16px;
+    --border-radius-inner: 12px;
+    
+    /* UI Elements */
+    --sidebar-bg: rgba(255, 255, 255, 0.8);
+}
+
+/* Dark Mode Overrides */
+[data-theme="dark"] {
+    --bg-color: #121212;
+    --card-bg: #1E1E1E;
+    --text-primary: #FFFFFF;
+    --text-secondary: #E6E6E6;
+    --sidebar-bg: rgba(30, 30, 30, 0.8);
+}
+
+body {
+    font-family: 'Mariné UP', sans-serif; /* Zorg dat je dit font inlaadt via @font-face */
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    margin: 0;
+    transition: all 0.3s ease;
+}
