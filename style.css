@@ -41,14 +41,17 @@
     --vrmwb-dark-red: #AE1F1B;
     --vrmwb-gold: #CC9933;
 
-    /* LIGHT MODE VARIABELEN (Standaard) */
+    /* LIGHT MODE VARIABELEN */
     --text-main: #1E1E1E;
     --text-muted: #707172;
-    /* NIEUW: Duidelijke transparante witte glass-kaart voor de central column */
+    
+    /* AANGEPAST: De exacte lineaire gradiënt kleuren voor Light Mode */
+    --bg-gradient-top: #F6F6F6;
+    --bg-gradient-transparent: rgba(246, 246, 246, 0);
+    
     --glass-overlay: rgba(255, 255, 255, 0.5); 
     --glass-border: rgba(255, 255, 255, 0.1);
     
-    /* NIEUW: Variabelen voor de kaarten in de central column */
     --sequence-card-bg: rgba(255, 255, 255, 0.9);
     --sequence-card-border: rgba(0, 0, 0, 0.05);
     --sequence-card-text: #1E1E1E;
@@ -59,7 +62,7 @@
     --input-border: #E6E6E6;
     --bottom-bar-bg: #FFFFFF;
     --bottom-bar-text: #1E1E1E;
-    --nav-block-bg: #1E1E1E; /* Het Vandaag blokje is zwart in light */
+    --nav-block-bg: #1E1E1E; 
     --nav-block-text: #FFFFFF;
     --scrollbar-thumb: #1E1E1E; 
     
@@ -71,11 +74,14 @@
 [data-theme="dark"] {
     --text-main: #FFFFFF;
     --text-muted: #E6E6E6;
-    /* NIEUW: Duidelijke transparante donkere glass-kaart voor de central column */
+    
+    /* AANGEPAST: De exacte lineaire gradiënt kleuren voor Dark Mode */
+    --bg-gradient-top: #1E1E1E;
+    --bg-gradient-transparent: rgba(30, 30, 30, 0);
+    
     --glass-overlay: rgba(0, 0, 0, 0.4);
     --glass-border: rgba(255, 255, 255, 0.05);
     
-    /* NIEUW: Variabelen voor de kaarten in de central column in dark mode */
     --sequence-card-bg: rgba(43, 45, 49, 0.9);
     --sequence-card-border: rgba(255, 255, 255, 0.05);
     --sequence-card-text: #FFFFFF;
@@ -86,7 +92,7 @@
     --input-border: #444;
     --bottom-bar-bg: #1E1E1E;
     --bottom-bar-text: #FFFFFF;
-    --nav-block-bg: #FFFFFF; /* Het Vandaag blokje is wit in dark */
+    --nav-block-bg: #FFFFFF; 
     --nav-block-text: #1E1E1E;
     --scrollbar-thumb: #FFFFFF; 
 }
@@ -117,14 +123,14 @@ body {
     z-index: -1;
 }
 
-/* --- NIEUW: DE GRADIENT OVERLAY (Figma-effect) --- */
+/* --- AANGEPAST: DE LINEAIRE GRADIENT OVERLAY --- */
 #gradient-overlay {
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
-    /* Duidelijke radiale gradiënt die vanuit het midden naar de randen loopt */
-    background: radial-gradient(circle at center, transparent 0%, rgba(18, 20, 53, 0.2) 20%, rgba(18, 20, 53, 0.6) 60%, rgba(18, 20, 53, 0.9) 100%);
-    z-index: 0; /* Boven de backdrop, onder de content */
-    pointer-events: none; /* Klikken gaat er doorheen */
+    /* Lineaire gradiënt van volledig gevuld bovenaan (0%) naar transparant halverwege (50%) */
+    background: linear-gradient(to bottom, var(--bg-gradient-top) 0%, var(--bg-gradient-transparent) 50%);
+    z-index: 0; 
+    pointer-events: none; 
 }
 
 /* --- HEADER --- */
@@ -176,10 +182,10 @@ body {
 .column {
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 
-/* --- KOPJES UITLIJNING (Fix Padding/Flexbox) --- */
-/* Dit dwingt alle h2 kopjes op dezelfde baseline, ongeacht de knop ernaast */
+/* --- KOPJES UITLIJNING --- */
 .column-header {
     display: flex;
     align-items: center;
@@ -205,6 +211,8 @@ h2 {
     overflow-y: auto;
     padding-right: 15px;
     align-content: start;
+    flex: 1;
+    min-height: 0;
 }
 
 .card {
@@ -227,13 +235,13 @@ h2 {
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* --- MIDDELSTE KOLOM (Glass Overlay & Lichte Kaarten in Light Mode) --- */
+/* --- MIDDELSTE KOLOM --- */
 .journal-sequence {
-    /* Nu een duidelijke, frosted white kaart voor central column */
     background: var(--glass-overlay);
+    -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     border-radius: var(--radius-outer);
-    padding: 20px;
+    padding: 20px 20px 0 20px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     border: 1px solid var(--glass-border);
 }
@@ -244,7 +252,9 @@ h2 {
     gap: 15px;
     overflow-y: auto;
     padding-right: 10px; 
+    padding-bottom: 20px;
     flex: 1; 
+    min-height: 0;
 }
 
 .sequence-list .card {
@@ -255,7 +265,6 @@ h2 {
     flex-shrink: 0;
 }
 
-/* AANGEPAST: De kaarten zijn nu licht met een rand in light mode, en donker in dark */
 .card.sequence-card {
     background-color: var(--sequence-card-bg);
     color: var(--sequence-card-text);
@@ -275,6 +284,7 @@ h2 {
     color: var(--text-main);
     transition: background-color 0.3s, color 0.3s;
     overflow-y: auto;
+    min-height: 0;
 }
 
 .btn-preview { 
@@ -331,7 +341,7 @@ h2 {
 .editor-panel::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 10px; }
 
 
-/* --- BOTTOM BAR (Perfecte Uitlijning & Hoogte) --- */
+/* --- BOTTOM BAR --- */
 .bottom-bar {
     height: 80px;
     background-color: var(--bottom-bar-bg);
@@ -341,8 +351,9 @@ h2 {
     padding: 0 50px;
     box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
     position: relative;
-    z-index: 20; /* Zorgt dat het over de gradiënt valt */
+    z-index: 20; 
     transition: background-color 0.3s, color 0.3s;
+    flex-shrink: 0;
 }
 
 .title-logo { 
@@ -351,17 +362,15 @@ h2 {
     justify-content: center;
     font-size: 14px; 
     color: var(--bottom-bar-text); 
-    font-weight: 400; /* Dagjournaal is Regular */ 
+    font-weight: 400; 
 }
-.title-logo strong { font-weight: 900; /* Operationeel is Black */ }
+.title-logo strong { font-weight: 900; }
 
-/* --- AANGEPAST: date-controls en knoppen herzien voor hoogte matching en pili-vorm --- */
 .date-controls {
     display: flex;
     align-items: center;
     justify-content: space-between;
     background-color: var(--nav-block-bg);
-    /* AANGEPAST: Hoogte matched nu exact de 80px van de bottom bar, en is een pil */
     height: 80px; 
     width: 320px; 
     border-radius: 40px; 
