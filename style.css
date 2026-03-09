@@ -44,15 +44,17 @@
     /* LIGHT MODE VARIABELEN */
     --text-main: #1E1E1E;
     --text-muted: #707172;
-    /* Een subtiel wit gradiënt voor de middelste kolom */
-    --bg-overlay: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.3) 100%); 
+    /* FIX: Duidelijke gradiënt overgang voor Light Mode */
+    --bg-overlay: linear-gradient(180deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.1) 100%); 
+    --glass-border: rgba(255, 255, 255, 0.3);
+    
     --card-bg-light: rgba(255, 255, 255, 0.95); 
     --panel-bg: rgba(255, 255, 255, 0.95); 
     --input-bg: #F6F6F6;
     --input-border: #E6E6E6;
     --bottom-bar-bg: #FFFFFF;
     --bottom-bar-text: #1E1E1E;
-    --nav-block-bg: #1E1E1E; /* Het Vandaag blokje */
+    --nav-block-bg: #1E1E1E; 
     --nav-block-text: #FFFFFF;
     --scrollbar-thumb: #1E1E1E; 
     
@@ -65,15 +67,17 @@
 [data-theme="dark"] {
     --text-main: #FFFFFF;
     --text-muted: #E6E6E6;
-    /* Een subtiel donker gradiënt voor de middelste kolom */
-    --bg-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 100%);
+    /* FIX: Duidelijke gradiënt overgang voor Dark Mode */
+    --bg-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.1) 100%);
+    --glass-border: rgba(255, 255, 255, 0.05);
+    
     --card-bg-light: #707172; 
     --panel-bg: #1E1E1E; 
     --input-bg: #2B2D31;
     --input-border: #444;
     --bottom-bar-bg: #1E1E1E;
     --bottom-bar-text: #FFFFFF;
-    --nav-block-bg: #FFFFFF; /* Het Vandaag blokje draait om */
+    --nav-block-bg: #FFFFFF; 
     --nav-block-text: #1E1E1E;
     --scrollbar-thumb: #FFFFFF; 
 }
@@ -143,22 +147,23 @@ body {
     grid-template-columns: 1fr 1fr 1.3fr;
     gap: 40px;
     padding: 30px 50px;
-    overflow: hidden;
+    overflow: hidden; /* Houdt alles netjes binnen het scherm */
 }
 
+/* FIX VOOR HET SCROLLEN: min-height: 0 dwingt de kolom om niet uit het scherm te groeien */
 .column {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 0; 
 }
 
 /* --- KOPJES UITLIJNING --- */
-/* Dit zorgt dat de titels van alle 3 de kolommen perfect op 1 lijn staan */
 .column-header {
     display: flex;
     align-items: center;
     height: 50px;
     margin-bottom: 20px;
+    flex-shrink: 0; /* Voorkomt dat het kopje in elkaar drukt */
 }
 .column-header.center-title { justify-content: center; }
 .column-header.space-between { justify-content: space-between; }
@@ -178,6 +183,8 @@ h2 {
     overflow-y: auto;
     padding-right: 15px;
     align-content: start;
+    flex: 1;
+    min-height: 0; /* CRUCIAAL voor scrollen */
 }
 
 .card {
@@ -200,15 +207,16 @@ h2 {
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* --- MIDDELSTE KOLOM (De Gradiënt & Glass Overlay) --- */
+/* --- MIDDELSTE KOLOM (Glass Overlay Fix) --- */
 .journal-sequence {
-    background: var(--bg-overlay);
-    /* De -webkit- is cruciaal voor Apple devices/Safari! */
+    /* FIX: Dwingt de browser om het als een gradiënt afbeelding te zien */
+    background-image: var(--bg-overlay);
     -webkit-backdrop-filter: blur(15px);
     backdrop-filter: blur(15px);
     border-radius: var(--radius-outer);
-    padding: 20px;
+    padding: 20px 20px 0 20px; /* Padding onder is 0 zodat lijst strak doorloopt */
     box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 1px solid var(--glass-border); /* Geeft extra definitie aan de rand */
 }
 
 .sequence-list {
@@ -217,7 +225,9 @@ h2 {
     gap: 15px;
     overflow-y: auto;
     padding-right: 10px; 
+    padding-bottom: 20px; /* Ruimte aan de onderkant van de scroll-lijst */
     flex: 1; 
+    min-height: 0; /* CRUCIAAL voor scrollen */
 }
 
 .sequence-list .card {
@@ -225,6 +235,7 @@ h2 {
     padding: 20px 25px;
     font-size: 16px;
     color: white;
+    flex-shrink: 0; /* Zorgt dat kaarten niet in elkaar proppen */
 }
 
 .card.dark { background-color: var(--card-dark-fill); }
@@ -241,6 +252,7 @@ h2 {
     color: var(--text-main);
     transition: background-color 0.3s, color 0.3s;
     overflow-y: auto;
+    min-height: 0; /* CRUCIAAL voor scrollen */
 }
 
 .btn-preview { 
@@ -309,6 +321,7 @@ h2 {
     position: relative;
     z-index: 10;
     transition: background-color 0.3s, color 0.3s;
+    flex-shrink: 0; /* Voorkomt dat de footer kleiner wordt gedrukt */
 }
 
 .title-logo { 
@@ -321,7 +334,6 @@ h2 {
 .title-logo strong { font-weight: 900; }
 .title-logo span { font-weight: 400; }
 
-/* --- AANGEPAST: Het "Vandaag" blokje is nu een perfecte pil die de hele hoogte vult --- */
 .date-controls {
     display: flex;
     align-items: center;
@@ -329,7 +341,7 @@ h2 {
     background-color: var(--nav-block-bg);
     height: 80px; 
     width: 320px; 
-    border-radius: 40px; /* Maakt de zijkanten perfect rond */
+    border-radius: 40px; 
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
