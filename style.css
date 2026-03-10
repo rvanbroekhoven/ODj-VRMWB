@@ -50,8 +50,8 @@ body { font-family: 'Mariné UP', 'Open Sans', sans-serif; height: 100vh; displa
 .col-header.center { justify-content: center; }
 .col-header.space-between { justify-content: space-between; }
 
-/* AANGEPAST: overflow-x: hidden blokkeert het horizontale scrollen volledig! */
-.scroll-area { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden; min-height: 0; padding-bottom: 20px; padding-right: 15px; }
+/* AANGEPAST: Horizontaal scrollen hard uitgeschakeld */
+.scroll-area { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden !important; min-height: 0; }
 
 h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; }
 
@@ -88,8 +88,10 @@ h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; }
 
 .theme-card-light { background-color: var(--card-bg-light); box-shadow: 0 4px 6px rgba(0,0,0,0.05); color: var(--text-main); }
 
-.grid-blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-content: start; padding: 10px 5px; }
-.sequence-list { display: flex; flex-direction: column; gap: 15px; padding: 10px 5px; }
+/* AANGEPAST: Consistente padding (boven, rechts, onder, links) zodat badges passen en de lijst niet overloopt */
+.grid-blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-content: start; padding: 10px 15px 30px 5px; }
+.sequence-list { display: flex; flex-direction: column; gap: 15px; padding: 10px 15px 30px 5px; }
+.editor-form { padding: 10px 15px 30px 5px; }
 
 .sequence-list .card { justify-content: center; padding: 0 25px; font-size: 16px; color: white; }
 .sequence-list .card:hover { transform: scale(1.02); z-index: 5; box-shadow: 0 5px 15px rgba(0,0,0,0.15); }
