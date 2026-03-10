@@ -44,26 +44,26 @@
                 <h2>DAGJOURNAAL</h2>
             </header>
             <div class="scroll-area sequence-list">
-                <div class="card active-card gold">Ploeg indeling <span class="badge red-bg">10</span></div>
-                <div class="card dark">Alarmen vorige dienst <span class="badge red-bg">3</span></div>
-                <div class="card dark">Status voertuigen <span class="badge red-bg">1</span></div>
-                <div class="card dark">Topdesk <span class="badge red-bg">5</span></div>
-                <div class="card dark">Mobiliteit <span class="badge red-bg">1</span></div>
-                <div class="card dark">Ploeg afspraken</div>
-                <div class="card dark">Kazerne Nieuws</div>
-                <div class="card dark">Gepland onderhoud voertuigen <span class="badge red-bg">4</span></div>
-                <div class="card dark">Alg. Werkzaamheden <span class="badge red-bg">4</span></div>
-                <div class="card dark">Ademlucht Werkzaamheden <span class="badge red-bg">1</span></div>
-                <div class="card dark">Vakbekwaam AG5 <span class="badge red-bg">1</span></div>
+                <div class="card active-card gold sequence-card" data-id="ploeg-indeling">Ploeg indeling <span class="badge red-bg">10</span></div>
+                <div class="card dark sequence-card" data-id="alarmen">Alarmen vorige dienst <span class="badge red-bg">3</span></div>
+                <div class="card dark sequence-card" data-id="voertuigen">Status voertuigen <span class="badge red-bg">1</span></div>
+                <div class="card dark sequence-card" data-id="topdesk">Topdesk <span class="badge red-bg">5</span></div>
+                <div class="card dark sequence-card" data-id="mobiliteit">Mobiliteit <span class="badge red-bg">1</span></div>
+                <div class="card dark sequence-card" data-id="afspraken">Ploeg afspraken</div>
+                <div class="card dark sequence-card" data-id="nieuws">Kazerne Nieuws</div>
+                <div class="card dark sequence-card" data-id="onderhoud">Gepland onderhoud voertuigen <span class="badge red-bg">4</span></div>
+                <div class="card dark sequence-card" data-id="algemeen">Alg. Werkzaamheden <span class="badge red-bg">4</span></div>
+                <div class="card dark sequence-card" data-id="ademlucht">Ademlucht Werkzaamheden <span class="badge red-bg">1</span></div>
+                <div class="card dark sequence-card" data-id="vakbekwaam">Vakbekwaam AG5 <span class="badge red-bg">1</span></div>
             </div>
         </section>
 
         <section class="column solid-panel">
             <header class="col-header space-between">
-                <h2>PLOEG INDELING</h2>
+                <h2 id="editor-title">PLOEG INDELING</h2>
                 <button class="btn-preview">Preview</button>
             </header>
-            <div class="scroll-area editor-form">
+            <div class="scroll-area editor-form" id="editor-content">
                 <div class="form-group">
                     <label>Kazernes in Roosterplanning</label>
                     <div class="dropdown-input">
