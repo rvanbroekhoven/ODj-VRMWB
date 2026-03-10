@@ -24,18 +24,30 @@
             <header class="col-header">
                 <h2>BLOK SELECTIE</h2>
             </header>
-            <div class="scroll-area grid-blocks">
-                <div class="card theme-card-light">Arbo Mededelingen</div>
-                <div class="card theme-card-light">Communicatie</div>
-                <div class="card theme-card-light">Evenementen</div>
-                <div class="card theme-card-light">IBOA Mededelingen</div>
-                <div class="card theme-card-light">Object van de Maand<br>(RB)</div>
-                <div class="card theme-card-light">OCB Mededelingen</div>
-                <div class="card theme-card-light">RB/CB Mededelingen</div>
-                <div class="card theme-card-light">Stratenkennis</div>
-                <div class="card theme-card-light">TFL Mededelingen</div>
-                <div class="card theme-card-light">VKB Mededelingen</div>
-                <div class="card theme-card-light">Waarschuwingen &<br>Operationele Fases</div>
+            <div class="scroll-area grid-blocks" id="blok-selectie">
+                <div class="card theme-card-light drag-item" draggable="true" data-id="ploeg-indeling">Ploeg indeling <span class="badge red-bg">10</span></div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="alarmen">Alarmen vorige dienst <span class="badge red-bg">3</span></div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="voertuigen">Status voertuigen <span class="badge red-bg">1</span></div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="topdesk">Topdesk <span class="badge red-bg">5</span></div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="mobiliteit">Mobiliteit <span class="badge red-bg">1</span></div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="afspraken">Ploeg afspraken</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="nieuws">Kazerne Nieuws</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="onderhoud">Gepland onderhoud voertuigen <span class="badge red-bg">4</span></div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="algemeen">Alg. Werkzaamheden <span class="badge red-bg">4</span></div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="ademlucht">Ademlucht Werkzaamheden <span class="badge red-bg">1</span></div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="vakbekwaam">Vakbekwaam AG5 <span class="badge red-bg">1</span></div>
+                
+                <div class="card theme-card-light drag-item" draggable="true" data-id="arbo">Arbo Mededelingen</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="communicatie">Communicatie</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="evenementen">Evenementen</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="iboa">IBOA Mededelingen</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="object">Object van de Maand<br>(RB)</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="ocb">OCB Mededelingen</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="rbcb">RB/CB Mededelingen</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="straten">Stratenkennis</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="tfl">TFL Mededelingen</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="vkb">VKB Mededelingen</div>
+                <div class="card theme-card-light drag-item" draggable="true" data-id="waarschuwingen">Waarschuwingen &<br>Operationele Fases</div>
             </div>
         </section>
 
@@ -43,54 +55,21 @@
             <header class="col-header center">
                 <h2>DAGJOURNAAL</h2>
             </header>
-            <div class="scroll-area sequence-list">
-                <div class="card active-card gold sequence-card" data-id="ploeg-indeling">Ploeg indeling <span class="badge red-bg">10</span></div>
-                <div class="card dark sequence-card" data-id="alarmen">Alarmen vorige dienst <span class="badge red-bg">3</span></div>
-                <div class="card dark sequence-card" data-id="voertuigen">Status voertuigen <span class="badge red-bg">1</span></div>
-                <div class="card dark sequence-card" data-id="topdesk">Topdesk <span class="badge red-bg">5</span></div>
-                <div class="card dark sequence-card" data-id="mobiliteit">Mobiliteit <span class="badge red-bg">1</span></div>
-                <div class="card dark sequence-card" data-id="afspraken">Ploeg afspraken</div>
-                <div class="card dark sequence-card" data-id="nieuws">Kazerne Nieuws</div>
-                <div class="card dark sequence-card" data-id="onderhoud">Gepland onderhoud voertuigen <span class="badge red-bg">4</span></div>
-                <div class="card dark sequence-card" data-id="algemeen">Alg. Werkzaamheden <span class="badge red-bg">4</span></div>
-                <div class="card dark sequence-card" data-id="ademlucht">Ademlucht Werkzaamheden <span class="badge red-bg">1</span></div>
-                <div class="card dark sequence-card" data-id="vakbekwaam">Vakbekwaam AG5 <span class="badge red-bg">1</span></div>
+            <div class="scroll-area sequence-list" id="dagjournaal-lijst">
+                <div id="empty-state" style="text-align: center; color: white; border: 2px dashed rgba(255,255,255,0.3); padding: 20px; border-radius: 12px; margin-top: 10px;">
+                    Sleep blokken hierheen
+                </div>
             </div>
         </section>
 
         <section class="column solid-panel">
             <header class="col-header space-between">
-                <h2 id="editor-title">PLOEG INDELING</h2>
+                <h2 id="editor-title">GEEN BLOK GESELECTEERD</h2>
                 <button class="btn-preview">Preview</button>
             </header>
             <div class="scroll-area editor-form" id="editor-content">
-                <div class="form-group">
-                    <label>Kazernes in Roosterplanning</label>
-                    <div class="dropdown-input">
-                        <span class="tag">Bergen op Zoom <span class="close">&times;</span></span>
-                        <span class="chevron"></span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Dienstlijst MWB in Roosterplanning</label>
-                    <div class="dropdown-input placeholder">
-                        Voeg een kazerne toe om standaard naam te overschrijven...
-                        <span class="chevron"></span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Dienstlijst ZLD in Roosterplanning</label>
-                    <div class="dropdown-input placeholder">
-                        Voeg een kazerne toe om standaard naam te overschrijven...
-                        <span class="chevron"></span>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Ticker rooster in Roosterplanning</label>
-                    <div class="dropdown-input">
-                        Bergen op Zoom
-                        <span class="chevron"></span>
-                    </div>
+                <div style="text-align: center; color: var(--text-muted); margin-top: 20px;">
+                    Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.
                 </div>
             </div>
         </section>

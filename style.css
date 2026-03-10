@@ -1,11 +1,7 @@
 /* =========================================
    1. RESET & FONTS
    ========================================= */
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 @font-face { font-family: 'Mariné UP'; src: url('Marine-UPLight.ttf') format('truetype'); font-weight: 300; font-style: normal; }
 @font-face { font-family: 'Mariné UP'; src: url('Marine-UPRegular.ttf') format('truetype'); font-weight: 400; font-style: normal; }
@@ -17,184 +13,69 @@
    2. VARIABELEN (THEMES)
    ========================================= */
 :root {
-    /* Base Colors */
-    --vrmwb-navy: #17428C;
-    --vrmwb-red: #D2100B;
-    --vrmwb-gold: #CC9933;
-
-    /* LIGHT MODE */
-    --text-main: #1E1E1E;
-    --text-muted: #707172;
-    --bg-grad-solid: #F6F6F6; /* De massieve kleur bovenaan */
-    --bg-grad-trans: rgba(246, 246, 246, 0); /* Vervaagt hiernaartoe */
-    
-    --glass-bg: rgba(255, 255, 255, 0.4); 
-    --glass-border: rgba(255, 255, 255, 0.3);
-    --panel-bg: rgba(255, 255, 255, 0.95); 
-    --card-bg-light: #FFFFFF; 
-    
-    --input-bg: #F6F6F6;
-    --input-border: #E6E6E6;
-    --bottom-bar-bg: #FFFFFF;
-    --bottom-bar-text: #1E1E1E;
-    --nav-block-bg: #1E1E1E; 
-    --nav-block-text: #FFFFFF;
+    --vrmwb-navy: #17428C; --vrmwb-red: #D2100B; --vrmwb-gold: #CC9933;
+    --text-main: #1E1E1E; --text-muted: #707172;
+    --bg-grad-solid: #F6F6F6; --bg-grad-trans: rgba(246, 246, 246, 0); 
+    --glass-bg: rgba(255, 255, 255, 0.4); --glass-border: rgba(255, 255, 255, 0.3);
+    --panel-bg: rgba(255, 255, 255, 0.95); --card-bg-light: #FFFFFF; 
+    --input-bg: #F6F6F6; --input-border: #E6E6E6;
+    --bottom-bar-bg: #FFFFFF; --bottom-bar-text: #1E1E1E;
+    --nav-block-bg: #1E1E1E; --nav-block-text: #FFFFFF;
     --scrollbar-thumb: #1E1E1E; 
-    
-    --radius-outer: 16px;
-    --radius-inner: 12px;
+    --radius-outer: 16px; --radius-inner: 12px;
 }
 
 [data-theme="dark"] {
-    /* DARK MODE */
-    --text-main: #FFFFFF;
-    --text-muted: #E6E6E6;
-    --bg-grad-solid: #1E1E1E;
-    --bg-grad-trans: rgba(30, 30, 30, 0);
-    
-    --glass-bg: rgba(0, 0, 0, 0.4);
-    --glass-border: rgba(255, 255, 255, 0.05);
-    --panel-bg: #2B2D31; 
-    --card-bg-light: #707172; 
-    
-    --input-bg: #1E1E1E;
-    --input-border: #444;
-    --bottom-bar-bg: #1E1E1E;
-    --bottom-bar-text: #FFFFFF;
-    --nav-block-bg: #FFFFFF; 
-    --nav-block-text: #1E1E1E;
+    --text-main: #FFFFFF; --text-muted: #E6E6E6;
+    --bg-grad-solid: #1E1E1E; --bg-grad-trans: rgba(30, 30, 30, 0);
+    --glass-bg: rgba(0, 0, 0, 0.4); --glass-border: rgba(255, 255, 255, 0.05);
+    --panel-bg: #2B2D31; --card-bg-light: #707172; 
+    --input-bg: #1E1E1E; --input-border: #444;
+    --bottom-bar-bg: #1E1E1E; --bottom-bar-text: #FFFFFF;
+    --nav-block-bg: #FFFFFF; --nav-block-text: #1E1E1E;
     --scrollbar-thumb: #FFFFFF; 
 }
 
-/* =========================================
-   3. KOGELVRIJE LAYOUT (STRUCTUUR)
-   ========================================= */
-body {
-    font-family: 'Mariné UP', 'Open Sans', sans-serif; 
-    height: 100vh;
-    display: flex;
-    flex-direction: column; /* Boven naar beneden stapelen */
-    overflow: hidden; /* Body mag NOOIT scrollen */
-    background-color: var(--bg-grad-solid); 
-    color: var(--text-main);
-}
-
-/* --- De Achtergrond (Gradiënt over afbeelding) --- */
+body { font-family: 'Mariné UP', 'Open Sans', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-grad-solid); color: var(--text-main); transition: background-color 0.3s, color 0.3s; }
 .bg-layer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; }
-.backdrop-img {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url('./backdrop_odj.png'); 
-    background-size: cover; background-position: center;
-}
-.gradient-fade {
-    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-    /* Perfecte fade van 0% tot 50% van het scherm */
-    background: linear-gradient(to bottom, var(--bg-grad-solid) 0%, var(--bg-grad-trans) 50%);
-}
+.backdrop-img { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('./backdrop_odj.png'); background-size: cover; background-position: center; }
+.gradient-fade { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, var(--bg-grad-solid) 0%, var(--bg-grad-trans) 50%); }
 
-/* --- De Flexbox Sandwich (Header - Main - Footer) --- */
-.top-header {
-    flex: 0 0 auto; /* Krimp verboden, groei verboden */
-    height: 80px;
-    display: flex; justify-content: center; align-items: center;
-    padding-top: 20px; z-index: 10; position: relative;
-}
+.top-header { flex: 0 0 auto; height: 80px; display: flex; justify-content: center; align-items: center; padding-top: 20px; z-index: 10; position: relative; }
+.bottom-bar { flex: 0 0 auto; height: 80px; background-color: var(--bottom-bar-bg); display: flex; justify-content: space-between; align-items: center; padding: 0 50px; z-index: 20; position: relative; box-shadow: 0 -4px 15px rgba(0,0,0,0.05); }
 
-.bottom-bar {
-    flex: 0 0 auto; /* Krimp verboden, groei verboden */
-    height: 80px;
-    background-color: var(--bottom-bar-bg);
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 0 50px; z-index: 20; position: relative;
-    box-shadow: 0 -4px 15px rgba(0,0,0,0.05);
-}
-
-.app-container {
-    flex: 1 1 auto; /* Vul alle overgebleven ruimte */
-    display: grid;
-    grid-template-columns: 1fr 1fr 1.3fr;
-    gap: 40px;
-    padding: 30px 50px;
-    min-height: 0; /* GOUDEN REGEL: Sta Grid toe om kleiner te worden dan content */
-    z-index: 10;
-}
-
-/* --- Kolom Structuur Binnenin --- */
-.column {
-    display: flex;
-    flex-direction: column;
-    height: 100%; /* Vul de grid cell */
-    min-height: 0; /* GOUDEN REGEL */
-}
-
-.col-header {
-    flex: 0 0 auto; /* Krimp verboden */
-    height: 50px; /* Vaste hoogte voor perfecte uitlijning van alle 3 koppen */
-    display: flex; align-items: center;
-    margin-bottom: 20px;
-}
+.app-container { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 40px; padding: 30px 50px; min-height: 0; z-index: 10; }
+.column { display: flex; flex-direction: column; height: 100%; min-height: 0; }
+.col-header { flex: 0 0 auto; height: 50px; display: flex; align-items: center; margin-bottom: 20px; }
 .col-header.center { justify-content: center; }
 .col-header.space-between { justify-content: space-between; }
 
-.scroll-area {
-    flex: 1 1 auto; /* Vul alle ruimte onder de header */
-    overflow-y: auto; /* Scrollen! */
-    min-height: 0; /* GOUDEN REGEL */
-    padding-bottom: 20px;
-    padding-right: 15px; /* Voorkomt dat scrollbar over tekst valt */
-}
+/* De overflow-y: auto zorgt dat de scrollbar ALLEEN verschijnt als content te groot is */
+.scroll-area { flex: 1 1 auto; overflow-y: auto; min-height: 0; padding-bottom: 20px; padding-right: 15px; }
 
-/* =========================================
-   4. COMPONENTEN STYLING
-   ========================================= */
-/* Typografie */
 h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; }
+.location-pill { background-color: var(--vrmwb-gold); color: #000; font-size: 36px; font-weight: 900; padding: 10px 40px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+.theme-btn { position: absolute; right: 50px; background-color: var(--bottom-bar-bg); color: var(--text-main); border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; }
+.btn-preview { background-color: var(--vrmwb-red); color: white; border: none; padding: 0 25px; border-radius: 20px; font-weight: 700; font-size: 16px; cursor: pointer; height: 40px; flex-shrink: 0; }
 
-/* Knoppen & Badges */
-.location-pill {
-    background-color: var(--vrmwb-gold); color: #000;
-    font-size: 36px; font-weight: 900; padding: 10px 40px;
-    border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-}
+.glass-panel { background: var(--glass-bg); -webkit-backdrop-filter: blur(15px); backdrop-filter: blur(15px); border-radius: var(--radius-outer); border: 1px solid var(--glass-border); padding: 25px 15px 10px 25px; }
+.solid-panel { background: var(--panel-bg); border-radius: var(--radius-outer); box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 25px 20px 10px 30px; }
 
-.theme-btn {
-    position: absolute; right: 50px;
-    background-color: var(--bottom-bar-bg); color: var(--text-main);
-    border: none; padding: 10px 20px; border-radius: 20px;
-    font-weight: 700; cursor: pointer;
-}
-
-.btn-preview { 
-    background-color: var(--vrmwb-red); color: white; border: none; 
-    padding: 0 25px; border-radius: 20px; font-weight: 700; font-size: 16px; 
-    cursor: pointer; height: 40px; 
-}
-
-/* Panelen (Midden en Rechts) */
-.glass-panel {
-    background: var(--glass-bg);
-    -webkit-backdrop-filter: blur(15px); backdrop-filter: blur(15px);
-    border-radius: var(--radius-outer); border: 1px solid var(--glass-border);
-    padding: 25px 15px 10px 25px; 
-}
-
-.solid-panel {
-    background: var(--panel-bg);
-    border-radius: var(--radius-outer); box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-    padding: 25px 20px 10px 30px; 
-}
-
-/* Kaarten (Cards) */
+/* DRAG & DROP Styling (Nieuw) */
 .card {
-    flex: 0 0 auto; /* Krimp verboden, hierdoor worden ze nooit plat! */
-    min-height: 60px;
-    border-radius: var(--radius-inner); padding: 15px;
+    flex: 0 0 auto; min-height: 60px; border-radius: var(--radius-inner); padding: 15px;
     text-align: center; font-weight: 400; font-size: 14px;
     display: flex; justify-content: center; align-items: center; border: none;
+    cursor: grab; /* Laat een 'handje' zien dat je kunt oppakken */
+    user-select: none;
 }
-.theme-card-light { background-color: var(--card-bg-light); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+.card:active { cursor: grabbing; } /* Gesloten handje bij oppakken */
+.card.dragging {
+    opacity: 0.5;
+    border: 2px dashed var(--vrmwb-gold) !important;
+}
 
-/* Lijsten & Grids */
+.theme-card-light { background-color: var(--card-bg-light); box-shadow: 0 4px 6px rgba(0,0,0,0.05); color: var(--text-main); }
 .grid-blocks { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-content: start; }
 .sequence-list { display: flex; flex-direction: column; gap: 15px; }
 .sequence-list .card { justify-content: space-between; padding: 0 25px; font-size: 16px; color: white; }
@@ -203,39 +84,22 @@ h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; }
 .card.gold { background-color: var(--vrmwb-gold); color: #000; font-weight: 700; }
 .badge.red-bg { background-color: var(--vrmwb-red); color: white; padding: 4px 10px; border-radius: 20px; font-weight: 700; }
 
-/* Formulieren */
 .form-group { flex: 0 0 auto; margin-bottom: 25px; }
 .form-group label { display: block; font-weight: 700; font-size: 16px; margin-bottom: 10px; }
-.dropdown-input { 
-    background-color: var(--input-bg); border: 1px solid var(--input-border); 
-    border-radius: var(--radius-inner); padding: 15px; display: flex; 
-    justify-content: space-between; align-items: center; font-size: 14px; 
-}
+.dropdown-input { background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: var(--radius-inner); padding: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; }
 .dropdown-input.placeholder { color: var(--text-muted); }
 .tag { background-color: var(--panel-bg); padding: 5px 10px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--input-border); }
 .tag .close { color: var(--text-muted); cursor: pointer; font-weight: 700; }
 .chevron { width: 10px; height: 10px; border-right: 2px solid var(--text-muted); border-bottom: 2px solid var(--text-muted); transform: rotate(45deg); }
 
-/* Vandaag Pil (Bottom bar) */
-.date-controls {
-    display: flex; align-items: center; justify-content: space-between;
-    background-color: var(--nav-block-bg);
-    height: 80px; width: 320px; 
-    border-radius: 40px; /* Perfect ronde hoeken */
-    position: absolute; left: 50%; transform: translateX(-50%);
-    padding: 0 30px; 
-}
+.date-controls { display: flex; align-items: center; justify-content: space-between; background-color: var(--nav-block-bg); height: 80px; width: 320px; border-radius: 40px; position: absolute; left: 50%; transform: translateX(-50%); padding: 0 30px; }
 .nav-btn, .nav-btn-text { background: none; border: none; color: var(--nav-block-text); cursor: pointer; }
 .nav-btn { font-size: 24px; font-weight: 700; }
 .nav-btn-text { font-size: 20px; font-weight: 700; text-align: center; flex: 1; }
-
 .title-logo { display: flex; flex-direction: column; justify-content: center; font-size: 14px; color: var(--bottom-bar-text); }
 .title-logo strong { font-weight: 900; }
 .status-clock { font-size: 22px; color: var(--text-muted); font-weight: 300; }
 
-/* =========================================
-   5. SCROLLBARS
-   ========================================= */
 .scroll-area::-webkit-scrollbar { width: 8px; }
 .scroll-area::-webkit-scrollbar-track { background: transparent; }
 .scroll-area::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 10px; }

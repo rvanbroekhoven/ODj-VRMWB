@@ -24,128 +24,141 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function isToday(dateToCheck) {
         const today = new Date();
-        return dateToCheck.getDate() === today.getDate() &&
-               dateToCheck.getMonth() === today.getMonth() &&
-               dateToCheck.getFullYear() === today.getFullYear();
+        return dateToCheck.getDate() === today.getDate() && dateToCheck.getMonth() === today.getMonth() && dateToCheck.getFullYear() === today.getFullYear();
     }
-
     function updateCenterNavigation() {
-        if (isToday(selectedDate)) {
-            btnTodayText.innerText = "Vandaag";
-        } else {
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            btnTodayText.innerText = selectedDate.toLocaleDateString('nl-NL', options);
-        }
+        if (isToday(selectedDate)) { btnTodayText.innerText = "Vandaag"; } 
+        else { const options = { day: 'numeric', month: 'long', year: 'numeric' }; btnTodayText.innerText = selectedDate.toLocaleDateString('nl-NL', options); }
     }
-
     function updateRealTimeClock() {
         const now = new Date();
-        const optionsDate = { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' };
-        let dateString = now.toLocaleDateString('nl-NL', optionsDate);
-        dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1);
-        dateString = dateString.replace(' ', ', ');
-
-        const timeString = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-        datetimeDisplay.innerHTML = `${dateString} &nbsp;&nbsp; ${timeString}`;
+        let dateString = now.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
+        dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1).replace(' ', ', ');
+        datetimeDisplay.innerHTML = `${dateString} &nbsp;&nbsp; ${now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`;
     }
 
     btnPrev.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() - 1); updateCenterNavigation(); });
     btnNext.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() + 1); updateCenterNavigation(); });
     btnTodayText.addEventListener('click', () => { selectedDate = new Date(); updateCenterNavigation(); });
 
-    updateCenterNavigation();
-    updateRealTimeClock();
-    setInterval(updateRealTimeClock, 1000);
+    updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
 
-    // --- 3. DYNAMISCHE TITEL & CONTENT SELECTIE ---
-    
-    // We bewaren hier alleen de HTML content, niet meer de titel!
+    // --- 3. DYNAMISCHE CONTENT DATABASE ---
     const blockContent = {
-        'ploeg-indeling': `
-            <div class="form-group">
-                <label>Kazernes in Roosterplanning</label>
-                <div class="dropdown-input">
-                    <span class="tag">Bergen op Zoom <span class="close">&times;</span></span>
-                    <span class="chevron"></span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label>Dienstlijst MWB in Roosterplanning</label>
-                <div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div>
-            </div>
-            <div class="form-group">
-                <label>Dienstlijst ZLD in Roosterplanning</label>
-                <div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div>
-            </div>
-            <div class="form-group">
-                <label>Ticker rooster in Roosterplanning</label>
-                <div class="dropdown-input">Bergen op Zoom<span class="chevron"></span></div>
-            </div>
-        `,
-        'alarmen': `
-            <div class="form-group">
-                <label>Selecteer incidenten ter bespreking</label>
-                <div class="dropdown-input placeholder">Kies uit recente P1/P2 meldingen...<span class="chevron"></span></div>
-            </div>
-            <div class="form-group">
-                <label>Bijzonderheden / Leermomenten</label>
-                <div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Typ hier eventuele notities voor de overdracht...</div>
-            </div>
-        `,
-        'voertuigen': `
-            <div class="form-group">
-                <label>Defecten / Uit de uitruk</label>
-                <div class="dropdown-input">Geen defecten gemeld (OASIS)<span class="chevron"></span></div>
-            </div>
-            <div class="form-group">
-                <label>Vervangend materieel</label>
-                <div class="dropdown-input placeholder">Selecteer indien van toepassing...<span class="chevron"></span></div>
-            </div>
-        `,
-        'default': `
-            <div class="form-group">
-                <label>Observaties en Opmerkingen</label>
-                <div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Voeg hier de details voor dit dagjournaal-onderdeel toe...</div>
-            </div>
-        `
+        'ploeg-indeling': `<div class="form-group"><label>Kazernes in Roosterplanning</label><div class="dropdown-input"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span><span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst MWB in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe...<span class="chevron"></span></div></div>`,
+        'alarmen': `<div class="form-group"><label>Selecteer incidenten ter bespreking</label><div class="dropdown-input placeholder">Kies uit recente P1/P2 meldingen...<span class="chevron"></span></div></div><div class="form-group"><label>Bijzonderheden / Leermomenten</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Typ hier eventuele notities...</div></div>`,
+        'voertuigen': `<div class="form-group"><label>Defecten / Uit de uitruk</label><div class="dropdown-input">Geen defecten gemeld (OASIS)<span class="chevron"></span></div></div><div class="form-group"><label>Vervangend materieel</label><div class="dropdown-input placeholder">Selecteer indien van toepassing...<span class="chevron"></span></div></div>`,
+        'default': `<div class="form-group"><label>Observaties en Opmerkingen</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Voeg hier de details voor dit dagjournaal-onderdeel toe...</div></div>`
     };
 
-    const sequenceCards = document.querySelectorAll('.sequence-list .sequence-card');
+
+    // --- 4. DRAG & DROP LOGICA ---
+    const draggables = document.querySelectorAll('.drag-item');
+    const leftZone = document.getElementById('blok-selectie');
+    const middleZone = document.getElementById('dagjournaal-lijst');
+    const emptyState = document.getElementById('empty-state');
     const editorTitle = document.getElementById('editor-title');
     const editorContent = document.getElementById('editor-content');
 
-    sequenceCards.forEach(card => {
-        card.addEventListener('click', function() {
-            // A. Visuele update: maak vorige selectie weer donker
-            sequenceCards.forEach(c => {
-                c.classList.remove('active-card', 'gold');
-                c.classList.add('dark');
-            });
-            
-            // Maak het aangeklikte blok goud
-            this.classList.remove('dark');
-            this.classList.add('active-card', 'gold');
-
-            // B. DYNAMISCHE TITEL LEZEN:
-            // We maken even een onzichtbare kopie van het blok om de rode badge te verwijderen
-            let clone = this.cloneNode(true);
-            let badge = clone.querySelector('.badge');
-            if (badge) {
-                badge.remove(); // Sloop de badge eruit
-            }
-            
-            // Lees de overgebleven tekst ("Topdesk", "Mobiliteit", etc.) en maak het HOOFDLETTERS
-            let blockName = clone.textContent.trim().toUpperCase(); 
-            
-            // Verander de titel in de rechterkolom
-            editorTitle.innerText = blockName;
-            
-            // C. Pas de formulier-content aan (specifiek óf de default)
-            const blockId = this.getAttribute('data-id');
-            const newContent = blockContent[blockId] || blockContent['default'];
-            editorContent.innerHTML = newContent;
+    // Functie voor opstarten/oppakken
+    draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', () => {
+            draggable.classList.add('dragging');
         });
+
+        draggable.addEventListener('dragend', () => {
+            draggable.classList.remove('dragging');
+        });
+    });
+
+    // Functie om te bepalen WAAR je iets loslaat in een lijst (voor het sorteren)
+    function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.drag-item:not(.dragging)')];
+
+        return draggableElements.reduce((closest, child) => {
+            const box = child.getBoundingClientRect();
+            const offset = y - box.top - box.height / 2;
+            if (offset < 0 && offset > closest.offset) {
+                return { offset: offset, element: child };
+            } else {
+                return closest;
+            }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+    }
+
+    // Beide kolommen zijn 'Drop Zones'
+    [leftZone, middleZone].forEach(zone => {
+        zone.addEventListener('dragover', e => {
+            e.preventDefault(); // Noodzakelijk om drop toe te staan
+            
+            // Verberg de "Sleep hierheen" tekst als je er overheen zweeft
+            if (zone === middleZone && emptyState) { emptyState.style.display = 'none'; }
+
+            const afterElement = getDragAfterElement(zone, e.clientY);
+            const draggable = document.querySelector('.dragging');
+            
+            if (afterElement == null) {
+                zone.appendChild(draggable);
+            } else {
+                zone.insertBefore(draggable, afterElement);
+            }
+        });
+
+        zone.addEventListener('drop', e => {
+            const draggable = document.querySelector('.dragging');
+            
+            // A. Als we in het Dagjournaal (Midden) droppen
+            if (zone === middleZone) {
+                draggable.classList.remove('theme-card-light');
+                draggable.classList.add('dark', 'sequence-card'); // Wordt een donkere, brede balk
+            } 
+            // B. Als we terug in Selectie (Links) droppen
+            else if (zone === leftZone) {
+                draggable.classList.remove('dark', 'sequence-card', 'active-card', 'gold');
+                draggable.classList.add('theme-card-light'); // Wordt weer een licht blokje
+                
+                // Als het midden leeg is, laat de tekst "Sleep blokken hierheen" weer zien
+                if (middleZone.querySelectorAll('.drag-item').length === 0 && emptyState) {
+                    emptyState.style.display = 'block';
+                    editorTitle.innerText = "GEEN BLOK GESELECTEERD";
+                    editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
+                }
+            }
+        });
+    });
+
+
+    // --- 5. KLIKKEN IN DE MIDDELSTE KOLOM (DYNAMISCHE TITEL) ---
+    middleZone.addEventListener('click', e => {
+        // Controleer of je echt op een kaartje hebt geklikt (en niet op de achtergrond)
+        const card = e.target.closest('.drag-item');
+        if (!card) return;
+
+        // Maak alle andere kaarten weer donker
+        const allCards = middleZone.querySelectorAll('.drag-item');
+        allCards.forEach(c => {
+            c.classList.remove('active-card', 'gold');
+            c.classList.add('dark');
+        });
+
+        // Maak aangeklikte kaart goud
+        card.classList.remove('dark');
+        card.classList.add('active-card', 'gold');
+
+        // Haal de naam op (zonder badge)
+        let clone = card.cloneNode(true);
+        let badge = clone.querySelector('.badge');
+        if (badge) badge.remove();
+        let blockName = clone.textContent.trim().toUpperCase(); 
+        
+        // Verander rechterkolom titel
+        editorTitle.innerText = blockName;
+        
+        // Verander rechterkolom content
+        const blockId = card.getAttribute('data-id');
+        const newContent = blockContent[blockId] || blockContent['default'];
+        editorContent.innerHTML = newContent;
     });
 
 });
