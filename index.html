@@ -14,12 +14,11 @@
     </div>
 
     <header class="top-header">
-        <div class="location-pill">Tilburg Vossenberg</div>
+        <div id="location-trigger" class="location-pill">Tilburg Vossenberg</div>
         <button id="theme-toggle" class="theme-btn">🌙 Dark Mode</button>
     </header>
 
     <main class="app-container">
-        
         <section class="column">
             <header class="col-header">
                 <h2>BLOK SELECTIE</h2>
@@ -82,17 +81,28 @@
                 DAGJOURNAAL
             </div>
         </div>
-        
         <div class="date-controls">
             <button id="btn-prev-day" class="nav-btn">&lt;</button>
             <button id="btn-today" class="nav-btn-text">Vandaag</button>
             <button id="btn-next-day" class="nav-btn">&gt;</button>
         </div>
-        
-        <div class="status-clock" id="datetime-display">
-            Laden...
-        </div>
+        <div class="status-clock" id="datetime-display">Laden...</div>
     </footer>
+
+    <div id="location-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h3>SELECTEER KAZERNE</h3>
+            <div class="location-options">
+                <button class="loc-btn">Bergen op Zoom</button>
+                <button class="loc-btn">Breda</button>
+                <button class="loc-btn">Moerdijk-Haven</button>
+                <button class="loc-btn">Roosendaal</button>
+                <button class="loc-btn">Tilburg Centrum</button>
+                <button class="loc-btn active">Tilburg Vossenberg</button>
+            </div>
+            <button id="close-modal" class="btn-cancel">Annuleren</button>
+        </div>
+    </div>
     
     <script src="script.js"></script>
 </body>

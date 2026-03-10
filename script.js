@@ -24,37 +24,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function isToday(dateToCheck) {
         const today = new Date();
-        return dateToCheck.getDate() === today.getDate() &&
-               dateToCheck.getMonth() === today.getMonth() &&
-               dateToCheck.getFullYear() === today.getFullYear();
+        return dateToCheck.getDate() === today.getDate() && dateToCheck.getMonth() === today.getMonth() && dateToCheck.getFullYear() === today.getFullYear();
     }
-
     function updateCenterNavigation() {
-        if (isToday(selectedDate)) {
-            btnTodayText.innerText = "Vandaag";
-        } else {
-            const options = { day: 'numeric', month: 'long', year: 'numeric' };
-            btnTodayText.innerText = selectedDate.toLocaleDateString('nl-NL', options);
-        }
+        if (isToday(selectedDate)) { btnTodayText.innerText = "Vandaag"; } 
+        else { const options = { day: 'numeric', month: 'long', year: 'numeric' }; btnTodayText.innerText = selectedDate.toLocaleDateString('nl-NL', options); }
     }
-
     function updateRealTimeClock() {
         const now = new Date();
-        const optionsDate = { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' };
-        let dateString = now.toLocaleDateString('nl-NL', optionsDate);
+        let dateString = now.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
         dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1).replace(' ', ', ');
-
-        const timeString = now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' });
-        datetimeDisplay.innerHTML = `${dateString} &nbsp;&nbsp; ${timeString}`;
+        datetimeDisplay.innerHTML = `${dateString} &nbsp;&nbsp; ${now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`;
     }
 
     btnPrev.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() - 1); updateCenterNavigation(); });
     btnNext.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() + 1); updateCenterNavigation(); });
     btnTodayText.addEventListener('click', () => { selectedDate = new Date(); updateCenterNavigation(); });
 
-    updateCenterNavigation();
-    updateRealTimeClock();
-    setInterval(updateRealTimeClock, 1000);
+    updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
 
     // --- 3. DYNAMISCHE CONTENT DATABASE ---
@@ -66,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // --- 4. DRAG & DROP LOGICA (100% Kogelvrij) ---
+    // --- 4. DRAG & DROP LOGICA ---
     const draggables = document.querySelectorAll('.drag-item');
     const leftList = document.getElementById('blok-selectie');
     const middleList = document.getElementById('dagjournaal-lijst');
@@ -74,11 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const editorTitle = document.getElementById('editor-title');
     const editorContent = document.getElementById('editor-content');
 
-    // FIX: We selecteren de HELE kolom in plaats van alleen het kleine lijstje
     const leftColumn = leftList.closest('.column');
     const middleColumn = middleList.closest('.column');
 
-    // Houdt in de gaten of het midden leeg is om de tekst te tonen
     function checkEmptyState() {
         if (!emptyState) return;
         const itemsInMiddle = middleList.querySelectorAll('.drag-item').length;
@@ -86,14 +71,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     draggables.forEach(draggable => {
-        draggable.addEventListener('dragstart', () => {
-            draggable.classList.add('dragging');
-        });
-
+        draggable.addEventListener('dragstart', () => { draggable.classList.add('dragging'); });
         draggable.addEventListener('dragend', () => {
             draggable.classList.remove('dragging');
-            
-            // Checken waar we hem losgelaten hebben om de stijl aan te passen
             if (middleList.contains(draggable)) {
                 draggable.classList.remove('theme-card-light');
                 draggable.classList.add('dark', 'sequence-card');
@@ -101,10 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 draggable.classList.remove('dark', 'sequence-card', 'active-card', 'gold');
                 draggable.classList.add('theme-card-light');
             }
-            
             checkEmptyState();
-
-            // Als we per ongeluk het geselecteerde (gouden) blok terug hebben gegooid: reset de rechterkolom
             if (!middleList.querySelector('.active-card')) {
                 editorTitle.innerText = "GEEN BLOK GESELECTEERD";
                 editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
@@ -112,70 +89,89 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Functie berekent de exacte positie tussen andere blokken tijdens het slepen
     function getDragAfterElement(container, y) {
         const draggableElements = [...container.querySelectorAll('.drag-item:not(.dragging)')];
-
         return draggableElements.reduce((closest, child) => {
             const box = child.getBoundingClientRect();
             const offset = y - box.top - box.height / 2;
-            if (offset < 0 && offset > closest.offset) {
-                return { offset: offset, element: child };
-            } else {
-                return closest;
-            }
+            if (offset < 0 && offset > closest.offset) { return { offset: offset, element: child }; } else { return closest; }
         }, { offset: Number.NEGATIVE_INFINITY }).element;
     }
 
-    // De Magneet: Als je zweeft over de linkse of rechtse KOLOM
     [leftColumn, middleColumn].forEach(col => {
         col.addEventListener('dragover', e => {
-            e.preventDefault(); // Browser vertellen dat droppen hier oké is
-            
+            e.preventDefault(); 
             const draggable = document.querySelector('.dragging');
             if (!draggable) return;
-
-            // Welke kant zijn we aan het slepen? Vind de juiste lijst in die kolom
             const zone = col.querySelector('.scroll-area');
             const afterElement = getDragAfterElement(zone, e.clientY);
-            
-            if (afterElement == null) {
-                zone.appendChild(draggable); // Plaats onderaan
-            } else {
-                zone.insertBefore(draggable, afterElement); // Plaats ertussen
-            }
+            if (afterElement == null) { zone.appendChild(draggable); } else { zone.insertBefore(draggable, afterElement); }
         });
     });
 
 
     // --- 5. KLIKKEN IN DE MIDDELSTE KOLOM ---
-    // Event listener op de hele lijst, zodat pas-gesleepte blokken het ook direct snappen
     middleList.addEventListener('click', e => {
         const card = e.target.closest('.drag-item');
-        if (!card) return; // Er is op de achtergrond geklikt
-        if (!middleList.contains(card)) return; // Je kan geen blokken selecteren die nog links staan
+        if (!card) return; 
+        if (!middleList.contains(card)) return; 
 
-        // Maak alle kaarten donker
         middleList.querySelectorAll('.drag-item').forEach(c => {
             c.classList.remove('active-card', 'gold');
             c.classList.add('dark');
         });
 
-        // Maak het aangeklikte blok goud
         card.classList.remove('dark');
         card.classList.add('active-card', 'gold');
 
-        // Knip de badge weg voor de titel
         let clone = card.cloneNode(true);
         let badge = clone.querySelector('.badge');
         if (badge) badge.remove();
         
         editorTitle.innerText = clone.textContent.trim().toUpperCase(); 
         
-        // Laad het juiste HTML-formulier in
         const blockId = card.getAttribute('data-id');
         const newContent = blockContent[blockId] || blockContent['default'];
         editorContent.innerHTML = newContent;
+    });
+
+
+    // --- 6. LOCATIE SELECTIE (MODAL) ---
+    const locationTrigger = document.getElementById('location-trigger');
+    const locationModal = document.getElementById('location-modal');
+    const closeModalBtn = document.getElementById('close-modal');
+    const locBtns = document.querySelectorAll('.loc-btn');
+
+    // Open het pop-up venster als je op de locatie klikt
+    locationTrigger.addEventListener('click', () => {
+        locationModal.classList.add('active');
+    });
+
+    // Sluit venster met annuleren knop
+    closeModalBtn.addEventListener('click', () => {
+        locationModal.classList.remove('active');
+    });
+
+    // Optioneel: Sluit venster als je buiten het witte vlak op het wazige gedeelte klikt
+    locationModal.addEventListener('click', (e) => {
+        if (e.target === locationModal) {
+            locationModal.classList.remove('active');
+        }
+    });
+
+    // Update de locatie als je op een kazerne knop klikt
+    locBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Zet alle knoppen uit, en deze ene knop aan (goud)
+            locBtns.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Verander de tekst bovenaan in de header
+            locationTrigger.innerText = this.innerText;
+            
+            // Sluit het pop-up venster direct af
+            locationModal.classList.remove('active');
+        });
     });
 
 });
