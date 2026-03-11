@@ -9,27 +9,30 @@
 @font-face { font-family: 'Mariné UP'; src: url('Marine-UPBlack.ttf') format('truetype'); font-weight: 900; font-style: normal; }
 
 :root {
-    /* Brand Colors (Worden NIET gebruikt voor tekst) */
+    /* Brand Colors */
     --vrmwb-navy: #17428C; 
     --vrmwb-red: #D2100B; 
     --vrmwb-gold: #CC9933;
 
-    /* Light Theme - STRENG ZWART (#1E1E1E) EN WIT (#F6F6F6) */
+    /* Light Theme - Donkergrijs/zwarte titels en scrollbalk */
     --text-main: #1E1E1E; 
-    --text-muted: #1E1E1E; /* Placeholder/Muted is nu ook gewoon 1E1E1E */
+    --text-muted: #707172;
+    
+    --bg-grad-solid: #F6F6F6; 
+    --bg-grad-trans: rgba(246, 246, 246, 0); 
     
     --glass-bg: rgba(255, 255, 255, 0.65); 
     --glass-border: rgba(255, 255, 255, 0.8);
     --panel-bg: rgba(255, 255, 255, 0.98); 
-    --card-bg-light: #F6F6F6; 
+    --card-bg-light: #FFFFFF; 
     
     --input-bg: #F6F6F6; 
     --input-border: #E6E6E6;
     
-    --bottom-bar-bg: #F6F6F6; 
+    --bottom-bar-bg: #FFFFFF; 
     --bottom-bar-text: #1E1E1E;
     --nav-block-bg: #1E1E1E; 
-    --nav-block-text: #F6F6F6;
+    --nav-block-text: #FFFFFF;
     
     --scrollbar-thumb: #1E1E1E; 
     
@@ -38,8 +41,11 @@
 }
 
 [data-theme="dark"] {
-    --text-main: #F6F6F6; 
-    --text-muted: #F6F6F6;
+    --text-main: #FFFFFF; 
+    --text-muted: #E6E6E6;
+    
+    --bg-grad-solid: #1E1E1E; 
+    --bg-grad-trans: rgba(30, 30, 30, 0);
     
     --glass-bg: rgba(0, 0, 0, 0.5); 
     --glass-border: rgba(255, 255, 255, 0.1);
@@ -50,19 +56,19 @@
     --input-border: #333333;
     
     --bottom-bar-bg: #1E1E1E; 
-    --bottom-bar-text: #F6F6F6;
-    --nav-block-bg: #F6F6F6; 
+    --bottom-bar-text: #FFFFFF;
+    --nav-block-bg: #FFFFFF; 
     --nav-block-text: #1E1E1E;
     
-    --scrollbar-thumb: #F6F6F6; 
+    --scrollbar-thumb: #FFFFFF; 
 }
 
-/* Alles in Mariné UP */
-body { font-family: 'Mariné UP', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: #1E1E1E; color: var(--text-main); transition: color 0.3s; }
+body { font-family: 'Mariné UP', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-grad-solid); color: var(--text-main); transition: background-color 0.3s, color 0.3s; }
 
-/* Achtergrond */
+/* Achtergrond met gradiënt! */
 .bg-layer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; }
 .backdrop-img { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('./backdrop_odj.png'); background-size: cover; background-position: center; }
+.gradient-fade { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, var(--bg-grad-solid) 0%, var(--bg-grad-trans) 50%); }
 
 /* =========================================
    2. STRUCTUUR & PANELS
@@ -82,16 +88,28 @@ body { font-family: 'Mariné UP', sans-serif; height: 100vh; display: flex; flex
 h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--text-main); }
 
 /* Knoppen & Headers */
-.location-pill { background-color: var(--vrmwb-gold); color: #1E1E1E; font-size: 34px; font-weight: 900; padding: 12px 40px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s; }
+.location-pill { background-color: var(--vrmwb-gold); color: #000; font-size: 34px; font-weight: 900; padding: 12px 40px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s; }
 .location-pill:hover { transform: scale(1.02); }
 
 .theme-btn { position: absolute; right: 50px; background-color: var(--bottom-bar-bg); color: var(--text-main); border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-.btn-preview { background-color: var(--vrmwb-red); color: #F6F6F6; border: none; padding: 0 25px; border-radius: 20px; font-weight: 700; font-size: 16px; cursor: pointer; height: 40px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(210, 16, 11, 0.3); transition: transform 0.2s; }
+.btn-preview { background-color: var(--vrmwb-red); color: white; border: none; padding: 0 25px; border-radius: 20px; font-weight: 700; font-size: 16px; cursor: pointer; height: 40px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(210, 16, 11, 0.3); transition: transform 0.2s; }
 .btn-preview:hover { transform: scale(1.05); }
 
-/* Panelen */
-.glass-panel { background: var(--glass-bg); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-radius: var(--radius-outer); border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 25px 20px 10px 25px; }
-.solid-panel { background: var(--panel-bg); border-radius: var(--radius-outer); box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 25px 30px 10px 30px; }
+/* De echte Glass Widget stijl */
+.glass-panel { 
+    background: var(--glass-bg); 
+    -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); 
+    border-radius: var(--radius-outer); 
+    border: 1px solid var(--glass-border); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    padding: 25px 20px 10px 25px; 
+}
+.solid-panel { 
+    background: var(--panel-bg); 
+    border-radius: var(--radius-outer); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+    padding: 25px 30px 10px 30px; 
+}
 
 /* =========================================
    3. KAARTEN & DRAG DROP
@@ -114,15 +132,16 @@ h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--
 .sequence-list { display: flex; flex-direction: column; gap: 15px; padding: 15px 20px 30px 10px; }
 .editor-form { padding: 10px 15px 30px 5px; }
 
-.sequence-list .card { justify-content: center; padding: 0 25px; font-size: 16px; color: var(--text-main); }
+.sequence-list .card { justify-content: center; padding: 0 25px; font-size: 16px; }
 .sequence-list .card:hover { transform: scale(1.02); z-index: 5; box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
 
-.card.dark { background-color: #2B2D31; color: #F6F6F6; }
-.card.gold { background-color: var(--vrmwb-gold); color: #1E1E1E; box-shadow: 0 6px 15px rgba(204, 153, 51, 0.4); }
+/* De actieve (gouden) kaart */
+.card.gold { background-color: var(--vrmwb-gold); color: #000; box-shadow: 0 6px 15px rgba(204, 153, 51, 0.4); }
 
+/* De Apple-stijl Notificaties */
 .badge.red-bg { 
     position: absolute; top: -8px; right: -8px; 
-    background-color: var(--vrmwb-red); color: #F6F6F6; 
+    background-color: var(--vrmwb-red); color: white; 
     min-width: 24px; height: 24px; padding: 0 6px; 
     border-radius: 12px; font-weight: 700; font-size: 12px;
     display: flex; justify-content: center; align-items: center; 
@@ -137,11 +156,10 @@ h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--
 .form-group { flex: 0 0 auto; margin-bottom: 25px; }
 .form-group label { display: block; font-weight: 700; font-size: 16px; margin-bottom: 10px; color: var(--text-main); }
 .dropdown-input { background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: var(--radius-inner); padding: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--text-main); }
-/* Om onderscheid te houden maken we de placeholder licht doorschijnend, maar het IS zwart/wit */
-.dropdown-input.placeholder { color: var(--text-main); opacity: 0.6; font-weight: 400; }
-.tag { background-color: var(--panel-bg); padding: 5px 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--input-border); font-weight: 700; color: var(--text-main); }
-.tag .close { color: var(--text-main); cursor: pointer; font-weight: 900; }
-.chevron { width: 10px; height: 10px; border-right: 2px solid var(--text-main); border-bottom: 2px solid var(--text-main); transform: rotate(45deg); opacity: 0.6; }
+.dropdown-input.placeholder { color: var(--text-muted); font-weight: 400; }
+.tag { background-color: var(--panel-bg); padding: 5px 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--input-border); font-weight: 700; }
+.tag .close { color: var(--text-muted); cursor: pointer; font-weight: 900; }
+.chevron { width: 10px; height: 10px; border-right: 2px solid var(--text-muted); border-bottom: 2px solid var(--text-muted); transform: rotate(45deg); }
 
 /* =========================================
    5. BOTTOM BAR & SCROLL
@@ -151,7 +169,7 @@ h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--
 .nav-btn { font-size: 26px; font-weight: 900; }
 .nav-btn-text { font-size: 20px; font-weight: 700; text-align: center; flex: 1; }
 .title-logo { display: flex; flex-direction: column; justify-content: center; font-size: 14px; color: var(--bottom-bar-text); }
-.status-clock { font-size: 22px; color: var(--text-main); opacity: 0.7; font-weight: 400; }
+.status-clock { font-size: 22px; color: var(--text-muted); font-weight: 400; }
 
 .scroll-area::-webkit-scrollbar { width: 8px; }
 .scroll-area::-webkit-scrollbar:horizontal { display: none; height: 0; } 
@@ -167,6 +185,7 @@ h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--
 .modal-content h3 { margin-bottom: 25px; font-size: 24px; font-weight: 900; text-transform: uppercase; color: var(--text-main); }
 .location-options { display: flex; flex-direction: column; gap: 12px; }
 .loc-btn { background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-main); padding: 15px; border-radius: var(--radius-inner); font-family: inherit; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.loc-btn:hover { background: var(--card-bg-light); opacity: 0.9; }
-.loc-btn.active, .loc-btn.active:hover { background: var(--vrmwb-gold); color: #1E1E1E; border-color: var(--vrmwb-gold); box-shadow: 0 4px 10px rgba(204, 153, 51, 0.3); opacity: 1; }
-.btn-cancel { margin-top: 25px; background: transparent; border: none; color: var(--text-main); font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: underline; font-family: 'Mariné UP', sans-serif;}
+.loc-btn:hover { background: #EAEAEA; }
+[data-theme="dark"] .loc-btn:hover { background: #444; }
+.loc-btn.active, .loc-btn.active:hover { background: var(--vrmwb-gold); color: #000; border-color: var(--vrmwb-gold); box-shadow: 0 4px 10px rgba(204, 153, 51, 0.3); }
+.btn-cancel { margin-top: 25px; background: transparent; border: none; color: var(--text-muted); font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: underline; font-family: 'Mariné UP', sans-serif;}
