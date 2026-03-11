@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    // --- 1. THEME SWITCHER LOGICA ---
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
 
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- 2. DATUM EN KLOK LOGICA ---
     let selectedDate = new Date(); 
     const btnPrev = document.getElementById('btn-prev-day');
     const btnNext = document.getElementById('btn-next-day');
@@ -24,13 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const today = new Date();
         return dateToCheck.getDate() === today.getDate() && dateToCheck.getMonth() === today.getMonth() && dateToCheck.getFullYear() === today.getFullYear();
     }
+
     function updateCenterNavigation() {
         if (isToday(selectedDate)) { btnTodayText.innerText = "Vandaag"; } 
-        else { const options = { day: 'numeric', month: 'short', year: 'numeric' }; btnTodayText.innerText = selectedDate.toLocaleDateString('nl-NL', options); }
+        else { const options = { day: 'numeric', month: 'long', year: 'numeric' }; btnTodayText.innerText = selectedDate.toLocaleDateString('nl-NL', options); }
     }
+
     function updateRealTimeClock() {
         const now = new Date();
-        let dateString = now.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+        let dateString = now.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
         dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1).replace(' ', ', ');
         datetimeDisplay.innerHTML = `${dateString} &nbsp;&nbsp; ${now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`;
     }
@@ -42,9 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
 
-    // DYNAMISCHE CONTENT
-    const emptyEditorHTML = `<div class="empty-editor-state"><div class="icon">⚙️</div><p>Selecteer een blok in het Dagjournaal om de instellingen te bekijken en te bewerken.</p></div>`;
-    
+    // --- 3. DYNAMISCHE CONTENT DATABASE ---
     const blockContent = {
         'ploeg-indeling': `<div class="form-group"><label>Kazernes in Roosterplanning</label><div class="dropdown-input"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span><span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst MWB in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst ZLD in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Ticker rooster in Roosterplanning</label><div class="dropdown-input">Bergen op Zoom<span class="chevron"></span></div></div>`,
         'alarmen': `<div class="form-group"><label>Selecteer incidenten ter bespreking</label><div class="dropdown-input placeholder">Kies uit recente P1/P2 meldingen...<span class="chevron"></span></div></div><div class="form-group"><label>Bijzonderheden / Leermomenten</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Typ hier eventuele notities voor de overdracht...</div></div>`,
@@ -53,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // DRAG & DROP LOGICA
+    // --- 4. DRAG & DROP LOGICA ---
     const draggables = document.querySelectorAll('.drag-item');
     const leftList = document.getElementById('blok-selectie');
     const middleList = document.getElementById('dagjournaal-lijst');
@@ -67,9 +69,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkEmptyState() {
         if (!emptyState) return;
         const itemsInMiddle = middleList.querySelectorAll('.drag-item').length;
-        emptyState.style.display = itemsInMiddle === 0 ? 'flex' : 'none'; 
+        emptyState.style.display = itemsInMiddle === 0 ? 'block' : 'none';
     }
-    checkEmptyState();
 
     draggables.forEach(draggable => {
         draggable.addEventListener('dragstart', () => { draggable.classList.add('dragging'); });
@@ -83,11 +84,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 draggable.classList.add('theme-card-light');
             }
             checkEmptyState();
-            
             if (!middleList.querySelector('.active-card')) {
-                editorTitle.innerText = "UITGELICHT";
-                editorContent.innerHTML = emptyEditorHTML;
-                editorContent.firstElementChild.classList.add('form-fade-in');
+                editorTitle.innerText = "GEEN BLOK GESELECTEERD";
+                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
             }
         });
     });
@@ -113,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // KLIKKEN IN DE MIDDELSTE KOLOM
+    // --- 5. KLIKKEN IN DE MIDDELSTE KOLOM ---
     middleList.addEventListener('click', e => {
         const card = e.target.closest('.drag-item');
         if (!card) return; 
@@ -129,20 +128,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let clone = card.cloneNode(true);
         let badge = clone.querySelector('.badge');
-        let handle = clone.querySelector('.drag-handle'); 
         if (badge) badge.remove();
-        if (handle) handle.remove();
         
         editorTitle.innerText = clone.textContent.trim().toUpperCase(); 
         
         const blockId = card.getAttribute('data-id');
         const newContent = blockContent[blockId] || blockContent['default'];
-        
-        editorContent.innerHTML = `<div class="form-fade-in">${newContent}</div>`;
+        editorContent.innerHTML = newContent;
     });
 
 
-    // LOCATIE SELECTIE (MODAL)
+    // --- 6. LOCATIE SELECTIE (MODAL) ---
     const locationTrigger = document.getElementById('location-trigger');
     const locationModal = document.getElementById('location-modal');
     const closeModalBtn = document.getElementById('close-modal');
