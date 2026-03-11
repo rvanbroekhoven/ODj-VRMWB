@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. THEME SWITCHER LOGICA ---
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
 
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 2. DATUM EN KLOK LOGICA ---
     let selectedDate = new Date(); 
     const btnPrev = document.getElementById('btn-prev-day');
     const btnNext = document.getElementById('btn-next-day');
@@ -44,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
 
-    // --- 3. DYNAMISCHE CONTENT DATABASE ---
+    // DYNAMISCHE CONTENT
     const emptyEditorHTML = `<div class="empty-editor-state"><div class="icon">⚙️</div><p>Selecteer een blok in het Dagjournaal om de instellingen te bekijken en te bewerken.</p></div>`;
     
     const blockContent = {
@@ -55,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // --- 4. DRAG & DROP LOGICA ---
+    // DRAG & DROP LOGICA
     const draggables = document.querySelectorAll('.drag-item');
     const leftList = document.getElementById('blok-selectie');
     const middleList = document.getElementById('dagjournaal-lijst');
@@ -69,10 +67,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkEmptyState() {
         if (!emptyState) return;
         const itemsInMiddle = middleList.querySelectorAll('.drag-item').length;
-        emptyState.style.display = itemsInMiddle === 0 ? 'flex' : 'none'; // Flex voor de nieuwe UX opmaak
+        emptyState.style.display = itemsInMiddle === 0 ? 'flex' : 'none'; 
     }
-    
-    // Voer de check direct 1x uit bij laden
     checkEmptyState();
 
     draggables.forEach(draggable => {
@@ -88,11 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             checkEmptyState();
             
-            // UX Update: Als we geselecteerd blok weggooien, reset panel
             if (!middleList.querySelector('.active-card')) {
                 editorTitle.innerText = "UITGELICHT";
-                
-                // Voeg animatie class toe
                 editorContent.innerHTML = emptyEditorHTML;
                 editorContent.firstElementChild.classList.add('form-fade-in');
             }
@@ -120,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 5. KLIKKEN IN DE MIDDELSTE KOLOM (MET UX FADE IN) ---
+    // KLIKKEN IN DE MIDDELSTE KOLOM
     middleList.addEventListener('click', e => {
         const card = e.target.closest('.drag-item');
         if (!card) return; 
@@ -136,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let clone = card.cloneNode(true);
         let badge = clone.querySelector('.badge');
-        let handle = clone.querySelector('.drag-handle'); // Sloop ook de drag handle eruit voor de titel
+        let handle = clone.querySelector('.drag-handle'); 
         if (badge) badge.remove();
         if (handle) handle.remove();
         
@@ -145,12 +138,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const blockId = card.getAttribute('data-id');
         const newContent = blockContent[blockId] || blockContent['default'];
         
-        // UX Fade-in effect
         editorContent.innerHTML = `<div class="form-fade-in">${newContent}</div>`;
     });
 
 
-    // --- 6. LOCATIE SELECTIE (MODAL) ---
+    // LOCATIE SELECTIE (MODAL)
     const locationTrigger = document.getElementById('location-trigger');
     const locationModal = document.getElementById('location-modal');
     const closeModalBtn = document.getElementById('close-modal');
