@@ -28,11 +28,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     function updateCenterNavigation() {
         if (isToday(selectedDate)) { btnTodayText.innerText = "Vandaag"; } 
-        else { const options = { day: 'numeric', month: 'long', year: 'numeric' }; btnTodayText.innerText = selectedDate.toLocaleDateString('nl-NL', options); }
+        else { const options = { day: 'numeric', month: 'short', year: 'numeric' }; btnTodayText.innerText = selectedDate.toLocaleDateString('nl-NL', options); }
     }
     function updateRealTimeClock() {
         const now = new Date();
-        let dateString = now.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
+        let dateString = now.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
         dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1).replace(' ', ', ');
         datetimeDisplay.innerHTML = `${dateString} &nbsp;&nbsp; ${now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`;
     }
@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     // --- 3. DYNAMISCHE CONTENT DATABASE ---
+    const emptyEditorHTML = `<div class="empty-editor-state"><div class="icon">⚙️</div><p>Selecteer een blok in het Dagjournaal om de instellingen te bekijken en te bewerken.</p></div>`;
+    
     const blockContent = {
         'ploeg-indeling': `<div class="form-group"><label>Kazernes in Roosterplanning</label><div class="dropdown-input"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span><span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst MWB in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst ZLD in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Ticker rooster in Roosterplanning</label><div class="dropdown-input">Bergen op Zoom<span class="chevron"></span></div></div>`,
         'alarmen': `<div class="form-group"><label>Selecteer incidenten ter bespreking</label><div class="dropdown-input placeholder">Kies uit recente P1/P2 meldingen...<span class="chevron"></span></div></div><div class="form-group"><label>Bijzonderheden / Leermomenten</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Typ hier eventuele notities voor de overdracht...</div></div>`,
@@ -67,8 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function checkEmptyState() {
         if (!emptyState) return;
         const itemsInMiddle = middleList.querySelectorAll('.drag-item').length;
-        emptyState.style.display = itemsInMiddle === 0 ? 'block' : 'none';
+        emptyState.style.display = itemsInMiddle === 0 ? 'flex' : 'none'; // Flex voor de nieuwe UX opmaak
     }
+    
+    // Voer de check direct 1x uit bij laden
+    checkEmptyState();
 
     draggables.forEach(draggable => {
         draggable.addEventListener('dragstart', () => { draggable.classList.add('dragging'); });
@@ -82,9 +87,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 draggable.classList.add('theme-card-light');
             }
             checkEmptyState();
+            
+            // UX Update: Als we geselecteerd blok weggooien, reset panel
             if (!middleList.querySelector('.active-card')) {
-                editorTitle.innerText = "GEEN BLOK GESELECTEERD";
-                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
+                editorTitle.innerText = "UITGELICHT";
+                
+                // Voeg animatie class toe
+                editorContent.innerHTML = emptyEditorHTML;
+                editorContent.firstElementChild.classList.add('form-fade-in');
             }
         });
     });
@@ -110,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 5. KLIKKEN IN DE MIDDELSTE KOLOM ---
+    // --- 5. KLIKKEN IN DE MIDDELSTE KOLOM (MET UX FADE IN) ---
     middleList.addEventListener('click', e => {
         const card = e.target.closest('.drag-item');
         if (!card) return; 
@@ -126,13 +136,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let clone = card.cloneNode(true);
         let badge = clone.querySelector('.badge');
+        let handle = clone.querySelector('.drag-handle'); // Sloop ook de drag handle eruit voor de titel
         if (badge) badge.remove();
+        if (handle) handle.remove();
         
         editorTitle.innerText = clone.textContent.trim().toUpperCase(); 
         
         const blockId = card.getAttribute('data-id');
         const newContent = blockContent[blockId] || blockContent['default'];
-        editorContent.innerHTML = newContent;
+        
+        // UX Fade-in effect
+        editorContent.innerHTML = `<div class="form-fade-in">${newContent}</div>`;
     });
 
 
@@ -142,34 +156,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.getElementById('close-modal');
     const locBtns = document.querySelectorAll('.loc-btn');
 
-    // Open het pop-up venster als je op de locatie klikt
-    locationTrigger.addEventListener('click', () => {
-        locationModal.classList.add('active');
-    });
+    locationTrigger.addEventListener('click', () => { locationModal.classList.add('active'); });
+    closeModalBtn.addEventListener('click', () => { locationModal.classList.remove('active'); });
+    locationModal.addEventListener('click', (e) => { if (e.target === locationModal) locationModal.classList.remove('active'); });
 
-    // Sluit venster met annuleren knop
-    closeModalBtn.addEventListener('click', () => {
-        locationModal.classList.remove('active');
-    });
-
-    // Optioneel: Sluit venster als je buiten het witte vlak op het wazige gedeelte klikt
-    locationModal.addEventListener('click', (e) => {
-        if (e.target === locationModal) {
-            locationModal.classList.remove('active');
-        }
-    });
-
-    // Update de locatie als je op een kazerne knop klikt
     locBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Zet alle knoppen uit, en deze ene knop aan (goud)
             locBtns.forEach(b => b.classList.remove('active'));
             this.classList.add('active');
-            
-            // Verander de tekst bovenaan in de header
             locationTrigger.innerText = this.innerText;
-            
-            // Sluit het pop-up venster direct af
             locationModal.classList.remove('active');
         });
     });
