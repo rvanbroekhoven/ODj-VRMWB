@@ -44,8 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
 
-    // --- DYNAMISCHE CONTENT (GEÜPDATE MET PREVIEW DATA) ---
-    // In plaats van alleen HTML voor de rechterkolom, slaan we nu OOK de preview (slide) HTML op.
+    // --- DYNAMISCHE CONTENT (EDITOR EN PREVIEW) ---
     const blockData = {
         'ploeg-indeling': {
             editorHTML: `
@@ -107,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-
     // --- DRAG & DROP LOGICA ---
     const draggables = document.querySelectorAll('.drag-item');
     const leftList = document.getElementById('blok-selectie');
@@ -119,7 +117,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const leftColumn = leftList.closest('.column');
     const middleColumn = middleList.closest('.column');
 
-    // Globaal bijhouden welk blok we momenteel selecteren voor de preview
     let currentSelectedBlockId = null;
     let currentSelectedBlockName = "";
 
@@ -145,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (!middleList.querySelector('.active-card')) {
                 editorTitle.innerText = "GEEN BLOK GESELECTEERD";
-                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-main); margin-top: 20px; font-weight: 700;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
+                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px; font-weight: 700;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
                 currentSelectedBlockId = null;
             }
         });
@@ -171,17 +168,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-
     // --- KLIKKEN IN DE MIDDELSTE KOLOM ---
     middleList.addEventListener('click', e => {
         const card = e.target.closest('.drag-item');
         if (!card) return; 
         if (!middleList.contains(card)) return; 
 
-        middleList.querySelectorAll('.drag-item').forEach(c => {
-            c.classList.remove('active-card', 'gold');
-        });
-
+        middleList.querySelectorAll('.drag-item').forEach(c => { c.classList.remove('active-card', 'gold'); });
         card.classList.add('active-card', 'gold');
 
         let clone = card.cloneNode(true);
@@ -192,12 +185,9 @@ document.addEventListener('DOMContentLoaded', () => {
         editorTitle.innerText = currentSelectedBlockName; 
         
         currentSelectedBlockId = card.getAttribute('data-id');
-        
-        // Vul de rechterkolom met de editorHTML uit de data
         const data = blockData[currentSelectedBlockId] || blockData['default'];
         editorContent.innerHTML = data.editorHTML;
     });
-
 
     // --- PREVIEW LOGICA ---
     const btnOpenPreview = document.getElementById('btn-open-preview');
@@ -206,28 +196,18 @@ document.addEventListener('DOMContentLoaded', () => {
     const previewBody = document.getElementById('preview-body');
 
     btnOpenPreview.addEventListener('click', () => {
-        if (!currentSelectedBlockId) {
-            alert("Selecteer eerst een blok in het Dagjournaal om te previewen!");
-            return;
-        }
+        if (!currentSelectedBlockId) { alert("Selecteer eerst een blok in het Dagjournaal om te previewen!"); return; }
 
-        // Haal de presentatie content op
         const data = blockData[currentSelectedBlockId] || blockData['default'];
         previewBody.innerHTML = data.previewHTML;
 
-        // Als het de default is, vervang dan de titel door de echte naam van het blok
         const dynamicTitle = document.getElementById('dynamic-preview-title');
-        if (dynamicTitle) {
-            dynamicTitle.innerText = currentSelectedBlockName;
-        }
+        if (dynamicTitle) { dynamicTitle.innerText = currentSelectedBlockName; }
 
         previewModal.classList.add('active');
     });
 
-    closePreviewBtn.addEventListener('click', () => {
-        previewModal.classList.remove('active');
-    });
-
+    closePreviewBtn.addEventListener('click', () => { previewModal.classList.remove('active'); });
 
     // --- LOCATIE SELECTIE (MODAL) ---
     const locationTrigger = document.getElementById('location-trigger');
@@ -238,7 +218,6 @@ document.addEventListener('DOMContentLoaded', () => {
     locationTrigger.addEventListener('click', () => { locationModal.classList.add('active'); });
     closeModalBtn.addEventListener('click', () => { locationModal.classList.remove('active'); });
     
-    // Sluit modals als je buiten de content klikt
     window.addEventListener('click', (e) => { 
         if (e.target === locationModal) locationModal.classList.remove('active'); 
         if (e.target === previewModal) previewModal.classList.remove('active');
@@ -252,5 +231,4 @@ document.addEventListener('DOMContentLoaded', () => {
             locationModal.classList.remove('active');
         });
     });
-
 });
