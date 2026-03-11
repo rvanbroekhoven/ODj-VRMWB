@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+ document.addEventListener('DOMContentLoaded', () => {
 
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (!middleList.querySelector('.active-card')) {
                 editorTitle.innerText = "GEEN BLOK GESELECTEERD";
-                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-main); margin-top: 20px; font-weight: 700;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
+                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px; font-weight: 700;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
             }
         });
     });
