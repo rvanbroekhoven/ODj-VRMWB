@@ -1,4 +1,4 @@
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
 
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
@@ -44,12 +44,67 @@
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
 
-    // --- DYNAMISCHE CONTENT ---
-    const blockContent = {
-        'ploeg-indeling': `<div class="form-group"><label>Kazernes in Roosterplanning</label><div class="dropdown-input"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span><span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst MWB in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst ZLD in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Ticker rooster in Roosterplanning</label><div class="dropdown-input">Bergen op Zoom<span class="chevron"></span></div></div>`,
-        'alarmen': `<div class="form-group"><label>Selecteer incidenten ter bespreking</label><div class="dropdown-input placeholder">Kies uit recente P1/P2 meldingen...<span class="chevron"></span></div></div><div class="form-group"><label>Bijzonderheden / Leermomenten</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Typ hier eventuele notities voor de overdracht...</div></div>`,
-        'voertuigen': `<div class="form-group"><label>Defecten / Uit de uitruk</label><div class="dropdown-input">Geen defecten gemeld (OASIS)<span class="chevron"></span></div></div><div class="form-group"><label>Vervangend materieel</label><div class="dropdown-input placeholder">Selecteer indien van toepassing...<span class="chevron"></span></div></div>`,
-        'default': `<div class="form-group"><label>Observaties en Opmerkingen</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Voeg hier de details voor dit dagjournaal-onderdeel toe...</div></div>`
+    // --- DYNAMISCHE CONTENT (GEÜPDATE MET PREVIEW DATA) ---
+    // In plaats van alleen HTML voor de rechterkolom, slaan we nu OOK de preview (slide) HTML op.
+    const blockData = {
+        'ploeg-indeling': {
+            editorHTML: `
+                <div class="form-group"><label>Kazernes in Roosterplanning</label><div class="dropdown-input"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span><span class="chevron"></span></div></div>
+                <div class="form-group"><label>Dienstlijst MWB in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div>
+                <div class="form-group"><label>Dienstlijst ZLD in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div>
+                <div class="form-group"><label>Ticker rooster in Roosterplanning</label><div class="dropdown-input">Bergen op Zoom<span class="chevron"></span></div></div>
+            `,
+            previewHTML: `
+                <h1 class="slide-title">PLOEG INDELING</h1>
+                <table class="rooster-table">
+                    <tr><th>Functie</th><th>Naam</th></tr>
+                    <tr><td>Bevelvoerder</td><td>J. de Vries</td></tr>
+                    <tr><td>Chauffeur/Pompbediende</td><td>P. Hendriks</td></tr>
+                    <tr><td>Manschap 1</td><td>A. Jansen</td></tr>
+                    <tr><td>Manschap 2</td><td>M. Bakker</td></tr>
+                </table>
+            `
+        },
+        'alarmen': {
+            editorHTML: `
+                <div class="form-group"><label>Selecteer incidenten ter bespreking</label><div class="dropdown-input placeholder">Kies uit recente P1/P2 meldingen...<span class="chevron"></span></div></div>
+                <div class="form-group"><label>Bijzonderheden / Leermomenten</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Typ hier eventuele notities voor de overdracht...</div></div>
+            `,
+            previewHTML: `
+                <h1 class="slide-title">ALARMEN VORIGE DIENST</h1>
+                <div class="incident-card">
+                    <strong>PRIO 1</strong> - Woningbrand (Middel Brand)
+                    <br><br>
+                    Locatie: Hoofdstraat 12, Breda<br>
+                    <span style="opacity: 0.7; font-size: 16px;">Bijzonderheden: Binnenaanval succesvol, controleer ademlucht.</span>
+                </div>
+                <div class="incident-card" style="border-left-color: var(--vrmwb-gold);">
+                    <strong style="color: var(--vrmwb-gold);">PRIO 2</strong> - Buitenbrand
+                    <br><br>
+                    Locatie: Mastbos, Breda
+                </div>
+            `
+        },
+        'voertuigen': {
+            editorHTML: `
+                <div class="form-group"><label>Defecten / Uit de uitruk</label><div class="dropdown-input">Geen defecten gemeld (OASIS)<span class="chevron"></span></div></div>
+                <div class="form-group"><label>Vervangend materieel</label><div class="dropdown-input placeholder">Selecteer indien van toepassing...<span class="chevron"></span></div></div>
+            `,
+            previewHTML: `
+                <h1 class="slide-title">STATUS VOERTUIGEN</h1>
+                <h3 style="font-size: 24px; margin-bottom: 10px;">Geen defecten gemeld via OASIS.</h3>
+                <p style="font-size: 20px; opacity: 0.7;">Alle voertuigen zijn inzetbaar voor de komende dienst.</p>
+            `
+        },
+        'default': {
+            editorHTML: `
+                <div class="form-group"><label>Observaties en Opmerkingen</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Voeg hier de details voor dit dagjournaal-onderdeel toe...</div></div>
+            `,
+            previewHTML: `
+                <h1 class="slide-title" id="dynamic-preview-title">ONDERDEEL</h1>
+                <p style="font-size: 24px; opacity: 0.5; text-align: center; margin-top: 100px;">Geen specifieke bijzonderheden ingevoerd voor dit onderdeel.</p>
+            `
+        }
     };
 
 
@@ -63,6 +118,10 @@
 
     const leftColumn = leftList.closest('.column');
     const middleColumn = middleList.closest('.column');
+
+    // Globaal bijhouden welk blok we momenteel selecteren voor de preview
+    let currentSelectedBlockId = null;
+    let currentSelectedBlockName = "";
 
     function checkEmptyState() {
         if (!emptyState) return;
@@ -86,7 +145,8 @@
             
             if (!middleList.querySelector('.active-card')) {
                 editorTitle.innerText = "GEEN BLOK GESELECTEERD";
-                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px; font-weight: 700;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
+                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-main); margin-top: 20px; font-weight: 700;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
+                currentSelectedBlockId = null;
             }
         });
     });
@@ -128,11 +188,44 @@
         let badge = clone.querySelector('.badge');
         if (badge) badge.remove();
         
-        editorTitle.innerText = clone.textContent.trim().toUpperCase(); 
+        currentSelectedBlockName = clone.textContent.trim().toUpperCase();
+        editorTitle.innerText = currentSelectedBlockName; 
         
-        const blockId = card.getAttribute('data-id');
-        const newContent = blockContent[blockId] || blockContent['default'];
-        editorContent.innerHTML = newContent;
+        currentSelectedBlockId = card.getAttribute('data-id');
+        
+        // Vul de rechterkolom met de editorHTML uit de data
+        const data = blockData[currentSelectedBlockId] || blockData['default'];
+        editorContent.innerHTML = data.editorHTML;
+    });
+
+
+    // --- PREVIEW LOGICA ---
+    const btnOpenPreview = document.getElementById('btn-open-preview');
+    const previewModal = document.getElementById('preview-modal');
+    const closePreviewBtn = document.getElementById('close-preview');
+    const previewBody = document.getElementById('preview-body');
+
+    btnOpenPreview.addEventListener('click', () => {
+        if (!currentSelectedBlockId) {
+            alert("Selecteer eerst een blok in het Dagjournaal om te previewen!");
+            return;
+        }
+
+        // Haal de presentatie content op
+        const data = blockData[currentSelectedBlockId] || blockData['default'];
+        previewBody.innerHTML = data.previewHTML;
+
+        // Als het de default is, vervang dan de titel door de echte naam van het blok
+        const dynamicTitle = document.getElementById('dynamic-preview-title');
+        if (dynamicTitle) {
+            dynamicTitle.innerText = currentSelectedBlockName;
+        }
+
+        previewModal.classList.add('active');
+    });
+
+    closePreviewBtn.addEventListener('click', () => {
+        previewModal.classList.remove('active');
     });
 
 
@@ -144,7 +237,12 @@
 
     locationTrigger.addEventListener('click', () => { locationModal.classList.add('active'); });
     closeModalBtn.addEventListener('click', () => { locationModal.classList.remove('active'); });
-    locationModal.addEventListener('click', (e) => { if (e.target === locationModal) locationModal.classList.remove('active'); });
+    
+    // Sluit modals als je buiten de content klikt
+    window.addEventListener('click', (e) => { 
+        if (e.target === locationModal) locationModal.classList.remove('active'); 
+        if (e.target === previewModal) previewModal.classList.remove('active');
+    });
 
     locBtns.forEach(btn => {
         btn.addEventListener('click', function() {

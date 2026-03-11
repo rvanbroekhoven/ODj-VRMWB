@@ -1,5 +1,5 @@
 /* =========================================
-   1. RESET & FONTS
+   1. RESET & FONTS (VRMWB STIJL)
    ========================================= */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -8,33 +8,27 @@
 @font-face { font-family: 'Mariné UP'; src: url('Marine-UPBold.ttf') format('truetype'); font-weight: 700; font-style: normal; }
 @font-face { font-family: 'Mariné UP'; src: url('Marine-UPBlack.ttf') format('truetype'); font-weight: 900; font-style: normal; }
 
-/* =========================================
-   2. VARIABELEN (THEMES)
-   ========================================= */
 :root {
     --vrmwb-navy: #17428C; 
     --vrmwb-red: #D2100B; 
     --vrmwb-gold: #CC9933;
 
-    /* Light Theme */
+    /* Light Theme - STRENG ZWART EN WIT */
     --text-main: #1E1E1E; 
-    --text-muted: #707172;
-    
-    --bg-grad-solid: #F6F6F6; 
-    --bg-grad-trans: rgba(246, 246, 246, 0); 
+    --text-muted: #1E1E1E; 
     
     --glass-bg: rgba(255, 255, 255, 0.65); 
     --glass-border: rgba(255, 255, 255, 0.8);
     --panel-bg: rgba(255, 255, 255, 0.98); 
-    --card-bg-light: #FFFFFF; 
+    --card-bg-light: #F6F6F6; 
     
     --input-bg: #F6F6F6; 
     --input-border: #E6E6E6;
     
-    --bottom-bar-bg: #FFFFFF; 
+    --bottom-bar-bg: #F6F6F6; 
     --bottom-bar-text: #1E1E1E;
     --nav-block-bg: #1E1E1E; 
-    --nav-block-text: #FFFFFF;
+    --nav-block-text: #F6F6F6;
     
     --scrollbar-thumb: #1E1E1E; 
     
@@ -43,11 +37,8 @@
 }
 
 [data-theme="dark"] {
-    --text-main: #FFFFFF; 
-    --text-muted: #E6E6E6;
-    
-    --bg-grad-solid: #1E1E1E; 
-    --bg-grad-trans: rgba(30, 30, 30, 0);
+    --text-main: #F6F6F6; 
+    --text-muted: #F6F6F6;
     
     --glass-bg: rgba(0, 0, 0, 0.5); 
     --glass-border: rgba(255, 255, 255, 0.1);
@@ -58,31 +49,20 @@
     --input-border: #333333;
     
     --bottom-bar-bg: #1E1E1E; 
-    --bottom-bar-text: #FFFFFF;
-    --nav-block-bg: #FFFFFF; 
+    --bottom-bar-text: #F6F6F6;
+    --nav-block-bg: #F6F6F6; 
     --nav-block-text: #1E1E1E;
     
-    --scrollbar-thumb: #FFFFFF; 
+    --scrollbar-thumb: #F6F6F6; 
 }
 
-/* =========================================
-   3. ACHTERGROND & LAYOUT
-   ========================================= */
-body { 
-    font-family: 'Mariné UP', sans-serif; 
-    height: 100vh; 
-    display: flex; 
-    flex-direction: column; 
-    overflow: hidden; 
-    background-color: var(--bg-grad-solid); 
-    color: var(--text-main); 
-    transition: background-color 0.3s, color 0.3s; 
-}
-
+body { font-family: 'Mariné UP', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: #1E1E1E; color: var(--text-main); transition: color 0.3s; }
 .bg-layer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; }
 .backdrop-img { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('./backdrop_odj.png'); background-size: cover; background-position: center; }
-.gradient-fade { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, var(--bg-grad-solid) 0%, var(--bg-grad-trans) 50%); }
 
+/* =========================================
+   2. STRUCTUUR & PANELS
+   ========================================= */
 .top-header { flex: 0 0 auto; height: 90px; display: flex; justify-content: center; align-items: center; padding-top: 25px; z-index: 10; position: relative; }
 .bottom-bar { flex: 0 0 auto; height: 80px; background-color: var(--bottom-bar-bg); display: flex; justify-content: space-between; align-items: center; padding: 0 50px; z-index: 20; position: relative; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); }
 
@@ -97,71 +77,163 @@ body {
 
 h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--text-main); }
 
-/* =========================================
-   4. COMPONENTEN
-   ========================================= */
-.location-pill { background-color: var(--vrmwb-gold); color: #000; font-size: 34px; font-weight: 900; padding: 12px 40px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s; }
+.location-pill { background-color: var(--vrmwb-gold); color: #1E1E1E; font-size: 34px; font-weight: 900; padding: 12px 40px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s; }
 .location-pill:hover { transform: scale(1.02); }
 
 .theme-btn { position: absolute; right: 50px; background-color: var(--bottom-bar-bg); color: var(--text-main); border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-.btn-preview { background-color: var(--vrmwb-red); color: white; border: none; padding: 0 25px; border-radius: 20px; font-weight: 700; font-size: 16px; cursor: pointer; height: 40px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(210, 16, 11, 0.3); transition: transform 0.2s; }
+.btn-preview { background-color: var(--vrmwb-red); color: #F6F6F6; border: none; padding: 0 25px; border-radius: 20px; font-weight: 700; font-size: 16px; cursor: pointer; height: 40px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(210, 16, 11, 0.3); transition: transform 0.2s; }
 .btn-preview:hover { transform: scale(1.05); }
 
 .glass-panel { background: var(--glass-bg); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-radius: var(--radius-outer); border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 25px 20px 10px 25px; }
 .solid-panel { background: var(--panel-bg); border-radius: var(--radius-outer); box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 25px 30px 10px 30px; }
 
-/* KAARTEN */
+/* =========================================
+   3. KAARTEN & DRAG DROP
+   ========================================= */
 .card { flex: 0 0 auto; min-height: 60px; min-width: 0; border-radius: var(--radius-inner); padding: 15px; text-align: center; font-weight: 700; font-size: 14px; color: var(--text-main); display: flex; justify-content: center; align-items: center; border: none; cursor: grab; user-select: none; position: relative; overflow: visible; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s; word-wrap: break-word; overflow-wrap: break-word; }
 .card:active { cursor: grabbing; }
 .card.dragging { opacity: 0.5; border: 2px dashed var(--vrmwb-gold) !important; transform: scale(1); }
 
 .theme-card-light { background-color: var(--card-bg-light); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
-
 .grid-blocks { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 15px; align-content: start; padding: 15px 20px 30px 10px; }
 .sequence-list { display: flex; flex-direction: column; gap: 15px; padding: 15px 20px 30px 10px; }
-
-.sequence-list .card { justify-content: center; padding: 0 25px; font-size: 16px; }
+.sequence-list .card { justify-content: center; padding: 0 25px; font-size: 16px; color: var(--text-main); }
 .sequence-list .card:hover { transform: scale(1.02); z-index: 5; box-shadow: 0 6px 15px rgba(0,0,0,0.15); }
 
-.card.dark { background-color: #2B2D31; color: white; }
-.card.gold { background-color: var(--vrmwb-gold); color: #000; box-shadow: 0 6px 15px rgba(204, 153, 51, 0.4); }
+.card.dark { background-color: #2B2D31; color: #F6F6F6; }
+.card.gold { background-color: var(--vrmwb-gold); color: #1E1E1E; box-shadow: 0 6px 15px rgba(204, 153, 51, 0.4); }
 
-.badge.red-bg { position: absolute; top: -8px; right: -8px; background-color: var(--vrmwb-red); color: white; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 12px; font-weight: 700; font-size: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.25); z-index: 10; }
+.badge.red-bg { position: absolute; top: -8px; right: -8px; background-color: var(--vrmwb-red); color: #F6F6F6; min-width: 24px; height: 24px; padding: 0 6px; border-radius: 12px; font-weight: 700; font-size: 12px; display: flex; justify-content: center; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.25); z-index: 10; }
 .theme-card-light .badge { border: 2px solid var(--card-bg-light); }
 .card.dark .badge { border: 2px solid #2B2D31; }
 .card.gold .badge { border: 2px solid var(--vrmwb-gold); }
 
-/* FORMS */
+/* =========================================
+   4. EDITOR FORMS
+   ========================================= */
 .editor-form { padding: 10px 15px 30px 5px; }
 .form-group { flex: 0 0 auto; margin-bottom: 25px; }
 .form-group label { display: block; font-weight: 700; font-size: 16px; margin-bottom: 10px; color: var(--text-main); }
 .dropdown-input { background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: var(--radius-inner); padding: 15px; display: flex; justify-content: space-between; align-items: center; font-size: 14px; color: var(--text-main); }
-.dropdown-input.placeholder { color: var(--text-muted); font-weight: 400; }
-.tag { background-color: var(--panel-bg); padding: 5px 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--input-border); font-weight: 700; }
-.tag .close { color: var(--text-muted); cursor: pointer; font-weight: 900; }
-.chevron { width: 10px; height: 10px; border-right: 2px solid var(--text-muted); border-bottom: 2px solid var(--text-muted); transform: rotate(45deg); }
+.dropdown-input.placeholder { color: var(--text-main); opacity: 0.6; font-weight: 400; }
+.tag { background-color: var(--panel-bg); padding: 5px 12px; border-radius: 8px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--input-border); font-weight: 700; color: var(--text-main); }
+.tag .close { color: var(--text-main); cursor: pointer; font-weight: 900; }
+.chevron { width: 10px; height: 10px; border-right: 2px solid var(--text-main); border-bottom: 2px solid var(--text-main); transform: rotate(45deg); opacity: 0.6; }
 
-/* BOTTOM CONTROLS */
+/* =========================================
+   5. BOTTOM BAR & SCROLL
+   ========================================= */
 .date-controls { display: flex; align-items: center; justify-content: space-between; background-color: var(--nav-block-bg); height: 80px; width: 320px; border-radius: 25px; position: absolute; left: 50%; transform: translateX(-50%); padding: 0 30px; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); }
 .nav-btn, .nav-btn-text { background: none; border: none; color: var(--nav-block-text); cursor: pointer; font-family: 'Mariné UP', sans-serif; }
 .nav-btn { font-size: 26px; font-weight: 900; }
 .nav-btn-text { font-size: 20px; font-weight: 700; text-align: center; flex: 1; }
 .title-logo { display: flex; flex-direction: column; justify-content: center; font-size: 14px; color: var(--bottom-bar-text); }
-.status-clock { font-size: 22px; color: var(--text-muted); font-weight: 400; }
+.status-clock { font-size: 22px; color: var(--text-main); opacity: 0.7; font-weight: 400; }
 
 .scroll-area::-webkit-scrollbar { width: 8px; }
 .scroll-area::-webkit-scrollbar:horizontal { display: none; height: 0; } 
 .scroll-area::-webkit-scrollbar-track { background: transparent; }
 .scroll-area::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 10px; }
 
-/* MODAL */
-.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(8px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+/* =========================================
+   6. LOCATIE MODAL
+   ========================================= */
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
 .modal-overlay.active { opacity: 1; pointer-events: all; }
 .modal-content { background: var(--panel-bg); border-radius: var(--radius-outer); padding: 40px; width: 450px; max-width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; border: 1px solid var(--glass-border); }
 .modal-content h3 { margin-bottom: 25px; font-size: 24px; font-weight: 900; text-transform: uppercase; color: var(--text-main); }
 .location-options { display: flex; flex-direction: column; gap: 12px; }
 .loc-btn { background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-main); padding: 15px; border-radius: var(--radius-inner); font-family: inherit; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-.loc-btn:hover { background: #EAEAEA; }
-[data-theme="dark"] .loc-btn:hover { background: #444; }
-.loc-btn.active, .loc-btn.active:hover { background: var(--vrmwb-gold); color: #000; border-color: var(--vrmwb-gold); box-shadow: 0 4px 10px rgba(204, 153, 51, 0.3); }
-.btn-cancel { margin-top: 25px; background: transparent; border: none; color: var(--text-muted); font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: underline; font-family: 'Mariné UP', sans-serif;}
+.loc-btn:hover { background: var(--card-bg-light); opacity: 0.9; }
+.loc-btn.active, .loc-btn.active:hover { background: var(--vrmwb-gold); color: #1E1E1E; border-color: var(--vrmwb-gold); box-shadow: 0 4px 10px rgba(204, 153, 51, 0.3); opacity: 1; }
+.btn-cancel { margin-top: 25px; background: transparent; border: none; color: var(--text-main); font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: underline; font-family: 'Mariné UP', sans-serif;}
+
+/* =========================================
+   7. PREVIEW MODAL (PRESENTATIE SCHERM)
+   ========================================= */
+.preview-content {
+    background: var(--panel-bg);
+    width: 80vw;
+    height: 80vh;
+    border-radius: var(--radius-outer);
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    overflow: hidden;
+    border: 1px solid var(--glass-border);
+}
+
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: var(--input-bg);
+    border-bottom: 2px solid var(--input-border);
+}
+
+.preview-logo {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--text-main);
+    letter-spacing: 2px;
+}
+
+.btn-close-preview {
+    background: none;
+    border: none;
+    font-size: 40px;
+    color: var(--text-main);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.preview-body {
+    flex: 1;
+    padding: 60px;
+    overflow-y: auto;
+    color: var(--text-main);
+}
+
+/* Typografie binnen de presentatie */
+.slide-title {
+    font-size: 48px;
+    font-weight: 900;
+    margin-bottom: 40px;
+    color: var(--text-main);
+    text-transform: uppercase;
+    border-bottom: 4px solid var(--vrmwb-gold);
+    display: inline-block;
+    padding-bottom: 10px;
+}
+
+.rooster-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 24px;
+}
+
+.rooster-table th, .rooster-table td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid var(--input-border);
+}
+
+.rooster-table th {
+    font-weight: 900;
+    background-color: var(--input-bg);
+}
+
+.incident-card {
+    background-color: var(--input-bg);
+    border-left: 8px solid var(--vrmwb-red);
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.incident-card strong {
+    color: var(--vrmwb-red);
+    font-weight: 900;
+}
