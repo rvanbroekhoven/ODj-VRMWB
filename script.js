@@ -76,17 +76,20 @@ document.addEventListener('DOMContentLoaded', () => {
         draggable.addEventListener('dragstart', () => { draggable.classList.add('dragging'); });
         draggable.addEventListener('dragend', () => {
             draggable.classList.remove('dragging');
+            
+            // Houd de kaart netjes wit (of thema-kleur) onafhankelijk van waar hij staat, tenzij hij actief is
             if (middleList.contains(draggable)) {
-                draggable.classList.remove('theme-card-light');
-                draggable.classList.add('dark', 'sequence-card');
+                draggable.classList.add('sequence-card');
             } else {
-                draggable.classList.remove('dark', 'sequence-card', 'active-card', 'gold');
+                draggable.classList.remove('sequence-card', 'active-card', 'gold');
                 draggable.classList.add('theme-card-light');
             }
+            
             checkEmptyState();
+            
             if (!middleList.querySelector('.active-card')) {
                 editorTitle.innerText = "GEEN BLOK GESELECTEERD";
-                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
+                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px; font-weight: 700;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
             }
         });
     });
@@ -118,12 +121,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!card) return; 
         if (!middleList.contains(card)) return; 
 
+        // Reset alle kaarten
         middleList.querySelectorAll('.drag-item').forEach(c => {
             c.classList.remove('active-card', 'gold');
-            c.classList.add('dark');
         });
 
-        card.classList.remove('dark');
+        // Maak deze kaart goud
         card.classList.add('active-card', 'gold');
 
         let clone = card.cloneNode(true);
