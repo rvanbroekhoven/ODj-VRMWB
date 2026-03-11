@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- 1. THEME SWITCHER LOGICA ---
     const themeToggle = document.getElementById('theme-toggle');
     const body = document.body;
 
@@ -15,7 +14,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 2. DATUM EN KLOK LOGICA ---
     let selectedDate = new Date(); 
     const btnPrev = document.getElementById('btn-prev-day');
     const btnNext = document.getElementById('btn-next-day');
@@ -46,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
 
-    // --- 3. DYNAMISCHE CONTENT DATABASE ---
+    // --- DYNAMISCHE CONTENT ---
     const blockContent = {
         'ploeg-indeling': `<div class="form-group"><label>Kazernes in Roosterplanning</label><div class="dropdown-input"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span><span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst MWB in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst ZLD in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Ticker rooster in Roosterplanning</label><div class="dropdown-input">Bergen op Zoom<span class="chevron"></span></div></div>`,
         'alarmen': `<div class="form-group"><label>Selecteer incidenten ter bespreking</label><div class="dropdown-input placeholder">Kies uit recente P1/P2 meldingen...<span class="chevron"></span></div></div><div class="form-group"><label>Bijzonderheden / Leermomenten</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Typ hier eventuele notities voor de overdracht...</div></div>`,
@@ -55,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-    // --- 4. DRAG & DROP LOGICA ---
+    // --- DRAG & DROP LOGICA ---
     const draggables = document.querySelectorAll('.drag-item');
     const leftList = document.getElementById('blok-selectie');
     const middleList = document.getElementById('dagjournaal-lijst');
@@ -77,7 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         draggable.addEventListener('dragend', () => {
             draggable.classList.remove('dragging');
             
-            // Houd de kaart netjes wit (of thema-kleur) onafhankelijk van waar hij staat, tenzij hij actief is
             if (middleList.contains(draggable)) {
                 draggable.classList.add('sequence-card');
             } else {
@@ -89,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             if (!middleList.querySelector('.active-card')) {
                 editorTitle.innerText = "GEEN BLOK GESELECTEERD";
-                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px; font-weight: 700;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
+                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-main); margin-top: 20px; font-weight: 700;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
             }
         });
     });
@@ -115,18 +112,16 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 5. KLIKKEN IN DE MIDDELSTE KOLOM ---
+    // --- KLIKKEN IN DE MIDDELSTE KOLOM ---
     middleList.addEventListener('click', e => {
         const card = e.target.closest('.drag-item');
         if (!card) return; 
         if (!middleList.contains(card)) return; 
 
-        // Reset alle kaarten
         middleList.querySelectorAll('.drag-item').forEach(c => {
             c.classList.remove('active-card', 'gold');
         });
 
-        // Maak deze kaart goud
         card.classList.add('active-card', 'gold');
 
         let clone = card.cloneNode(true);
@@ -141,7 +136,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- 6. LOCATIE SELECTIE (MODAL) ---
+    // --- LOCATIE SELECTIE (MODAL) ---
     const locationTrigger = document.getElementById('location-trigger');
     const locationModal = document.getElementById('location-modal');
     const closeModalBtn = document.getElementById('close-modal');
