@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
 
-    // --- DYNAMISCHE CONTENT ---
+    // --- DYNAMISCHE CONTENT (EDITOR EN PREVIEW) ---
     const blockData = {
         'ploeg-indeling': {
             editorHTML: `<div class="form-group"><label>Kazernes in Roosterplanning</label><div class="dropdown-input"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span><span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst MWB in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst ZLD in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Ticker rooster in Roosterplanning</label><div class="dropdown-input">Bergen op Zoom<span class="chevron"></span></div></div>`,
@@ -87,7 +87,8 @@ document.addEventListener('DOMContentLoaded', () => {
             checkEmptyState();
             if (!middleList.querySelector('.active-card')) {
                 editorTitle.innerText = "GEEN BLOK GESELECTEERD";
-                editorContent.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 20px; font-weight: 700;">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
+                // FIX UIT STAP 1: Consistent Placeholder text
+                editorContent.innerHTML = `<div class="editor-placeholder-text">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
                 currentSelectedBlockId = null;
             }
         });
@@ -174,7 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (DEEP CLEAN FIX) ---
+    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (DEEP CLEAN FIX UIT STAP 1) ---
     const btnStartPresentation = document.getElementById('btn-start-presentation');
     const presentationOverlay = document.getElementById('presentation-overlay');
     const closePresentationBtn = document.getElementById('close-presentation');
@@ -189,18 +190,18 @@ document.addEventListener('DOMContentLoaded', () => {
     function buildPresentation() {
         presentationSlides = [];
 
-        // 1. Introductie Slide
+        // 1. Introductie Slide (Gecentreerd)
         const loc = document.getElementById('location-trigger').innerText;
-        const date = document.getElementById('btn-today').innerText;
+        const date = document.getElementById('datetime-display').innerText.split('   ')[0]; // Haal alleen de datum
         presentationSlides.push(`
-            <div style="text-align: center;">
+            <div style="text-align: center; width: 100%;">
                 <h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px;">OPERATIONEEL DAGJOURNAAL</h1>
                 <h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${loc}</h2>
                 <p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${date}</p>
             </div>
         `);
 
-        // 2. Inhoudelijke Slides
+        // 2. Inhoudelijke Slides (Links-uitgelijnd met padding)
         const blocksInMiddle = middleList.querySelectorAll('.drag-item');
         blocksInMiddle.forEach(block => {
             const id = block.getAttribute('data-id');
@@ -215,12 +216,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (html.includes('id="dynamic-preview-title"')) {
                 html = html.replace('id="dynamic-preview-title">ONDERDEEL', 'id="dynamic-preview-title">' + title);
             }
-            presentationSlides.push(`<div style="width: 100%;">${html}</div>`);
+            // Verpak de inhoud links-uitgelijnd met padding
+            presentationSlides.push(`<div style="width: 100%; text-align: left; padding: 0 40px;">${html}</div>`);
         });
 
-        // 3. Afsluitende Slide
+        // 3. Afsluitende Slide (Gecentreerd)
         presentationSlides.push(`
-            <div style="text-align: center;">
+            <div style="text-align: center; width: 100%;">
                 <h1 class="slide-title" style="font-size: 64px; margin-bottom: 40px; border-bottom-color: var(--vrmwb-red);">EINDE DAGJOURNAAL</h1>
                 <p style="font-size: 36px; opacity: 0.8; font-weight: 700;">Zijn er nog bijzonderheden of vragen?</p>
             </div>
@@ -241,27 +243,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnStartPresentation.addEventListener('click', () => {
         const blocksInMiddle = middleList.querySelectorAll('.drag-item');
-        if (blocksInMiddle.length === 0) {
-            alert("Voeg eerst blokken toe aan het Dagjournaal om de presentatie te starten.");
-            return;
-        }
-
+        if (blocksInMiddle.length === 0) { alert("Voeg eerst blokken toe aan het Dagjournaal om de presentatie te starten."); return; }
         buildPresentation();
         currentSlideIndex = 0;
         showSlide(currentSlideIndex);
         presentationOverlay.classList.add('active');
-
-        // Ga naar volledig scherm als de browser dit toestaat
-        if (document.documentElement.requestFullscreen) {
-            document.documentElement.requestFullscreen().catch(err => console.log(err));
-        }
+        if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(err => console.log(err)); }
     });
 
     closePresentationBtn.addEventListener('click', () => {
         presentationOverlay.classList.remove('active');
-        if (document.fullscreenElement) {
-            document.exitFullscreen().catch(err => console.log(err));
-        }
+        if (document.fullscreenElement) { document.exitFullscreen().catch(err => console.log(err)); }
     });
 
     presPrev.addEventListener('click', () => showSlide(currentSlideIndex - 1));
@@ -269,14 +261,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('keydown', (e) => {
         if (presentationOverlay.classList.contains('active')) {
-            if (e.key === 'ArrowRight' || e.key === ' ') {
-                showSlide(currentSlideIndex + 1);
-            } else if (e.key === 'ArrowLeft') {
-                showSlide(currentSlideIndex - 1);
-            } else if (e.key === 'Escape') {
-                closePresentationBtn.click();
-            }
+            if (e.key === 'ArrowRight' || e.key === ' ') { showSlide(currentSlideIndex + 1); } 
+            else if (e.key === 'ArrowLeft') { showSlide(currentSlideIndex - 1); } 
+            else if (e.key === 'Escape') { closePresentationBtn.click(); }
         }
     });
-
 });
