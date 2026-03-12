@@ -13,7 +13,7 @@
     --vrmwb-red: #D2100B; 
     --vrmwb-gold: #CC9933;
 
-    /* Light Theme */
+    /* Light Theme - Donkergrijs/zwarte titels en scrollbalk */
     --text-main: #1E1E1E; 
     --text-muted: #707172;
     --bg-grad-solid: #F6F6F6; 
@@ -63,7 +63,7 @@ body { font-family: 'Mariné UP', sans-serif; height: 100vh; display: flex; flex
 /* =========================================
    3. STRUCTUUR, PANELS & CONSISTENTIE
    ========================================= */
-.top-header { flex: 0 0 auto; height: 90px; display: flex; justify-content: center; align-items: center; padding-top: 25px; z-index: 10; position: relative; }
+.top-header { flex: 0 0 auto; height: 90px; display: flex; justify(content: center; align-items: center; padding-top: 25px; z-index: 10; position: relative; }
 .bottom-bar { flex: 0 0 auto; height: 80px; background-color: var(--bottom-bar-bg); display: flex; justify-content: space-between; align-items: center; padding: 0 50px; z-index: 20; position: relative; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); }
 .app-container { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 40px; padding: 30px 50px; min-height: 0; z-index: 10; }
 .column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-x: hidden; padding: 0 10px; }
@@ -101,11 +101,11 @@ h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--
 }
 .btn-preview:hover { transform: scale(1.05); }
 
-/* FIX: Specifieke Styling voor de Gouden Start Knop */
+/* FIX: Gouden Start Knop met neutrale (location-stijl) schaduw */
 #btn-start-presentation {
     background-color: var(--vrmwb-gold);
     color: #1E1E1E;
-    box-shadow: 0 4px 10px rgba(204, 153, 51, 0.4); /* GOUDEN gloed in plaats van rood */
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2); /* Neutrale gloed, zelfde als locatie */
 }
 
 .glass-panel { background: var(--glass-bg); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-radius: var(--radius-outer); border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 25px 20px 10px 25px; }
