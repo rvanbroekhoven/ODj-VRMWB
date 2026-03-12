@@ -13,28 +13,21 @@
     --vrmwb-red: #D2100B; 
     --vrmwb-gold: #CC9933;
 
-    /* Light Theme */
     --text-main: #1E1E1E; 
     --text-muted: #707172;
-    
     --bg-grad-solid: #F6F6F6; 
     --bg-grad-trans: rgba(246, 246, 246, 0); 
-    
     --glass-bg: rgba(255, 255, 255, 0.65); 
     --glass-border: rgba(255, 255, 255, 0.8);
     --panel-bg: rgba(255, 255, 255, 0.98); 
     --card-bg-light: #FFFFFF; 
-    
     --input-bg: #F6F6F6; 
     --input-border: #E6E6E6;
-    
     --bottom-bar-bg: #FFFFFF; 
     --bottom-bar-text: #1E1E1E;
     --nav-block-bg: #1E1E1E; 
     --nav-block-text: #FFFFFF;
-    
     --scrollbar-thumb: #1E1E1E; 
-    
     --radius-outer: 24px; 
     --radius-inner: 12px;
 }
@@ -42,23 +35,18 @@
 [data-theme="dark"] {
     --text-main: #FFFFFF; 
     --text-muted: #E6E6E6;
-    
     --bg-grad-solid: #1E1E1E; 
     --bg-grad-trans: rgba(30, 30, 30, 0);
-    
     --glass-bg: rgba(0, 0, 0, 0.5); 
     --glass-border: rgba(255, 255, 255, 0.1);
     --panel-bg: #1E1E1E; 
     --card-bg-light: #2B2D31; 
-    
     --input-bg: #111111; 
     --input-border: #333333;
-    
     --bottom-bar-bg: #1E1E1E; 
     --bottom-bar-text: #FFFFFF;
     --nav-block-bg: #FFFFFF; 
     --nav-block-text: #1E1E1E;
-    
     --scrollbar-thumb: #FFFFFF; 
 }
 
@@ -78,14 +66,14 @@ body { font-family: 'Mariné UP', sans-serif; height: 100vh; display: flex; flex
 .bottom-bar { flex: 0 0 auto; height: 80px; background-color: var(--bottom-bar-bg); display: flex; justify-content: space-between; align-items: center; padding: 0 50px; z-index: 20; position: relative; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); }
 .app-container { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 40px; padding: 30px 50px; min-height: 0; z-index: 10; }
 .column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-x: hidden; }
-.col-header { flex: 0 0 auto; height: 50px; display: flex; align-items: center; margin-bottom: 20px; }
-.col-header.center { justify-content: center; }
-.col-header.space-between { justify-content: space-between; }
+.col-header { flex: 0 0 auto; height: 50px; margin-bottom: 20px; } /* Verwijderd: display flex, dit regelen we nu in de HTML */
+
 .scroll-area { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden !important; min-height: 0; padding-bottom: 20px; padding-right: 15px; }
 h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--text-main); }
 
 .location-pill { background-color: var(--vrmwb-gold); color: #1E1E1E; font-size: 34px; font-weight: 900; padding: 12px 40px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s; }
 .location-pill:hover { transform: scale(1.02); }
+
 .theme-btn { position: absolute; right: 50px; background-color: var(--bottom-bar-bg); color: var(--text-main); border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
 .btn-preview { background-color: var(--vrmwb-red); color: #F6F6F6; border: none; padding: 0 25px; border-radius: 20px; font-weight: 700; font-size: 16px; cursor: pointer; height: 40px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(210, 16, 11, 0.3); transition: transform 0.2s; }
 .btn-preview:hover { transform: scale(1.05); }
@@ -149,7 +137,7 @@ h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--
 .loc-btn { background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-main); padding: 15px; border-radius: var(--radius-inner); font-family: inherit; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
 .loc-btn:hover { background: var(--card-bg-light); opacity: 0.9; }
 .loc-btn.active, .loc-btn.active:hover { background: var(--vrmwb-gold); color: #1E1E1E; border-color: var(--vrmwb-gold); box-shadow: 0 4px 10px rgba(204, 153, 51, 0.3); opacity: 1; }
-.btn-cancel { margin-top: 25px; background: transparent; border: none; color: var(--text-main); font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: underline; font-family: 'Mariné UP', sans-serif;}
+.btn-cancel { margin-top: 25px; background: transparent; border: none; color: var(--text-muted); font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: underline; font-family: 'Mariné UP', sans-serif;}
 
 /* =========================================
    8. PREVIEW MODAL (ENKELE SLIDE)
@@ -167,22 +155,24 @@ h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--
 .incident-card strong { color: var(--vrmwb-red); font-weight: 900; }
 
 /* =========================================
-   9. VOLLEDIG SCHERM PRESENTATIE
+   9. VOLLEDIG SCHERM PRESENTATIE (DEEP CLEAN FIX)
    ========================================= */
 .presentation-overlay {
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-    background-color: var(--panel-bg);
-    z-index: 9999;
-    display: flex; flex-direction: column;
-    opacity: 0; pointer-events: none; transition: opacity 0.4s ease;
+    background-color: var(--bg-grad-solid); /* Veilige, solide dekkende achtergrond */
+    z-index: 99999; /* Ver boven alle andere elementen */
+    display: none; /* FIX: Voorkomt het uitlekken van styling naar de bodem van je scherm */
+    flex-direction: column;
 }
-.presentation-overlay.active { opacity: 1; pointer-events: all; }
-.btn-close-presentation { position: absolute; top: 30px; right: 40px; background: none; border: none; font-size: 50px; color: var(--text-main); cursor: pointer; z-index: 10000; opacity: 0.5; transition: opacity 0.2s; }
+.presentation-overlay.active {
+    display: flex; /* Schakelt in bij klikken op start */
+}
+.btn-close-presentation { position: absolute; top: 30px; right: 40px; background: none; border: none; font-size: 50px; color: var(--text-main); cursor: pointer; z-index: 100000; opacity: 0.5; transition: opacity 0.2s; }
 .btn-close-presentation:hover { opacity: 1; }
 
 .pres-content-wrapper {
     flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-    padding: 80px; text-align: left; width: 100%; max-width: 1400px; margin: 0 auto;
+    padding: 80px; text-align: left; width: 100%; max-width: 1200px; margin: 0 auto;
     color: var(--text-main);
 }
 .pres-controls {

@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA ---
+    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (DEEP CLEAN FIX) ---
     const btnStartPresentation = document.getElementById('btn-start-presentation');
     const presentationOverlay = document.getElementById('presentation-overlay');
     const closePresentationBtn = document.getElementById('close-presentation');
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function buildPresentation() {
         presentationSlides = [];
 
-        // 1. Introductie Slide (Gecentreerd)
+        // 1. Introductie Slide
         const loc = document.getElementById('location-trigger').innerText;
         const date = document.getElementById('btn-today').innerText;
         presentationSlides.push(`
@@ -200,12 +200,10 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `);
 
-        // 2. Inhoudelijke Slides (In de gesleepte volgorde)
+        // 2. Inhoudelijke Slides
         const blocksInMiddle = middleList.querySelectorAll('.drag-item');
         blocksInMiddle.forEach(block => {
             const id = block.getAttribute('data-id');
-            
-            // Knip de badge weg voor de zuivere titel
             let clone = block.cloneNode(true);
             let badge = clone.querySelector('.badge');
             if (badge) badge.remove();
@@ -214,19 +212,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = blockData[id] || blockData['default'];
             let html = data.previewHTML;
             
-            // Vervang de titel als het een standaard blok is
             if (html.includes('id="dynamic-preview-title"')) {
                 html = html.replace('id="dynamic-preview-title">ONDERDEEL', 'id="dynamic-preview-title">' + title);
             }
-            
-            // Verpak de html in een div zodat tabellen mooi links uitlijnen in het midden van het scherm
             presentationSlides.push(`<div style="width: 100%;">${html}</div>`);
         });
 
-        // 3. Afsluitende Slide (Gecentreerd)
+        // 3. Afsluitende Slide
         presentationSlides.push(`
             <div style="text-align: center;">
-                <h1 class="slide-title" style="font-size: 64px; margin-bottom: 40px; border-color: var(--vrmwb-red);">EINDE DAGJOURNAAL</h1>
+                <h1 class="slide-title" style="font-size: 64px; margin-bottom: 40px; border-bottom-color: var(--vrmwb-red);">EINDE DAGJOURNAAL</h1>
                 <p style="font-size: 36px; opacity: 0.8; font-weight: 700;">Zijn er nog bijzonderheden of vragen?</p>
             </div>
         `);
@@ -256,7 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showSlide(currentSlideIndex);
         presentationOverlay.classList.add('active');
 
-        // Forceer de browser naar écht volledig scherm voor de ultieme focus!
+        // Ga naar volledig scherm als de browser dit toestaat
         if (document.documentElement.requestFullscreen) {
             document.documentElement.requestFullscreen().catch(err => console.log(err));
         }
@@ -272,7 +267,6 @@ document.addEventListener('DOMContentLoaded', () => {
     presPrev.addEventListener('click', () => showSlide(currentSlideIndex - 1));
     presNext.addEventListener('click', () => showSlide(currentSlideIndex + 1));
 
-    // Navigeren met het toetsenbord tijdens de presentatie
     window.addEventListener('keydown', (e) => {
         if (presentationOverlay.classList.contains('active')) {
             if (e.key === 'ArrowRight' || e.key === ' ') {
