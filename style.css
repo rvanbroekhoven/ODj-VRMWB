@@ -68,7 +68,7 @@ body { font-family: 'Mariné UP', sans-serif; height: 100vh; display: flex; flex
 .app-container { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 40px; padding: 30px 50px; min-height: 0; z-index: 10; }
 .column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-x: hidden; padding: 0 10px; }
 
-/* Consistent Header Styling (Geen grid meer nodig, flexbox met space-between doet precies wat we willen) */
+/* Consistent Header Styling */
 .consistent-header {
     flex: 0 0 auto; height: 50px; margin-bottom: 20px;
     display: flex; justify-content: space-between; align-items: center;
@@ -83,8 +83,30 @@ h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--
 .location-pill { background-color: var(--vrmwb-gold); color: #1E1E1E; font-size: 34px; font-weight: 900; padding: 12px 40px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s; }
 .location-pill:hover { transform: scale(1.02); }
 .theme-btn { position: absolute; right: 50px; background-color: var(--bottom-bar-bg); color: var(--text-main); border: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-.btn-preview { background-color: var(--vrmwb-red); color: #F6F6F6; border: none; padding: 0 25px; border-radius: 20px; font-weight: 700; font-size: 16px; cursor: pointer; height: 40px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(210, 16, 11, 0.3); transition: transform 0.2s; }
+
+/* Algemene Knop Styling */
+.btn-preview {
+    background-color: var(--vrmwb-red); /* Standaard rood (voor Preview) */
+    color: #F6F6F6;
+    border: none;
+    padding: 0 25px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    height: 40px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(210, 16, 11, 0.3); /* Standaard RODE gloed */
+    transition: transform 0.2s, box-shadow 0.2s;
+}
 .btn-preview:hover { transform: scale(1.05); }
+
+/* FIX: Specifieke Styling voor de Gouden Start Knop */
+#btn-start-presentation {
+    background-color: var(--vrmwb-gold);
+    color: #1E1E1E;
+    box-shadow: 0 4px 10px rgba(204, 153, 51, 0.4); /* GOUDEN gloed in plaats van rood */
+}
 
 .glass-panel { background: var(--glass-bg); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); border-radius: var(--radius-outer); border: 1px solid var(--glass-border); box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 25px 20px 10px 25px; }
 .solid-panel { background: var(--panel-bg); border-radius: var(--radius-outer); box-shadow: 0 10px 30px rgba(0,0,0,0.15); padding: 25px 30px 10px 30px; }
