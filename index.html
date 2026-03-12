@@ -52,8 +52,9 @@
         </section>
 
         <section class="column glass-panel">
-            <header class="col-header center">
+            <header class="col-header center" style="position: relative;">
                 <h2>DAGJOURNAAL</h2>
+                <button id="btn-start-presentation" class="btn-preview" style="position: absolute; right: 0; background-color: var(--vrmwb-gold); color: #1E1E1E;">Start</button>
             </header>
             <div class="scroll-area sequence-list" id="dagjournaal-lijst">
                 <div id="empty-state" style="text-align: center; color: var(--text-main); font-weight: 700; border: 2px dashed rgba(30, 30, 30, 0.3); padding: 20px; border-radius: 12px; margin-top: 10px;">
@@ -113,6 +114,17 @@
             </div>
             <div id="preview-body" class="preview-body">
                 </div>
+        </div>
+    </div>
+
+    <div id="presentation-overlay" class="presentation-overlay">
+        <button id="close-presentation" class="btn-close-presentation">&times;</button>
+        <div class="pres-content-wrapper" id="pres-content">
+            </div>
+        <div class="pres-controls">
+            <button id="pres-prev" class="pres-nav-btn">&lt;</button>
+            <span id="pres-counter" class="pres-counter">1 / 5</span>
+            <button id="pres-next" class="pres-nav-btn">&gt;</button>
         </div>
     </div>
     
