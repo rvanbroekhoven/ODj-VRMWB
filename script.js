@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (KOGELVRIJE BUGFIX) ---
+    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (DEFINITIEVE VERSIE) ---
     const btnStartPresentation = document.getElementById('btn-start-presentation');
     const presentationOverlay = document.getElementById('presentation-overlay');
     const closePresentationBtn = document.getElementById('close-presentation');
@@ -182,6 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const presPrev = document.getElementById('pres-prev');
     const presNext = document.getElementById('pres-next');
     const presCounter = document.getElementById('pres-counter');
+    const presBgImage = document.getElementById('pres-bg-image'); // Grijp de speciale achtergrond-layer
 
     let presentationSlides = [];
     let currentSlideIndex = 0;
@@ -270,26 +271,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index >= presentationSlides.length) index = presentationSlides.length - 1;
         currentSlideIndex = index;
 
-        // --- KOGELVRIJE BUGFIX VOOR SAFARI/CHROME ---
-        // In plaats van background-image te manipuleren, maken we een dynamische <img> tag.
-        // Hiermee móét de browser de afbeelding altijd herladen, er is geen escape mogelijk.
-        let presBgImg = document.getElementById('pres-bg-img');
-        if (!presBgImg) {
-            presBgImg = document.createElement('img');
-            presBgImg.id = 'pres-bg-img';
-            presBgImg.style.position = 'absolute';
-            presBgImg.style.top = '0';
-            presBgImg.style.left = '0';
-            presBgImg.style.width = '100%';
-            presBgImg.style.height = '100%';
-            presBgImg.style.objectFit = 'cover';
-            presBgImg.style.zIndex = '-2'; // Helemaal achteraan, achter de blauwe blur-laag
-            presentationOverlay.insertBefore(presBgImg, presentationOverlay.firstChild);
-        }
-        
-        // Verander simpelweg de bron (src) naar de afbeelding die bij deze slide hoort
-        presBgImg.src = presentationSlides[currentSlideIndex].bgImage;
-        // ---------------------------------------------
+        // De ORIGINELE, schone manier: pas simpelweg de background-image aan, 
+        // maar dit keer van de specifieke, veilige image-layer!
+        presBgImage.style.backgroundImage = `url('${presentationSlides[currentSlideIndex].bgImage}')`;
         
         // Pas HTML content aan
         presContent.innerHTML = presentationSlides[currentSlideIndex].html;
