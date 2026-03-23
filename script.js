@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (MET BUGFIX AFBEELDINGEN) ---
+    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (KOGELVRIJE BUGFIX) ---
     const btnStartPresentation = document.getElementById('btn-start-presentation');
     const presentationOverlay = document.getElementById('presentation-overlay');
     const closePresentationBtn = document.getElementById('close-presentation');
@@ -205,7 +205,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const randomIntroNum = Math.floor(Math.random() * 5) + 1;
         const randomOutroNum = Math.floor(Math.random() * 5) + 1;
         
-        // Zorg ervoor dat extensies exact kloppen voor je server (.jpg in kleine letters!)
         const introBg = `img/intro-${randomIntroNum}.jpg`;
         const outroBg = `img/outro-${randomOutroNum}.jpg`;
 
@@ -214,7 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
             contentImagePool.push(`img/content-${i}.jpg`);
         }
         contentImagePool = shuffleArray(contentImagePool);
-
 
         // 2. BOUW DE INTRODUCTIE SLIDE
         const loc = document.getElementById('location-trigger').innerText;
@@ -272,9 +270,26 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index >= presentationSlides.length) index = presentationSlides.length - 1;
         currentSlideIndex = index;
 
-        // Forceer de achtergrond om te updaten zonder vast te lopen
-        const currentImageUrl = presentationSlides[currentSlideIndex].bgImage;
-        presentationOverlay.style.backgroundImage = `url('${currentImageUrl}')`;
+        // --- KOGELVRIJE BUGFIX VOOR SAFARI/CHROME ---
+        // In plaats van background-image te manipuleren, maken we een dynamische <img> tag.
+        // Hiermee móét de browser de afbeelding altijd herladen, er is geen escape mogelijk.
+        let presBgImg = document.getElementById('pres-bg-img');
+        if (!presBgImg) {
+            presBgImg = document.createElement('img');
+            presBgImg.id = 'pres-bg-img';
+            presBgImg.style.position = 'absolute';
+            presBgImg.style.top = '0';
+            presBgImg.style.left = '0';
+            presBgImg.style.width = '100%';
+            presBgImg.style.height = '100%';
+            presBgImg.style.objectFit = 'cover';
+            presBgImg.style.zIndex = '-2'; // Helemaal achteraan, achter de blauwe blur-laag
+            presentationOverlay.insertBefore(presBgImg, presentationOverlay.firstChild);
+        }
+        
+        // Verander simpelweg de bron (src) naar de afbeelding die bij deze slide hoort
+        presBgImg.src = presentationSlides[currentSlideIndex].bgImage;
+        // ---------------------------------------------
         
         // Pas HTML content aan
         presContent.innerHTML = presentationSlides[currentSlideIndex].html;
