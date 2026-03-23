@@ -64,8 +64,6 @@
       2. ACHTERGROND GRADIËNT & BLUR
       ========================================= */
    .bg-layer { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background-color: var(--bg-grad-solid); }
-   
-   /* AANGEPAST: Subtiele blur toegevoegd en 2% opgeschaald zodat de onscherpe randjes buiten beeld vallen */
    .backdrop-img { 
        position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
        background-image: url('./backdrop_odj.png'); background-size: cover; background-position: center; 
@@ -73,7 +71,6 @@
        filter: blur(5px); 
        transform: scale(1.02); 
    }
-   
    .gradient-fade { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, var(--bg-grad-solid) 0%, var(--bg-grad-solid) 20%, var(--bg-grad-trans) 60%); z-index: 2; pointer-events: none; }
    
    /* =========================================
@@ -82,7 +79,6 @@
    .top-header { flex: 0 0 auto; height: 90px; display: flex; justify-content: center; align-items: center; padding-top: 25px; z-index: 10; position: relative; }
    .bottom-bar { flex: 0 0 auto; height: 80px; background-color: var(--bottom-bar-bg); display: flex; justify-content: space-between; align-items: center; padding: 0 50px; z-index: 20; position: relative; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); }
    
-   /* AANGEPAST: Marges en gap verkleind voor bredere kolommen (meer ruimte voor de content) */
    .app-container { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 25px; padding: 30px 35px; min-height: 0; z-index: 10; }
    .column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-x: hidden; padding: 0 10px; }
    
@@ -105,13 +101,11 @@
    /* =========================================
       4. KAARTEN & DRAG DROP
       ========================================= */
-   /* AANGEPAST: Min-height verhoogd naar 70px en padding iets geoptimaliseerd zodat 3-regelige teksten passen */
    .card { flex: 0 0 auto; min-height: 70px; min-width: 0; border-radius: var(--radius-inner); padding: 12px 10px; text-align: center; font-weight: 700; font-size: 14px; color: var(--text-main); display: flex; justify-content: center; align-items: center; border: none; cursor: grab; user-select: none; position: relative; overflow: visible; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s; word-wrap: break-word; overflow-wrap: break-word; }
    .card:active { cursor: grabbing; }
    .card.dragging { opacity: 0.5; border: 2px dashed var(--vrmwb-gold) !important; transform: scale(1); }
    .theme-card-light { background-color: var(--card-bg-light); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
    
-   /* AANGEPAST: Gap tussen blokken iets kleiner gemaakt voor een strakkere fit */
    .grid-blocks { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 12px; align-content: start; padding: 10px 15px 30px 5px; }
    
    .sequence-list { display: flex; flex-direction: column; gap: 15px; padding: 15px 20px 30px 10px; }
@@ -184,7 +178,7 @@
    .incident-card strong { color: var(--vrmwb-red); font-weight: 900; }
    
    /* =========================================
-      9. VOLLEDIG SCHERM PRESENTATIE
+      9. VOLLEDIG SCHERM PRESENTATIE (BUG FIX)
       ========================================= */
    .presentation-overlay {
        position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -194,11 +188,9 @@
        z-index: 99999;
        display: none; 
        flex-direction: column;
-       transition: background-image 0.4s ease;
+       /* FIX: Transition op de background-image is verwijderd, dit bevroor de browser! */
    }
    
-   /* AANGEPAST: Blur toegevoegd aan de overlay van de presentatie, 
-      zodat de foto erachter wazig wordt, maar de tekst vlijmscherp blijft! */
    .presentation-overlay::before {
        content: '';
        position: absolute; top: 0; left: 0; right: 0; bottom: 0;

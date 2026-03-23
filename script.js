@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (MET AFBEELDINGEN) ---
+    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (MET BUGFIX AFBEELDINGEN) ---
     const btnStartPresentation = document.getElementById('btn-start-presentation');
     const presentationOverlay = document.getElementById('presentation-overlay');
     const closePresentationBtn = document.getElementById('close-presentation');
@@ -186,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let presentationSlides = [];
     let currentSlideIndex = 0;
 
-    // Functie om een array random door elkaar te husselen (Fisher-Yates shuffle)
     function shuffleArray(array) {
         let curId = array.length;
         while (0 !== curId) {
@@ -205,10 +204,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // 1. BEPAAL DE AFBEELDINGEN
         const randomIntroNum = Math.floor(Math.random() * 5) + 1;
         const randomOutroNum = Math.floor(Math.random() * 5) + 1;
+        
+        // Zorg ervoor dat extensies exact kloppen voor je server (.jpg in kleine letters!)
         const introBg = `img/intro-${randomIntroNum}.jpg`;
         const outroBg = `img/outro-${randomOutroNum}.jpg`;
 
-        // Genereer lijst van 1 t/m 25 en schud deze
         let contentImagePool = [];
         for(let i = 1; i <= 25; i++) {
             contentImagePool.push(`img/content-${i}.jpg`);
@@ -247,12 +247,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 slideHtml = slideHtml.replace('id="dynamic-preview-title">ONDERDEEL', 'id="dynamic-preview-title">' + title);
             }
 
-            // Pak de volgende foto uit de geschudde stapel. 
-            // (% modulo is ingebouwd als fail-safe voor het onwaarschijnlijke geval dat men > 25 slides heeft)
-            const bgImage = contentImagePool[index % contentImagePool.length];
+            const activeBgImage = contentImagePool[index % contentImagePool.length];
 
             presentationSlides.push({
-                bgImage: bgImage,
+                bgImage: activeBgImage,
                 html: `<div style="width: 100%; text-align: left; padding: 0 40px;">${slideHtml}</div>`
             });
         });
@@ -274,11 +272,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index >= presentationSlides.length) index = presentationSlides.length - 1;
         currentSlideIndex = index;
 
+        // Forceer de achtergrond om te updaten zonder vast te lopen
+        const currentImageUrl = presentationSlides[currentSlideIndex].bgImage;
+        presentationOverlay.style.backgroundImage = `url('${currentImageUrl}')`;
+        
         // Pas HTML content aan
         presContent.innerHTML = presentationSlides[currentSlideIndex].html;
-        
-        // Pas de achtergrond foto aan
-        presentationOverlay.style.backgroundImage = `url('${presentationSlides[currentSlideIndex].bgImage}')`;
 
         // Update teller en pijlen
         presCounter.innerText = `${currentSlideIndex + 1} / ${presentationSlides.length}`;
