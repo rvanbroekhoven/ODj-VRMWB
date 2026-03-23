@@ -36,8 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
-
-    // --- DYNAMISCHE CONTENT (EDITOR EN PREVIEW) ---
+    // --- DYNAMISCHE CONTENT ---
     const blockData = {
         'ploeg-indeling': {
             editorHTML: `<div class="form-group"><label>Kazernes in Roosterplanning</label><div class="dropdown-input"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span><span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst MWB in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst ZLD in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Ticker rooster in Roosterplanning</label><div class="dropdown-input">Bergen op Zoom<span class="chevron"></span></div></div>`,
@@ -87,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
             checkEmptyState();
             if (!middleList.querySelector('.active-card')) {
                 editorTitle.innerText = "GEEN BLOK GESELECTEERD";
-                // FIX UIT STAP 1: Consistent Placeholder text
                 editorContent.innerHTML = `<div class="editor-placeholder-text">Voeg een blok toe aan het dagjournaal en klik erop om de instellingen te bekijken.</div>`;
                 currentSelectedBlockId = null;
             }
@@ -175,7 +173,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (DEEP CLEAN FIX UIT STAP 1) ---
+
+    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (MET AFBEELDINGEN) ---
     const btnStartPresentation = document.getElementById('btn-start-presentation');
     const presentationOverlay = document.getElementById('presentation-overlay');
     const closePresentationBtn = document.getElementById('close-presentation');
@@ -187,23 +186,54 @@ document.addEventListener('DOMContentLoaded', () => {
     let presentationSlides = [];
     let currentSlideIndex = 0;
 
+    // Functie om een array random door elkaar te husselen (Fisher-Yates shuffle)
+    function shuffleArray(array) {
+        let curId = array.length;
+        while (0 !== curId) {
+            let randId = Math.floor(Math.random() * curId);
+            curId -= 1;
+            let tmp = array[curId];
+            array[curId] = array[randId];
+            array[randId] = tmp;
+        }
+        return array;
+    }
+
     function buildPresentation() {
         presentationSlides = [];
 
-        // 1. Introductie Slide (Gecentreerd)
-        const loc = document.getElementById('location-trigger').innerText;
-        const date = document.getElementById('datetime-display').innerText.split('   ')[0]; // Haal alleen de datum
-        presentationSlides.push(`
-            <div style="text-align: center; width: 100%;">
-                <h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px;">OPERATIONEEL DAGJOURNAAL</h1>
-                <h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${loc}</h2>
-                <p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${date}</p>
-            </div>
-        `);
+        // 1. BEPAAL DE AFBEELDINGEN
+        const randomIntroNum = Math.floor(Math.random() * 5) + 1;
+        const randomOutroNum = Math.floor(Math.random() * 5) + 1;
+        const introBg = `img/intro-${randomIntroNum}.jpg`;
+        const outroBg = `img/outro-${randomOutroNum}.jpg`;
 
-        // 2. Inhoudelijke Slides (Links-uitgelijnd met padding)
+        // Genereer lijst van 1 t/m 25 en schud deze
+        let contentImagePool = [];
+        for(let i = 1; i <= 25; i++) {
+            contentImagePool.push(`img/content-${i}.jpg`);
+        }
+        contentImagePool = shuffleArray(contentImagePool);
+
+
+        // 2. BOUW DE INTRODUCTIE SLIDE
+        const loc = document.getElementById('location-trigger').innerText;
+        const date = document.getElementById('datetime-display').innerText.split('   ')[0];
+        
+        presentationSlides.push({
+            bgImage: introBg,
+            html: `
+                <div style="text-align: center; width: 100%;">
+                    <h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px; border-bottom: none;">OPERATIONEEL DAGJOURNAAL</h1>
+                    <h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${loc}</h2>
+                    <p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${date}</p>
+                </div>
+            `
+        });
+
+        // 3. BOUW DE INHOUDELIJKE SLIDES
         const blocksInMiddle = middleList.querySelectorAll('.drag-item');
-        blocksInMiddle.forEach(block => {
+        blocksInMiddle.forEach((block, index) => {
             const id = block.getAttribute('data-id');
             let clone = block.cloneNode(true);
             let badge = clone.querySelector('.badge');
@@ -211,22 +241,32 @@ document.addEventListener('DOMContentLoaded', () => {
             const title = clone.textContent.trim().toUpperCase();
 
             const data = blockData[id] || blockData['default'];
-            let html = data.previewHTML;
+            let slideHtml = data.previewHTML;
             
-            if (html.includes('id="dynamic-preview-title"')) {
-                html = html.replace('id="dynamic-preview-title">ONDERDEEL', 'id="dynamic-preview-title">' + title);
+            if (slideHtml.includes('id="dynamic-preview-title"')) {
+                slideHtml = slideHtml.replace('id="dynamic-preview-title">ONDERDEEL', 'id="dynamic-preview-title">' + title);
             }
-            // Verpak de inhoud links-uitgelijnd met padding
-            presentationSlides.push(`<div style="width: 100%; text-align: left; padding: 0 40px;">${html}</div>`);
+
+            // Pak de volgende foto uit de geschudde stapel. 
+            // (% modulo is ingebouwd als fail-safe voor het onwaarschijnlijke geval dat men > 25 slides heeft)
+            const bgImage = contentImagePool[index % contentImagePool.length];
+
+            presentationSlides.push({
+                bgImage: bgImage,
+                html: `<div style="width: 100%; text-align: left; padding: 0 40px;">${slideHtml}</div>`
+            });
         });
 
-        // 3. Afsluitende Slide (Gecentreerd)
-        presentationSlides.push(`
-            <div style="text-align: center; width: 100%;">
-                <h1 class="slide-title" style="font-size: 64px; margin-bottom: 40px; border-bottom-color: var(--vrmwb-red);">EINDE DAGJOURNAAL</h1>
-                <p style="font-size: 36px; opacity: 0.8; font-weight: 700;">Zijn er nog bijzonderheden of vragen?</p>
-            </div>
-        `);
+        // 4. BOUW DE AFSLUITENDE SLIDE
+        presentationSlides.push({
+            bgImage: outroBg,
+            html: `
+                <div style="text-align: center; width: 100%;">
+                    <h1 class="slide-title" style="font-size: 64px; margin-bottom: 40px; border-bottom: 4px solid var(--vrmwb-red);">EINDE DAGJOURNAAL</h1>
+                    <p style="font-size: 36px; opacity: 0.8; font-weight: 700;">Zijn er nog bijzonderheden of vragen?</p>
+                </div>
+            `
+        });
     }
 
     function showSlide(index) {
@@ -234,9 +274,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index >= presentationSlides.length) index = presentationSlides.length - 1;
         currentSlideIndex = index;
 
-        presContent.innerHTML = presentationSlides[currentSlideIndex];
-        presCounter.innerText = `${currentSlideIndex + 1} / ${presentationSlides.length}`;
+        // Pas HTML content aan
+        presContent.innerHTML = presentationSlides[currentSlideIndex].html;
+        
+        // Pas de achtergrond foto aan
+        presentationOverlay.style.backgroundImage = `url('${presentationSlides[currentSlideIndex].bgImage}')`;
 
+        // Update teller en pijlen
+        presCounter.innerText = `${currentSlideIndex + 1} / ${presentationSlides.length}`;
         presPrev.style.visibility = (currentSlideIndex === 0) ? 'hidden' : 'visible';
         presNext.style.visibility = (currentSlideIndex === presentationSlides.length - 1) ? 'hidden' : 'visible';
     }
@@ -244,10 +289,12 @@ document.addEventListener('DOMContentLoaded', () => {
     btnStartPresentation.addEventListener('click', () => {
         const blocksInMiddle = middleList.querySelectorAll('.drag-item');
         if (blocksInMiddle.length === 0) { alert("Voeg eerst blokken toe aan het Dagjournaal om de presentatie te starten."); return; }
+        
         buildPresentation();
         currentSlideIndex = 0;
         showSlide(currentSlideIndex);
         presentationOverlay.classList.add('active');
+        
         if (document.documentElement.requestFullscreen) { document.documentElement.requestFullscreen().catch(err => console.log(err)); }
     });
 
