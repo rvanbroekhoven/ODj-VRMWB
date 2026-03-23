@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (DEFINITIEVE VERSIE) ---
+    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA ---
     const btnStartPresentation = document.getElementById('btn-start-presentation');
     const presentationOverlay = document.getElementById('presentation-overlay');
     const closePresentationBtn = document.getElementById('close-presentation');
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const presPrev = document.getElementById('pres-prev');
     const presNext = document.getElementById('pres-next');
     const presCounter = document.getElementById('pres-counter');
-    const presBgImage = document.getElementById('pres-bg-image'); // Grijp de speciale achtergrond-layer
+    const presBgImage = document.getElementById('pres-bg-image');
 
     let presentationSlides = [];
     let currentSlideIndex = 0;
@@ -202,7 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function buildPresentation() {
         presentationSlides = [];
 
-        // 1. BEPAAL DE AFBEELDINGEN
         const randomIntroNum = Math.floor(Math.random() * 5) + 1;
         const randomOutroNum = Math.floor(Math.random() * 5) + 1;
         
@@ -215,7 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         contentImagePool = shuffleArray(contentImagePool);
 
-        // 2. BOUW DE INTRODUCTIE SLIDE
         const loc = document.getElementById('location-trigger').innerText;
         const date = document.getElementById('datetime-display').innerText.split('   ')[0];
         
@@ -230,7 +228,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         });
 
-        // 3. BOUW DE INHOUDELIJKE SLIDES
         const blocksInMiddle = middleList.querySelectorAll('.drag-item');
         blocksInMiddle.forEach((block, index) => {
             const id = block.getAttribute('data-id');
@@ -254,7 +251,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // 4. BOUW DE AFSLUITENDE SLIDE
         presentationSlides.push({
             bgImage: outroBg,
             html: `
@@ -271,14 +267,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index >= presentationSlides.length) index = presentationSlides.length - 1;
         currentSlideIndex = index;
 
-        // De ORIGINELE, schone manier: pas simpelweg de background-image aan, 
-        // maar dit keer van de specifieke, veilige image-layer!
         presBgImage.style.backgroundImage = `url('${presentationSlides[currentSlideIndex].bgImage}')`;
-        
-        // Pas HTML content aan
         presContent.innerHTML = presentationSlides[currentSlideIndex].html;
 
-        // Update teller en pijlen
         presCounter.innerText = `${currentSlideIndex + 1} / ${presentationSlides.length}`;
         presPrev.style.visibility = (currentSlideIndex === 0) ? 'hidden' : 'visible';
         presNext.style.visibility = (currentSlideIndex === presentationSlides.length - 1) ? 'hidden' : 'visible';
@@ -311,4 +302,23 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (e.key === 'Escape') { closePresentationBtn.click(); }
         }
     });
+
+    // --- NIEUW: PRELOADER VOOR DIRECTE LAADTIJDEN ---
+    // Dit pakt alle 35 afbeeldingen en slaat ze stiekem op de achtergrond 
+    // op in het cache geheugen van de browser. 
+    setTimeout(() => {
+        const imagesToPreload = [];
+        for (let i = 1; i <= 5; i++) { 
+            imagesToPreload.push(`img/intro-${i}.jpg`); 
+            imagesToPreload.push(`img/outro-${i}.jpg`); 
+        }
+        for (let i = 1; i <= 25; i++) { 
+            imagesToPreload.push(`img/content-${i}.jpg`); 
+        }
+
+        imagesToPreload.forEach(src => {
+            const img = new Image();
+            img.src = src;
+        });
+    }, 1000); // We wachten 1 seconde na opstarten, zodat de rest van je site niet vertraagt
 });
