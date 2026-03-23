@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 
-    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA ---
+    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (MET PRE-RENDERING VOOR 0.0S LAADTIJD) ---
     const btnStartPresentation = document.getElementById('btn-start-presentation');
     const presentationOverlay = document.getElementById('presentation-overlay');
     const closePresentationBtn = document.getElementById('close-presentation');
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const presPrev = document.getElementById('pres-prev');
     const presNext = document.getElementById('pres-next');
     const presCounter = document.getElementById('pres-counter');
-    const presBgImage = document.getElementById('pres-bg-image');
+    const presBgImageContainer = document.getElementById('pres-bg-image');
 
     let presentationSlides = [];
     let currentSlideIndex = 0;
@@ -201,10 +201,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function buildPresentation() {
         presentationSlides = [];
+        presBgImageContainer.innerHTML = ''; // Maak achtergrond-container leeg voor de nieuwe sessie
+        presBgImageContainer.style.backgroundImage = 'none'; // Voorkom dat er een basisafbeelding blijft hangen
 
+        // 1. BEPAAL DE AFBEELDINGEN
         const randomIntroNum = Math.floor(Math.random() * 5) + 1;
         const randomOutroNum = Math.floor(Math.random() * 5) + 1;
-        
         const introBg = `img/intro-${randomIntroNum}.jpg`;
         const outroBg = `img/outro-${randomOutroNum}.jpg`;
 
@@ -214,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         contentImagePool = shuffleArray(contentImagePool);
 
+        // 2. BOUW DE INTRODUCTIE SLIDE
         const loc = document.getElementById('location-trigger').innerText;
         const date = document.getElementById('datetime-display').innerText.split('   ')[0];
         
@@ -228,6 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         });
 
+        // 3. BOUW DE INHOUDELIJKE SLIDES
         const blocksInMiddle = middleList.querySelectorAll('.drag-item');
         blocksInMiddle.forEach((block, index) => {
             const id = block.getAttribute('data-id');
@@ -251,6 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        // 4. BOUW DE AFSLUITENDE SLIDE
         presentationSlides.push({
             bgImage: outroBg,
             html: `
@@ -260,6 +265,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `
         });
+
+        // 5. PRE-RENDER ALLE ACHTERGRONDEN IN DE DOM
+        // Door ze allemaal nu al op te bouwen, downloadt de browser ze stilletjes op de achtergrond.
+        presentationSlides.forEach((slide, i) => {
+            const bgLayer = document.createElement('div');
+            bgLayer.id = `bg-slide-${i}`;
+            bgLayer.style.position = 'absolute';
+            bgLayer.style.top = '0'; 
+            bgLayer.style.left = '0';
+            bgLayer.style.width = '100%'; 
+            bgLayer.style.height = '100%';
+            bgLayer.style.backgroundSize = 'cover';
+            bgLayer.style.backgroundPosition = 'center';
+            bgLayer.style.backgroundImage = `url('${slide.bgImage}')`;
+            // De eerste slide is zichtbaar, de rest is onzichtbaar (maar wel ingeladen!)
+            bgLayer.style.opacity = (i === 0) ? '1' : '0';
+            bgLayer.style.transition = 'opacity 0.4s ease'; // Zorgt voor de vloeiende fade-overgang
+            presBgImageContainer.appendChild(bgLayer);
+        });
     }
 
     function showSlide(index) {
@@ -267,9 +291,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index >= presentationSlides.length) index = presentationSlides.length - 1;
         currentSlideIndex = index;
 
-        presBgImage.style.backgroundImage = `url('${presentationSlides[currentSlideIndex].bgImage}')`;
+        // Vervaag de oude foto en schuif de nieuwe erin zonder netwerkvertraging
+        presentationSlides.forEach((_, i) => {
+            const layer = document.getElementById(`bg-slide-${i}`);
+            if (layer) {
+                layer.style.opacity = (i === currentSlideIndex) ? '1' : '0';
+            }
+        });
+        
+        // Pas HTML content (de tekst) direct aan
         presContent.innerHTML = presentationSlides[currentSlideIndex].html;
 
+        // Update teller en pijlen
         presCounter.innerText = `${currentSlideIndex + 1} / ${presentationSlides.length}`;
         presPrev.style.visibility = (currentSlideIndex === 0) ? 'hidden' : 'visible';
         presNext.style.visibility = (currentSlideIndex === presentationSlides.length - 1) ? 'hidden' : 'visible';
@@ -279,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const blocksInMiddle = middleList.querySelectorAll('.drag-item');
         if (blocksInMiddle.length === 0) { alert("Voeg eerst blokken toe aan het Dagjournaal om de presentatie te starten."); return; }
         
-        buildPresentation();
+        buildPresentation(); // Dit activeert de pre-rendering
         currentSlideIndex = 0;
         showSlide(currentSlideIndex);
         presentationOverlay.classList.add('active');
@@ -302,23 +335,4 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (e.key === 'Escape') { closePresentationBtn.click(); }
         }
     });
-
-    // --- NIEUW: PRELOADER VOOR DIRECTE LAADTIJDEN ---
-    // Dit pakt alle 35 afbeeldingen en slaat ze stiekem op de achtergrond 
-    // op in het cache geheugen van de browser. 
-    setTimeout(() => {
-        const imagesToPreload = [];
-        for (let i = 1; i <= 5; i++) { 
-            imagesToPreload.push(`img/intro-${i}.jpg`); 
-            imagesToPreload.push(`img/outro-${i}.jpg`); 
-        }
-        for (let i = 1; i <= 25; i++) { 
-            imagesToPreload.push(`img/content-${i}.jpg`); 
-        }
-
-        imagesToPreload.forEach(src => {
-            const img = new Image();
-            img.src = src;
-        });
-    }, 1000); // We wachten 1 seconde na opstarten, zodat de rest van je site niet vertraagt
 });
