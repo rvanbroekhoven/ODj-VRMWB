@@ -54,20 +54,20 @@
    
    [data-theme="dark"] {
        --text-main: #FFFFFF; 
-       --text-muted: #A0A0A5; /* Iets helderder voor betere leesbaarheid in dark mode */
+       --text-muted: #A0A0A5; 
        
-       --bg-grad-solid: #121418; /* Diepe, rustige basis */
+       --bg-grad-solid: #121418; 
        --bg-grad-trans: rgba(18, 20, 24, 0);
        
        --glass-bg: rgba(30, 32, 38, 0.75); 
        --glass-border: rgba(255, 255, 255, 0.08);
-       --panel-bg: #1E2025; /* Verhoging 1 */
+       --panel-bg: #1E2025; 
        
-       --card-bg-light: #2A2C33; /* Verhoging 2 (komt naar voren) */
+       --card-bg-light: #2A2C33; 
        --card-border: rgba(255, 255, 255, 0.05);
        
-       --input-bg: #23252A; /* Visueel onderscheid van panel-bg */
-       --input-border: #3A3D45; /* Duidelijke afbakening */
+       --input-bg: #23252A; 
+       --input-border: #3A3D45; 
        --dashed-border: rgba(255, 255, 255, 0.2);
        
        --bottom-bar-bg: #1E2025; 
@@ -94,7 +94,7 @@
        z-index: 1; 
        filter: blur(5px); 
        transform: scale(1.02); 
-       opacity: 0.8; /* Maakt de achtergrond íets rustiger */
+       opacity: 0.8; 
    }
    
    .gradient-fade { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to bottom, var(--bg-grad-solid) 0%, var(--bg-grad-solid) 20%, var(--bg-grad-trans) 60%); z-index: 2; pointer-events: none; transition: background 0.3s; }
@@ -130,14 +130,14 @@
    .solid-panel { background: var(--panel-bg); border-radius: var(--radius-outer); border: 1px solid var(--glass-border); box-shadow: var(--shadow-panel); padding: 25px 30px 10px 30px; transition: background 0.3s, border 0.3s; }
    
    /* =========================================
-      4. KAARTEN & DRAG DROP (Met UX Tweaks)
+      4. KAARTEN & DRAG DROP
       ========================================= */
    .card { 
        flex: 0 0 auto; min-height: 70px; min-width: 0; 
        border-radius: var(--radius-inner); padding: 12px 10px; text-align: center; 
        font-weight: 700; font-size: 14px; color: var(--text-main); 
        display: flex; justify-content: center; align-items: center; 
-       border: 1px solid var(--card-border); /* Scherpe rand in dark mode */
+       border: 1px solid var(--card-border); 
        cursor: grab; user-select: none; position: relative; overflow: visible; 
        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background-color 0.3s, border-color 0.3s; 
        word-wrap: break-word; overflow-wrap: break-word; 
@@ -166,7 +166,6 @@
        box-shadow: 0 2px 5px rgba(0,0,0,0.25); z-index: 10; 
        transition: border-color 0.3s;
    }
-   /* De border neemt de kleur over van het element eronder, wat een uitsnede effect geeft! */
    .theme-card-light .badge { border: 2px solid var(--card-bg-light); }
    .card.gold .badge { border: 2px solid var(--vrmwb-gold); }
    
@@ -175,7 +174,6 @@
       ========================================= */
    .editor-form { padding: 10px 15px 30px 5px; }
    .empty-state-consistent, .editor-placeholder-text { color: var(--text-main); font-weight: 700; text-align: left; padding: 20px; align-self: flex-start; }
-   /* UX Fix: De dashed border luistert nu naar the dark/light variabelen */
    .empty-state-consistent { border: 2px dashed var(--dashed-border); border-radius: 12px; margin-top: 10px; width: 100%; transition: border-color 0.3s; }
    .editor-placeholder-text { margin-top: 20px; opacity: 0.6; }
    
@@ -256,6 +254,13 @@
    }
    
    .presentation-overlay.active { display: flex; } 
+   
+   /* HERSTELD: Dit zorgt voor de geblurde achtergrondlaag */
+   .pres-bg-image {
+       position: absolute; top: -2%; left: -2%; right: -2%; bottom: -2%;
+       filter: blur(8px);
+       z-index: -2;
+   }
    
    .pres-bg-color {
        position: absolute; top: 0; left: 0; right: 0; bottom: 0;
