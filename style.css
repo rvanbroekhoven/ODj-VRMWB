@@ -25,27 +25,21 @@
        --text-muted: #707172;
        --bg-grad-solid: #F6F6F6; 
        --bg-grad-trans: rgba(246, 246, 246, 0); 
-       
        --glass-bg: rgba(255, 255, 255, 0.75); 
        --glass-border: rgba(255, 255, 255, 0.9);
        --panel-bg: rgba(255, 255, 255, 0.98); 
-       
        --card-bg-light: #FFFFFF; 
        --card-border: rgba(0, 0, 0, 0.04);
-       
        --input-bg: #F6F6F6; 
        --input-border: #E5E5E5;
        --dashed-border: rgba(30, 30, 30, 0.2);
-       
        --bottom-bar-bg: #FFFFFF; 
        --bottom-bar-text: #1E1E1E;
        --nav-block-bg: #1E1E1E; 
        --nav-block-text: #FFFFFF;
        --scrollbar-thumb: rgba(30, 30, 30, 0.3); 
-       
        --radius-outer: 24px; 
        --radius-inner: 12px;
-   
        --shadow-subtle: 0 4px 10px rgba(0,0,0,0.04);
        --shadow-hover: 0 8px 20px rgba(0,0,0,0.1);
        --shadow-panel: 0 10px 30px rgba(0,0,0,0.08);
@@ -54,27 +48,21 @@
    [data-theme="dark"] {
        --text-main: #FFFFFF; 
        --text-muted: #A0A0A5; 
-       
        --bg-grad-solid: #121418; 
        --bg-grad-trans: rgba(18, 20, 24, 0);
-       
        --glass-bg: rgba(30, 32, 38, 0.75); 
        --glass-border: rgba(255, 255, 255, 0.08);
        --panel-bg: #1E2025; 
-       
        --card-bg-light: #2A2C33; 
        --card-border: rgba(255, 255, 255, 0.05);
-       
        --input-bg: #23252A; 
        --input-border: #3A3D45; 
        --dashed-border: rgba(255, 255, 255, 0.2);
-       
        --bottom-bar-bg: #1E2025; 
        --bottom-bar-text: #FFFFFF;
        --nav-block-bg: #FFFFFF; 
        --nav-block-text: #1E1E1E;
        --scrollbar-thumb: rgba(255, 255, 255, 0.2); 
-       
        --shadow-subtle: 0 4px 10px rgba(0,0,0,0.3);
        --shadow-hover: 0 8px 20px rgba(0,0,0,0.5);
        --shadow-panel: 0 10px 30px rgba(0,0,0,0.25);
@@ -140,7 +128,7 @@
    .card.gold .badge { border: 2px solid var(--vrmwb-gold); }
    
    /* =========================================
-      5. EDITOR UI COMPONENTEN (MÉT TABEL FIX)
+      5. EDITOR UI COMPONENTEN 
       ========================================= */
    .editor-form { padding: 10px 15px 30px 5px; }
    .empty-state-consistent, .editor-placeholder-text { color: var(--text-main); font-weight: 700; text-align: left; padding: 20px; align-self: flex-start; }
@@ -150,12 +138,7 @@
    .form-group { flex: 0 0 auto; margin-bottom: 20px; }
    .form-group label { display: block; font-weight: 700; font-size: 16px; margin-bottom: 8px; color: var(--text-main); letter-spacing: 0.2px; }
    
-   .text-input, .dropdown-input {
-       width: 100%; background-color: var(--input-bg); border: 1px solid var(--input-border); 
-       border-radius: var(--radius-inner); padding: 15px; 
-       font-size: 14px; color: var(--text-main); font-family: inherit;
-       transition: background-color 0.3s, border-color 0.3s, box-shadow 0.2s;
-   }
+   .text-input, .dropdown-input { width: 100%; background-color: var(--input-bg); border: 1px solid var(--input-border); border-radius: var(--radius-inner); padding: 15px; font-size: 14px; color: var(--text-main); font-family: inherit; transition: background-color 0.3s, border-color 0.3s, box-shadow 0.2s; }
    .text-input:focus { outline: none; border-color: var(--vrmwb-navy); box-shadow: 0 0 0 2px rgba(18, 32, 83, 0.1); }
    .dropdown-input { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
    .dropdown-input:hover { border-color: var(--text-muted); }
@@ -169,19 +152,13 @@
    
    .btn-save { background-color: var(--vrmwb-navy); color: #FFFFFF; border: none; padding: 12px 25px; border-radius: 8px; font-weight: 700; font-size: 16px; cursor: pointer; box-shadow: var(--shadow-subtle); transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s; font-family: inherit; margin-top: 10px; display: inline-block; }
    .btn-save:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); opacity: 0.95; }
-   
    .btn-add { background-color: var(--vrmwb-navy); color: #FFFFFF; border: none; width: 40px; height: 40px; border-radius: 8px; font-size: 24px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: transform 0.2s; }
    .btn-add:hover { transform: scale(1.05); }
    
-   /* ==== UX FIX: TABELLEN DIE NIET MEER HORIZONTAAL UITBREKEN ==== */
    .table-container { width: 100%; overflow-x: auto; background: var(--input-bg); border-radius: var(--radius-inner); border: 1px solid var(--input-border); margin-bottom: 15px; transition: border-color 0.3s, background-color 0.3s; }
    .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; color: var(--text-main); }
-   
-   /* Forceer word-break zodat extreem lange voertuignummers worden afgebroken */
    .data-table th, .data-table td { padding: 12px 8px; border-bottom: 1px solid var(--input-border); vertical-align: top; word-break: break-word; overflow-wrap: break-word; hyphens: auto; }
    .data-table th { font-weight: 900; background-color: var(--card-bg-light); transition: background-color 0.3s; vertical-align: bottom; }
-   
-   /* De actiekolom strak inpakken rondom de knoppen zonder te breken */
    .data-table td:last-child, .data-table th:last-child { white-space: nowrap; width: 1%; text-align: right; }
    
    .icon-btn { border: none; border-radius: 6px; width: 28px; height: 28px; display: inline-flex; justify-content: center; align-items: center; cursor: pointer; margin-right: 4px; color: #FFFFFF; font-weight: bold; transition: transform 0.2s, opacity 0.2s; font-size: 12px; }
@@ -190,25 +167,14 @@
    .icon-btn.delete { background-color: var(--vrmwb-red); }
    .icon-btn.copy { background-color: var(--vrmwb-navy); }
    
-   /* Checklists & WYSIWYG */
-   .checklist-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--input-bg); border-radius: var(--radius-inner); margin-bottom: 10px; box-shadow: var(--shadow-subtle); border: 1px solid var(--card-border); transition: background-color 0.3s, border-color 0.3s; }
-   .check-box { width: 28px; height: 28px; border-radius: 6px; background: var(--vrmwb-red); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; flex-shrink: 0; box-shadow: 0 2px 5px rgba(210,16,11,0.3); }
+   /* Interactieve Checklists voor Sync */
+   .checklist-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--input-bg); border-radius: var(--radius-inner); margin-bottom: 10px; box-shadow: var(--shadow-subtle); border: 1px solid var(--card-border); transition: background-color 0.3s, border-color 0.3s; cursor: pointer; }
+   .check-box { width: 28px; height: 28px; border-radius: 6px; border: 2px solid var(--input-border); display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; flex-shrink: 0; transition: all 0.2s; }
+   .check-box.checked { background: var(--vrmwb-red); border-color: var(--vrmwb-red); box-shadow: 0 2px 5px rgba(210,16,11,0.3); }
    .check-content { flex: 1; display: flex; flex-direction: column; gap: 4px; }
    .check-content strong { font-size: 15px; color: var(--text-main); }
    .check-content span { font-size: 12px; color: var(--text-muted); font-style: italic; }
    .add-item-row { display: flex; gap: 10px; margin-top: 15px; }
-   
-   .editor-tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid var(--input-border); padding-bottom: 0; }
-   .editor-tabs .tab { padding: 10px 20px; border-radius: 8px 8px 0 0; background: var(--input-bg); font-weight: 700; color: var(--text-muted); cursor: pointer; border: 1px solid transparent; border-bottom: none; transition: all 0.2s; }
-   .editor-tabs .tab.active { background: var(--card-bg-light); color: var(--text-main); border-color: var(--input-border); position: relative; top: 2px; }
-   
-   .wysiwyg-container { border: 1px solid var(--input-border); border-radius: 8px; overflow: hidden; transition: border-color 0.3s; }
-   .wysiwyg-toolbar { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; background: var(--card-bg-light); border-bottom: 1px solid var(--input-border); align-items: center; transition: background-color 0.3s; }
-   .toolbar-btn { padding: 6px 12px; border-radius: 4px; border: none; background: transparent; color: var(--text-main); font-family: inherit; font-size: 14px; cursor: pointer; transition: background-color 0.2s; }
-   .toolbar-btn:hover { background-color: var(--input-bg); }
-   .toolbar-divider { width: 1px; height: 20px; background-color: var(--input-border); margin: 0 5px; }
-   .wysiwyg-area { width: 100%; height: 250px; border: none; padding: 15px; background: var(--input-bg); color: var(--text-main); font-family: inherit; font-size: 15px; line-height: 1.6; resize: vertical; transition: background-color 0.3s; }
-   .wysiwyg-area:focus { outline: none; }
    
    /* =========================================
       6. BOTTOM BAR & SCROLL
@@ -227,37 +193,7 @@
    .scroll-area::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 10px; transition: background-color 0.3s; }
    
    /* =========================================
-      7. LOCATIE MODAL (POP-UP)
-      ========================================= */
-   .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
-   .modal-overlay.active { opacity: 1; pointer-events: all; }
-   .modal-content { background: var(--panel-bg); border-radius: var(--radius-outer); padding: 40px; width: 450px; max-width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; border: 1px solid var(--glass-border); transition: background-color 0.3s; }
-   .modal-content h3 { margin-bottom: 25px; font-size: 24px; font-weight: 900; text-transform: uppercase; color: var(--text-main); letter-spacing: 0.5px; }
-   .location-options { display: flex; flex-direction: column; gap: 12px; }
-   .loc-btn { background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-main); padding: 15px; border-radius: var(--radius-inner); font-family: inherit; font-size: 18px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-   .loc-btn:hover { background: var(--card-bg-light); border-color: var(--text-muted); }
-   .loc-btn.active, .loc-btn.active:hover { background: var(--vrmwb-gold); color: #1E1E1E; border-color: var(--vrmwb-gold); box-shadow: 0 4px 10px rgba(204, 153, 51, 0.3); }
-   .btn-cancel { margin-top: 25px; background: transparent; border: none; color: var(--text-muted); font-size: 16px; font-weight: 700; cursor: pointer; text-decoration: underline; font-family: 'Frutiger', sans-serif; transition: color 0.2s; }
-   .btn-cancel:hover { color: var(--text-main); }
-   
-   /* =========================================
-      8. PREVIEW MODAL (ENKELE SLIDE)
-      ========================================= */
-   .preview-content { background: var(--panel-bg); width: 80vw; height: 80vh; border-radius: var(--radius-outer); display: flex; flex-direction: column; box-shadow: 0 25px 50px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid var(--glass-border); transition: background-color 0.3s; }
-   .preview-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 40px; background-color: var(--input-bg); border-bottom: 1px solid var(--input-border); transition: background-color 0.3s; }
-   .preview-logo { font-size: 24px; font-weight: 900; color: var(--text-main); letter-spacing: 2px; }
-   .btn-close-preview { background: none; border: none; font-size: 40px; color: var(--text-main); cursor: pointer; line-height: 1; transition: transform 0.2s; }
-   .btn-close-preview:hover { transform: scale(1.1); }
-   .preview-body { flex: 1; padding: 60px; overflow-y: auto; color: var(--text-main); }
-   .slide-title { font-size: 48px; font-weight: 900; margin-bottom: 40px; color: var(--text-main); text-transform: uppercase; border-bottom: 4px solid var(--vrmwb-gold); display: inline-block; padding-bottom: 10px; }
-   .rooster-table { width: 100%; border-collapse: collapse; font-size: 24px; }
-   .rooster-table th, .rooster-table td { padding: 15px 20px; text-align: left; border-bottom: 1px solid var(--input-border); }
-   .rooster-table th { font-weight: 900; background-color: var(--input-bg); transition: background-color 0.3s; }
-   .incident-card { background-color: var(--input-bg); border-left: 8px solid var(--vrmwb-red); padding: 20px; border-radius: 8px; margin-bottom: 20px; font-size: 20px; transition: background-color 0.3s; }
-   .incident-card strong { color: var(--vrmwb-red); font-weight: 900; }
-   
-   /* =========================================
-      9. VOLLEDIG SCHERM PRESENTATIE 
+      7. PREVIEW & PRESENTATIE (FIGMA KIS STIJL)
       ========================================= */
    .presentation-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--vrmwb-navy); z-index: 99999; display: none; flex-direction: column; overflow: hidden; }
    .presentation-overlay.active { display: flex; } 
@@ -270,7 +206,41 @@
    .pres-nav-btn { background: none; border: none; font-size: 30px; font-weight: 900; color: #FFFFFF; cursor: pointer; padding: 10px; font-family: 'Frutiger', sans-serif; transition: transform 0.2s; }
    .pres-nav-btn:hover { transform: scale(1.2); }
    .pres-counter { font-size: 20px; font-weight: 700; color: #FFFFFF; }
-   .presentation-overlay .slide-title { color: #FFFFFF; }
+   
+   .presentation-overlay .slide-title { color: #FFFFFF; font-size: 48px; font-weight: 900; margin-bottom: 40px; text-transform: uppercase; border-bottom: 4px solid var(--vrmwb-gold); display: inline-block; padding-bottom: 10px; }
+   
+   /* KIS White Cards (Figma Alarmen stijl) */
+   .kis-card {
+       background: #FFFFFF; border-radius: 12px; padding: 25px 30px; margin-bottom: 20px; width: 100%; 
+       display: flex; align-items: center; gap: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+       position: relative; border-left: 12px solid var(--vrmwb-navy); color: #1E1E1E;
+   }
+   .kis-card.prio-1 { border-left-color: var(--vrmwb-red); }
+   .kis-card.prio-2 { border-left-color: var(--vrmwb-gold); }
+   .kis-card-icon { width: 80px; text-align: center; font-weight: 900; font-size: 20px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; gap: 5px;}
+   .kis-card-icon span { font-size: 30px; } /* Vlammetje of Icoon */
+   .kis-card.prio-1 .kis-card-icon { color: var(--vrmwb-red); }
+   .kis-card.prio-2 .kis-card-icon { color: var(--vrmwb-gold); }
+   .kis-card-content { flex: 1; }
+   .kis-card-title { font-size: 24px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; }
+   .kis-card-sub { font-size: 16px; font-weight: 700; color: #707172; margin-bottom: 10px; }
+   .kis-card-desc { font-size: 16px; line-height: 1.5; color: #1E1E1E; }
+   
+   /* Info Trigger (i) in KIS */
+   .info-trigger { position: absolute; right: 25px; bottom: 20px; width: 28px; height: 28px; border-radius: 50%; border: 2px solid #1E1E1E; color: #1E1E1E; display: flex; justify-content: center; align-items: center; font-weight: 900; font-family: serif; font-size: 14px; cursor: pointer; opacity: 0.5; transition: opacity 0.2s, transform 0.2s; }
+   .info-trigger:hover { opacity: 1; transform: scale(1.1); }
+   
+   /* KIS Pop-up (Carnaval Vossemeer stijl) */
+   .pres-info-popup { position: absolute; z-index: 100001; background: #FFFFFF; border-radius: 12px; padding: 20px; width: 350px; box-shadow: 0 15px 50px rgba(0,0,0,0.5); display: none; color: #1E1E1E; border: 1px solid rgba(0,0,0,0.1); }
+   .pres-info-popup.active { display: block; }
+   .popup-arrow { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 10px solid #FFFFFF; }
+   
+   /* KIS Checklist Systeem */
+   .kis-checklist { list-style: none; padding: 0; margin-top: 20px; }
+   .kis-checklist-item { display: flex; align-items: center; gap: 20px; font-size: 22px; margin-bottom: 20px; color: #FFFFFF; cursor: pointer; transition: opacity 0.2s; }
+   .kis-checklist-item:hover { opacity: 0.8; }
+   .kis-check { width: 36px; height: 36px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; color: transparent; font-weight: bold; font-size: 18px; transition: all 0.3s; flex-shrink: 0; }
+   .kis-check.checked { background: var(--vrmwb-gold); border-color: var(--vrmwb-gold); color: #1E1E1E; box-shadow: 0 4px 15px rgba(204, 153, 51, 0.4); }
+   
    .presentation-overlay .rooster-table th { background-color: rgba(255, 255, 255, 0.1); color: #FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.2);}
    .presentation-overlay .rooster-table td { color: #FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.2); }
-   .presentation-overlay .incident-card { background-color: rgba(255, 255, 255, 0.1); color: #FFFFFF; }
