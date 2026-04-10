@@ -48,13 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 { name: 'Jan Rijvers', tags: [{text: 'TS 2: Ch, Dag', color: 'red'}] },
                 { name: 'Jasper Meeusen', tags: [{text: 'TS 1: 4', color: 'red'}] },
                 { name: 'Jochem Verdonk', tags: [{text: 'TS 2: BV', color: 'red'}, {text: 'WO: BV', color: 'gold'}] },
-                { name: 'Henri Smans', tags: [{text: 'TS 2: Ch', color: 'red'}, {text: 'WO: Ch', color: 'gold'}, {text: 'Corvee: Kantinist', color: 'grey'}] },
+                { name: 'Henri Smans', tags: [{text: 'TS 2: Ch', color: 'red'}, {text: 'WO: Ch', color: 'gold'}, {text: 'Kantinist', color: 'grey'}] },
                 { name: 'Geert Tuerlings', tags: [{text: 'TS 2: 1', color: 'red'}, {text: 'SPEC. voertuig: 1', color: 'blue'}] },
                 
                 { name: 'Kjell Bastiaansen', tags: [{text: 'TS 2: 2, Avond/Nacht', color: 'red'}] },
                 { name: 'Ronnie van Dongen', tags: [{text: 'TS 2: 3', color: 'red'}, {text: 'WO: DPL', color: 'gold'}] },
                 { name: 'Nick van Melsen', tags: [{text: 'TS 2: BV', color: 'red'}, {text: 'WO: duiker 1', color: 'gold'}] },
-                { name: 'Christ Joosen', tags: [{text: 'SPEC. voertuig: BV', color: 'blue'}, {text: 'Corvee: Sleutel ronde', color: 'grey'}] },
+                { name: 'Christ Joosen', tags: [{text: 'SPEC. voertuig: BV', color: 'blue'}, {text: 'Sleutel ronde', color: 'grey'}] },
                 { name: 'Richard Broeders', tags: [{text: 'SPEC. voertuig: Ch', color: 'blue'}] }
             ]
         },
@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function getRoosterKISHTML() {
         let html = `<h1 class="slide-title">Ploeg indeling: Breda</h1><div class="kis-rooster-grid">`;
         appState.rooster.members.forEach(m => {
-            let tagsHtml = m.tags.map(t => `<span class="func-tag color-${t.color}">${t.text}</span>`).join('');
+            let tagsHtml = m.tags.map(t => `<span class="func-tag" data-color="${t.color}">${t.text}</span>`).join('');
             html += `<div class="kis-rooster-card"><div class="member-name">${m.name}</div><div class="member-tags">${tagsHtml}</div></div>`;
         });
         html += `</div>`;
@@ -118,9 +118,12 @@ document.addEventListener('DOMContentLoaded', () => {
         return html;
     }
 
+    // Oplossing Overlap: De Info-trigger wordt nu gerenderd als een flex-item in zijn eigen flex-kolom.
     function getGlassRowsKISHTML(title, incidents) {
         let html = `<h1 class="slide-title">${title}</h1><div style="width:100%;">`;
-        html += `<div style="display:flex; gap:20px; font-weight:700; color:var(--text-muted); padding:0 30px 10px; font-size:16px; text-transform:uppercase;"><div style="flex:1;">Melding</div><div style="flex:1;">Locatie</div><div style="flex:1;">Datum</div><div style="flex:1;">Details</div></div>`;
+        html += `<div style="display:flex; gap:20px; font-weight:700; color:rgba(255,255,255,0.6); padding:0 30px 10px; font-size:16px; text-transform:uppercase;">
+                    <div style="flex:1;">Melding</div><div style="flex:1;">Locatie</div><div style="flex:1;">Datum</div><div style="flex:1;">Details</div>
+                    <div style="flex:0 0 40px;"></div> </div>`;
         incidents.forEach(inc => {
             html += `
                 <div class="kis-glass-row">
@@ -128,7 +131,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="kis-glass-col">${inc.loc}</div>
                     <div class="kis-glass-col">${inc.date}<br><span style="font-size:14px;opacity:0.7;">${inc.time}</span></div>
                     <div class="kis-glass-col">${inc.vehicles}</div>
-                    ${inc.infoText ? `<div class="kis-info-trigger" data-title="${inc.infoTitle}" data-text="${inc.infoText}">i</div>` : ''}
+                    
+                    ${inc.infoText ? `<div class="kis-info-trigger" data-title="${inc.infoTitle}" data-text="${inc.infoText}">i</div>` : '<div style="flex:0 0 40px;"></div>'}
                 </div>`;
         });
         html += `</div>`;
@@ -145,8 +149,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'topdesk': { count: 0, editorHTML: `<div class="form-group"><label>Topdesk</label><div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">TOPDESK MELDINGEN</h1><p style="opacity:0.5; font-size: 20px;">Geen meldingen.</p>` },
         'mobiliteit': { count: 0, editorHTML: `<div class="form-group"><label>Kaartlagen</label><div class="tags-wrapper"><span class="tag">Weg Info <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">MOBILITEIT</h1><div style="width:100%;height:400px;background:rgba(0,0,0,0.05);border:1px dashed var(--input-border);display:flex;align-items:center;justify-content:center;">Kaart</div>` },
         'gepland-onderhoud': { count: 1, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Voertuig</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>20-1571</td><td>Onderhoud</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><p style="font-size: 20px;">20-1571 in onderhoud.</p>` },
-        'algemeen': { count: () => appState.algemeen.tasks.length, editorHTML: () => getTaskEditorHTML('algemeen'), previewHTML: () => getTaskKISHTML('algemeen', 'ALG. WERKZAAMHEDEN') },
-        'ademlucht': { count: () => appState.ademlucht.tasks.length, editorHTML: () => getTaskEditorHTML('ademlucht'), previewHTML: () => getTaskKISHTML('ademlucht', 'ADEMLUCHT WERKZAAMHEDEN') },
+        'algemeen': { count: () => appState.algemeen.tasks.length, editorHTML: () => getTaskEditorHTML('algemeen'), previewHTML: () => getTaskKISHTML('algemeen', 'ALG. WERKzaamheden') },
+        'ademlucht': { count: () => appState.ademlucht.tasks.length, editorHTML: () => getTaskEditorHTML('ademlucht'), previewHTML: () => getTaskKISHTML('ademlucht', 'ADEMLUCHT WERKzaamheden') },
         'vakbekwaam': { count: 0, editorHTML: `<div class="form-group"><label>Ploegen</label><div class="dropdown-input placeholder">Selecteer...</div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">VAKBEKWAAM AG5</h1><p style="opacity:0.5; font-size: 20px;">Geen bijzonderheden.</p>` },
         'default': { count: 0, editorHTML: wysiwygEditorHTML, previewHTML: `<h1 class="slide-title" id="dynamic-preview-title">ONDERDEEL</h1><p style="font-size:24px;">Inhoud presentatie.</p>` }
     };

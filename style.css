@@ -1,5 +1,5 @@
 /* =========================================
-   1. RESET & VOLLEDIGE FONT STACK
+   1. RESET, FONTS & THEMES (Houd dit vast)
    ========================================= */
    * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -8,11 +8,8 @@
    @font-face { font-family: 'Frutiger'; src: url('Frutiger Regular.ttf') format('truetype'); font-weight: 400; font-style: normal; }
    @font-face { font-family: 'Frutiger'; src: url('Frutiger Roman.ttf') format('truetype'); font-weight: 400; font-style: normal; }
    @font-face { font-family: 'Frutiger'; src: url('Frutiger Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; }
-   @font-face { font-family: 'Frutiger'; src: url('Frutiger Roman Italic.ttf') format('truetype'); font-weight: 400; font-style: italic; }
    @font-face { font-family: 'Frutiger'; src: url('Frutiger Bold.ttf') format('truetype'); font-weight: 700; font-style: normal; }
-   @font-face { font-family: 'Frutiger'; src: url('Frutiger Bold Italic.ttf') format('truetype'); font-weight: 700; font-style: italic; }
    @font-face { font-family: 'Frutiger'; src: url('Frutiger Black.ttf') format('truetype'); font-weight: 900; font-style: normal; }
-   @font-face { font-family: 'Frutiger'; src: url('Frutiger Black Italic.ttf') format('truetype'); font-weight: 900; font-style: italic; }
    
    :root {
        --vrmwb-navy: #122053; 
@@ -78,24 +75,28 @@
    .top-header { flex: 0 0 auto; height: 90px; display: flex; justify-content: center; align-items: center; padding-top: 25px; z-index: 10; position: relative; }
    .bottom-bar { flex: 0 0 auto; height: 80px; background-color: var(--bottom-bar-bg); display: flex; justify-content: space-between; align-items: center; padding: 0 50px; z-index: 20; position: relative; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); transition: background-color 0.3s; }
    
+   .location-pill { background-color: var(--vrmwb-gold); color: #1E1E1E; font-size: 34px; font-weight: 900; padding: 12px 40px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+   .location-pill:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+   .theme-btn { position: absolute; right: 50px; background-color: var(--bottom-bar-bg); color: var(--text-main); border: 1px solid var(--input-border); padding: 10px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-subtle); transition: all 0.3s; }
+   .theme-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+   
+   .date-controls { display: flex; align-items: center; justify-content: space-between; background-color: var(--nav-block-bg); height: 80px; width: 320px; border-radius: 25px; position: absolute; left: 50%; transform: translateX(-50%); padding: 0 30px; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); transition: background-color 0.3s; }
+   .nav-btn, .nav-btn-text { background: none; border: none; color: var(--nav-block-text); cursor: pointer; font-family: 'Frutiger', sans-serif; transition: transform 0.2s; }
+   .nav-btn { font-size: 26px; font-weight: 900; }
+   .nav-btn:hover { transform: scale(1.2); }
+   .nav-btn-text { font-size: 20px; font-weight: 700; flex: 1; }
+   .title-logo { display: flex; flex-direction: column; font-size: 14px; font-weight: 400; color: var(--bottom-bar-text); }
+   .status-clock { font-size: 22px; color: var(--text-muted); font-weight: 400; }
+   
    .app-container { flex: 1 1 auto; display: grid; grid-template-columns: 1fr 1fr 1.3fr; gap: 25px; padding: 30px 35px; min-height: 0; z-index: 10; }
    .column { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow-x: hidden; padding: 0 10px; }
-   
    .consistent-header { flex: 0 0 auto; height: 50px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; padding: 0 10px; }
    .scroll-area { flex: 1 1 auto; overflow-y: auto; overflow-x: hidden !important; min-height: 0; padding: 0 15px 20px 10px; }
    
    h2 { font-size: 24px; text-transform: uppercase; font-weight: 900; color: var(--text-main); text-align: left; margin: 0; letter-spacing: 0.5px; }
    
-   .location-pill { background-color: var(--vrmwb-gold); color: #1E1E1E; font-size: 34px; font-weight: 900; padding: 12px 40px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
-   .location-pill:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
-   
-   /* Knoppen Herstel */
-   .theme-btn { position: absolute; right: 50px; background-color: var(--bottom-bar-bg); color: var(--text-main); border: 1px solid var(--input-border); padding: 10px 20px; border-radius: 20px; font-weight: 700; cursor: pointer; box-shadow: var(--shadow-subtle); transition: all 0.3s; }
-   .theme-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
-   
-   .btn-preview { background-color: var(--vrmwb-red); color: #F6F6F6; border: none; padding: 0 25px; border-radius: 20px; font-weight: 700; font-size: 16px; cursor: pointer; height: 40px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(210, 16, 11, 0.3); transition: transform 0.2s, box-shadow 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+   .btn-preview { background-color: var(--vrmwb-red); color: #F6F6F6; border: none; padding: 0 25px; border-radius: 20px; font-weight: 700; font-size: 16px; cursor: pointer; height: 40px; flex-shrink: 0; box-shadow: 0 4px 10px rgba(210, 16, 11, 0.3); transition: transform 0.2s, box-shadow 0.2s; }
    .btn-preview:hover { transform: translateY(-2px); box-shadow: 0 6px 15px rgba(210, 16, 11, 0.4); }
-   
    #btn-start-presentation { background-color: var(--vrmwb-gold); color: #1E1E1E; box-shadow: 0 4px 10px rgba(0,0,0,0.15); }
    #btn-start-presentation:hover { box-shadow: 0 6px 15px rgba(0,0,0,0.25); }
    
@@ -121,10 +122,11 @@
    .card.gold .badge { border: 2px solid var(--vrmwb-gold); }
    
    /* =========================================
-      4. EDITOR UI COMPONENTEN
+      4. EDITOR UI & SCROLL
       ========================================= */
    .editor-form { padding: 10px 15px 30px 5px; }
-   .empty-state-consistent { border: 2px dashed var(--dashed-border); border-radius: 12px; margin-top: 10px; width: 100%; padding: 40px 20px; text-align: center; color: var(--text-muted); font-weight: 700; transition: border-color 0.3s; }
+   .empty-state-consistent, .editor-placeholder-text { color: var(--text-main); font-weight: 700; text-align: left; padding: 20px; align-self: flex-start; }
+   .empty-state-consistent { border: 2px dashed var(--dashed-border); border-radius: 12px; margin-top: 10px; width: 100%; transition: border-color 0.3s; }
    .editor-placeholder-text { margin-top: 20px; opacity: 0.6; font-weight: 400; }
    
    .form-group { flex: 0 0 auto; margin-bottom: 20px; }
@@ -144,7 +146,6 @@
    .btn-add { background-color: var(--vrmwb-navy); color: #FFFFFF; border: none; width: 40px; height: 40px; border-radius: 8px; font-size: 24px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: transform 0.2s; }
    .btn-add:hover { transform: scale(1.05); }
    
-   /* Tabellen */
    .table-container { width: 100%; overflow-x: auto; background: var(--input-bg); border-radius: var(--radius-inner); border: 1px solid var(--input-border); margin-bottom: 15px; transition: border-color 0.3s, background-color 0.3s; }
    .data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 13px; color: var(--text-main); font-weight: 400; }
    .data-table th, .data-table td { padding: 12px 8px; border-bottom: 1px solid var(--input-border); vertical-align: top; word-break: break-word; }
@@ -156,7 +157,6 @@
    .icon-btn.edit { background-color: var(--vrmwb-gold); }
    .icon-btn.delete { background-color: var(--vrmwb-red); }
    
-   /* Checklists Beheer */
    .editor-check-toggle { display: flex; align-items: center; gap: 15px; padding: 15px; background: var(--input-bg); border-radius: var(--radius-inner); margin-bottom: 10px; box-shadow: var(--shadow-subtle); border: 1px solid var(--card-border); cursor: pointer; transition: background-color 0.3s; }
    .check-box { width: 28px; height: 28px; border-radius: 6px; border: 2px solid var(--input-border); display: flex; justify-content: center; align-items: center; color: transparent; font-weight: bold; flex-shrink: 0; transition: all 0.2s; }
    .editor-check-toggle.checked .check-box { background: var(--vrmwb-red); border-color: var(--vrmwb-red); color: white; }
@@ -165,30 +165,12 @@
    .check-content strong { font-size: 15px; color: var(--text-main); transition: all 0.3s; font-weight: 700; }
    .check-content span { font-size: 12px; color: var(--text-muted); font-style: italic; font-weight: 400; }
    
-   .wysiwyg-container { border: 1px solid var(--input-border); border-radius: 8px; overflow: hidden; transition: border-color 0.3s; }
-   .wysiwyg-toolbar { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; background: var(--card-bg-light); border-bottom: 1px solid var(--input-border); align-items: center; }
-   .toolbar-btn { padding: 6px 12px; border-radius: 4px; border: none; background: transparent; color: var(--text-main); font-family: inherit; font-size: 14px; font-weight: 400; cursor: pointer; }
-   .toolbar-btn:hover { background-color: var(--input-bg); }
-   .toolbar-divider { width: 1px; height: 20px; background-color: var(--input-border); margin: 0 5px; }
-   .wysiwyg-area { width: 100%; height: 250px; border: none; padding: 15px; background: var(--input-bg); color: var(--text-main); font-family: inherit; font-size: 15px; font-weight: 400; resize: vertical; outline: none; }
-   
-   /* =========================================
-      5. BOTTOM BAR & SCROLL
-      ========================================= */
-   .date-controls { display: flex; align-items: center; justify-content: space-between; background-color: var(--nav-block-bg); height: 80px; width: 320px; border-radius: 25px; position: absolute; left: 50%; transform: translateX(-50%); padding: 0 30px; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); transition: background-color 0.3s; }
-   .nav-btn, .nav-btn-text { background: none; border: none; color: var(--nav-block-text); cursor: pointer; font-family: 'Frutiger', sans-serif; transition: transform 0.2s; }
-   .nav-btn { font-size: 26px; font-weight: 900; }
-   .nav-btn:hover { transform: scale(1.2); }
-   .nav-btn-text { font-size: 20px; font-weight: 700; flex: 1; }
-   .title-logo { display: flex; flex-direction: column; font-size: 14px; font-weight: 400; color: var(--bottom-bar-text); }
-   .status-clock { font-size: 22px; color: var(--text-muted); font-weight: 400; }
-   
    .scroll-area::-webkit-scrollbar { width: 8px; }
    .scroll-area::-webkit-scrollbar:horizontal { display: none; } 
    .scroll-area::-webkit-scrollbar-thumb { background-color: var(--scrollbar-thumb); border-radius: 10px; }
    
    /* =========================================
-      6. MODALS DEEPCLEAN (DISPLAY NONE FIX)
+      5. MODALS (BUGFIX: display none default)
       ========================================= */
    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1000; display: none; justify-content: center; align-items: center; }
    .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease forwards; }
@@ -208,60 +190,87 @@
    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
    
    /* =========================================
-      7. KIS PRESENTATIE & SCOPED STYLING
+      6. KIS PRESENTATIE (Meer Ruimte, Oplossing Overlap)
       ========================================= */
-   /* SCOPED FIX: Zorgt dat de opmaak in de lichte beheer-preview netjes donker is, 
-      en in de KIS presentatie netjes wit. */
-   .slide-title { font-size: 48px; font-weight: 900; margin-bottom: 40px; text-transform: uppercase; border-bottom: 4px solid var(--vrmwb-gold); display: inline-block; padding-bottom: 10px; color: var(--text-main); }
-   .kis-glass-row { background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 12px; padding: 20px 30px; margin-bottom: 15px; display: flex; gap: 20px; color: var(--text-main); align-items: center; position: relative; }
-   .kis-glass-col { flex: 1; font-size: 18px; line-height: 1.4; font-weight: 400; }
-   .kis-glass-col.bold { font-weight: 700; font-size: 20px; }
-   .kis-info-trigger { position: absolute; right: 20px; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--text-muted); color: var(--text-muted); display: flex; justify-content: center; align-items: center; cursor: pointer; font-family: serif; font-weight: 900; transition: all 0.2s; }
-   .kis-info-trigger:hover { background: var(--text-main); color: var(--card-bg-light); border-color: var(--text-main); }
-   
-   .kis-checklist-card { background: var(--card-bg-light); border: 1px solid var(--input-border); border-radius: 12px; padding: 20px 30px; margin-bottom: 15px; width: 100%; display: flex; align-items: center; gap: 25px; cursor: pointer; transition: transform 0.2s; }
-   .kis-check-square { width: 40px; height: 40px; border-radius: 8px; background: var(--vrmwb-red); display: flex; justify-content: center; align-items: center; color: transparent; font-size: 24px; font-weight: bold; transition: all 0.3s; flex-shrink: 0; }
-   .kis-checklist-card.checked .kis-check-square { background: #FF6B6B; color: #FFFFFF; }
-   .kis-check-text { font-size: 22px; color: var(--text-main); transition: all 0.3s; flex: 1; font-weight: 700; }
-   .kis-checklist-card.checked .kis-check-text { text-decoration: line-through; text-decoration-color: var(--vrmwb-red); opacity: 0.5; }
-   .kis-check-author { display: block; font-size: 14px; color: var(--text-muted); font-style: italic; margin-top: 5px; font-weight: 400; }
-   
-   /* KIS: Roosterplanning Grid (Figma Ploegindeling) */
-   .kis-rooster-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; }
-   .kis-rooster-card { background: var(--card-bg-light); border: 1px solid var(--input-border); border-radius: 12px; padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; box-shadow: var(--shadow-subtle); }
-   .member-name { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 15px; width: 100%; }
-   .member-tags { display: flex; flex-direction: column; gap: 6px; width: 100%; }
-   .func-tag { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; color: #FFF; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-   
-   /* Figma Tag Colors */
-   .func-tag.color-red { background-color: var(--vrmwb-red); }
-   .func-tag.color-green { background-color: #009036; }
-   .func-tag.color-gold { background-color: var(--vrmwb-gold); color: #1E1E1E; }
-   .func-tag.color-blue { background-color: #17428C; }
-   .func-tag.color-grey { background-color: #707172; }
-   
-   
-   /* ====== DE ECHTE PRESENTATIE OVERLAY OVERRIDES ====== */
    .presentation-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--vrmwb-navy); z-index: 99999; display: none; flex-direction: column; overflow: hidden; }
    .presentation-overlay.active { display: flex; animation: fadeIn 0.3s ease forwards; } 
    .pres-bg-image { position: absolute; top: -2%; left: -2%; right: -2%; bottom: -2%; filter: blur(8px); z-index: -2; }
    .pres-bg-color { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(18, 32, 83, 0.85); z-index: -1; }
    .btn-close-presentation { position: absolute; top: 30px; right: 40px; background: none; border: none; font-size: 50px; font-weight: 300; color: #FFFFFF; cursor: pointer; z-index: 100000; opacity: 0.5; transition: opacity 0.2s; }
    .btn-close-presentation:hover { opacity: 1; }
-   .pres-content-wrapper { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 80px; text-align: left; width: 100%; max-width: 1200px; margin: 0 auto; color: #FFFFFF; z-index: 1; }
+   
+   /* KIS Content Container: VEEL MEER RUIMTE EN GEVULD SCHERM */
+   .pres-content-wrapper { 
+       flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+       padding: 50px; text-align: left; width: 100%; 
+       max-width: 1400px; /* VEEL BREDER */ 
+       margin: 0 auto; color: #FFFFFF; z-index: 1; 
+   }
+   
    .pres-controls { position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 30px; background: rgba(255, 255, 255, 0.1); padding: 10px 30px; border-radius: 40px; border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); z-index: 1; }
    .pres-nav-btn { background: none; border: none; font-size: 30px; font-weight: 900; color: #FFFFFF; cursor: pointer; padding: 10px; font-family: inherit; transition: transform 0.2s; }
    .pres-nav-btn:hover { transform: scale(1.2); }
    .pres-counter { font-size: 20px; font-weight: 700; color: #FFFFFF; }
    
-   /* Inverts the colors specifically for the dark presentation mode */
-   .presentation-overlay .slide-title { color: #FFFFFF; }
-   .presentation-overlay .kis-glass-row { background: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2); color: #FFFFFF; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-   .presentation-overlay .kis-info-trigger { border-color: rgba(255,255,255,0.5); color: #FFFFFF; }
-   .presentation-overlay .kis-info-trigger:hover { background: white; color: var(--vrmwb-navy); border-color: white; }
-   .presentation-overlay .kis-checklist-card { background: #FFFFFF; color: #1E1E1E; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-   .presentation-overlay .kis-rooster-card { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-   .presentation-overlay .member-name { color: #FFFFFF; }
+   .slide-title { font-size: 48px; font-weight: 900; margin-bottom: 40px; color: #FFFFFF; text-transform: uppercase; border-bottom: 4px solid var(--vrmwb-gold); display: inline-block; padding-bottom: 10px; }
+   
+   /* KIS: Glassmorphism Table Rows (Herschreven voor Flex-stijl Info-trigger) */
+   .kis-glass-row { 
+       background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
+       border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; 
+       padding: 25px 30px; /* MEER PADDING */
+       margin-bottom: 15px; 
+       display: flex; gap: 20px; color: #FFFFFF; align-items: center; 
+       box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+       width: 100%; /* KAART BREEDER */
+   }
+   .kis-glass-col { flex: 1; font-size: 18px; line-height: 1.4; font-weight: 400; }
+   .kis-glass-col.bold { font-weight: 700; font-size: 20px; }
+   
+   /* KIS: Info Trigger is nu een flex-item, geen overlap meer */
+   .kis-info-trigger { 
+       flex: 0 0 40px; /* VASTE BREEDTE KOLOM */
+       height: 32px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); 
+       display: flex; justify-content: center; align-items: center; 
+       cursor: pointer; font-family: serif; font-weight: 900; opacity: 0.7; transition: all 0.2s; 
+       align-self: flex-start; /* Uitlijning naar boven */
+   }
+   .kis-info-trigger:hover { opacity: 1; background: white; color: var(--vrmwb-navy); border-color: white; }
+   
+   /* KIS: Checklist Kaarten (Meer ruimte) */
+   .kis-checklist-card { 
+       background: #FFFFFF; border-radius: 12px; 
+       padding: 30px 40px; /* MEER PADDING */
+       margin-bottom: 15px; width: 100%; 
+       display: flex; align-items: center; gap: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+       cursor: pointer; transition: transform 0.2s; 
+   }
+   .kis-check-square { width: 40px; height: 40px; border-radius: 8px; background: var(--vrmwb-red); display: flex; justify-content: center; align-items: center; color: transparent; font-size: 24px; font-weight: bold; transition: all 0.3s; flex-shrink: 0; }
+   .kis-checklist-card.checked .kis-check-square { background: #FF6B6B; color: #FFFFFF; }
+   .kis-check-text { font-size: 22px; color: #1E1E1E; transition: all 0.3s; flex: 1; font-weight: 700; }
+   .kis-checklist-card.checked .kis-check-text { text-decoration: line-through; text-decoration-color: var(--vrmwb-red); opacity: 0.5; }
+   
+   /* KIS: Roosterplanning Grid (Pixel-perfect Figma 5x3 Grid) */
+   .kis-rooster-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; height: auto; padding: 0; }
+   
+   /* Ploeg Kaarten: Even Breed, Even Hoog */
+   .kis-rooster-card { 
+       background:rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); 
+       border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; 
+       padding: 20px; color: #FFFFFF; display: flex; flex-direction: column; 
+       box-shadow: 0 10px 30px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.05); 
+       aspect-ratio: 4 / 3; /* Forceren naar een strakke verhouding */
+   }
+   .member-name { font-size: 18px; font-weight: 900; margin-bottom: 12px; color: #FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; flex-shrink: 0; text-transform: uppercase;}
+   .member-tags { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow: hidden; justify-content: flex-start; font-weight: 700;}
+   .func-tag { display: inline-block; background: #FFF; color: #1E1E1E; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; text-align: center; }
+   
+   /* Figma Specifieke Tag Kleuren */
+   .func-tag[data-color="red"] { background-color: var(--vrmwb-red); color: #FFF;}
+   .func-tag[data-color="green"] { background-color: #009036; color: #FFF;}
+   .func-tag[data-color="gold"] { background-color: var(--vrmwb-gold); color: #1E1E1E;}
+   .func-tag[data-color="blue"] { background-color: #17428C; color: #FFF;}
+   .func-tag[data-color="grey"] { background-color: #707172; color: #FFF;}
    
    /* KIS: Gecentreerde Pop-up Modal (Figma Stijl) */
    .kis-modal-wrapper { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 100002; }
