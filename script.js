@@ -34,57 +34,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
-    // --- SHARED STATE (DATA BRON VOOR SYNC) ---
+    // --- SHARED STATE & FIGMA DATA ---
     const appState = {
         'rooster': {
-            // 15 leden voor het 5x3 grid (Figma Ploegindeling)
+            // Figma 5x3 Grid Structuur voor Ploegindeling Breda
             members: [
-                { name: 'J. de Vries', functions: ['Bevelvoerder TS 1', 'BV SPEC. VOERTUIG', 'R&C BV'] },
-                { name: 'P. Hendriks', functions: ['Bevelvoerder TS 2', 'SPEC. VOERTUIG : BV', 'R&C BV'] },
-                { name: 'A. Jansen', functions: ['Chauffeur TS 1', 'Chaff. RV'] },
-                { name: 'M. Bakker', functions: ['Chauffeur TS 2', 'Chaff. HV'] },
-                { name: 'L. Peters', functions: ['Bevelvoerder RV', 'R&C BV', 'Hogere Functies'] },
-                { name: 'K. Smits', functions: ['Hogere Functies'] },
-                { name: 'H. van Dijk', functions: ['Bevelvoerder HV', 'SPEC. VOERTUIG : BV', 'R&C BV'] },
-                { name: 'F. Boer', functions: ['SPEC. VOERTUIG : BV', 'Chaff. HV'] },
-                { name: 'S. Visser', functions: ['Bevelvoerder TS 1', 'Hogere Functies'] },
-                { name: 'R. Klein', functions: ['Chauffeur RV', 'SPEC. VOERTUIG : BV'] },
-                { name: 'E. de Jong', functions: ['Bevelvoerder TS 2', 'BV SPEC. VOERTUIG'] },
-                { name: 'D. Groen', functions: ['Chauffeur HV'] },
-                { name: 'B. Mulder', functions: ['R&C BV'] },
-                { name: 'C. Meijer', functions: ['SPEC. VOERTUIG : BV'] },
-                { name: 'G. Witte', functions: ['Hogere Functies'] }
+                { name: 'Ron Appeldoorn', tags: [{text: 'TS 1: BV', color: 'red'}] },
+                { name: 'Bart Savelsberg', tags: [{text: 'TS 1: Ch, Avond/Nacht', color: 'red'}] },
+                { name: 'Wiebo Razenberg', tags: [{text: 'TS 1: Ch, Dag', color: 'red'}] },
+                { name: 'Erik Smulders', tags: [{text: 'TS 1: 1', color: 'red'}, {text: 'WO: ass', color: 'green'}] },
+                { name: 'Dirk Magielse', tags: [{text: 'TS 1: 2, Avond/Nacht', color: 'red'}, {text: 'TS 2: 2, Dag', color: 'red'}, {text: 'WO: duiker 2', color: 'green'}] },
+                
+                { name: 'Jan Rijvers', tags: [{text: 'TS 2: Ch, Dag', color: 'red'}] },
+                { name: 'Jasper Meeusen', tags: [{text: 'TS 1: 4', color: 'red'}] },
+                { name: 'Jochem Verdonk', tags: [{text: 'TS 2: BV', color: 'red'}, {text: 'WO: BV', color: 'gold'}] },
+                { name: 'Henri Smans', tags: [{text: 'TS 2: Ch', color: 'red'}, {text: 'WO: Ch', color: 'gold'}, {text: 'Corvee: Kantinist', color: 'grey'}] },
+                { name: 'Geert Tuerlings', tags: [{text: 'TS 2: 1', color: 'red'}, {text: 'SPEC. voertuig: 1', color: 'blue'}] },
+                
+                { name: 'Kjell Bastiaansen', tags: [{text: 'TS 2: 2, Avond/Nacht', color: 'red'}] },
+                { name: 'Ronnie van Dongen', tags: [{text: 'TS 2: 3', color: 'red'}, {text: 'WO: DPL', color: 'gold'}] },
+                { name: 'Nick van Melsen', tags: [{text: 'TS 2: BV', color: 'red'}, {text: 'WO: duiker 1', color: 'gold'}] },
+                { name: 'Christ Joosen', tags: [{text: 'SPEC. voertuig: BV', color: 'blue'}, {text: 'Corvee: Sleutel ronde', color: 'grey'}] },
+                { name: 'Richard Broeders', tags: [{text: 'SPEC. voertuig: Ch', color: 'blue'}] }
             ]
         },
-        'alarmen': { incidents: [{ id: 'al1', type: 'P1 Brand - Wegvervoer', loc: 'Afrit A4 Re - Hoogerheide', date: '9-4-2026', time: '16:06 - 16:41', vehicles: '201531, 201444, 201092', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Carnaval Nieuw-Vossemeer is een evenement met verhoogd risico. Brandweer is lokaal aanwezig ter ondersteuning.' }] },
-        'evenementen': { incidents: [{ id: 'ev1', type: 'B-Evenement (~300)', loc: 'Nieuw-Vossemeer', date: '23-1-2026', time: 'Hele dag', vehicles: 'Nienke Zwetsloot (Adviseur)', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Carnaval Nieuw-Vossemeer is een evenement met verhoogd risico ivm wegafsluiting.' }] },
-        'algemeen': { tasks: [ { id: 'aw1', text: 'Schoonmaken vuile ruimte en wasmachine', checked: true, author: 'Paul van der Heijden' }, { id: 'aw2', text: 'SVM-rondpompen 20-1561', checked: false, author: 'Paul van der Heijden' }, { id: 'aw3', text: 'Papierbakken legen', checked: false, author: 'Paul van der Heijden' } ] },
-        'ademlucht': { tasks: [ { id: 'ad1', text: 'Na einde werkzaamheden testbanken en pc uitschakelen', checked: false, author: 'Paul van der Heijden' } ] }
+        'alarmen': {
+            incidents: [
+                { id: 'al1', type: 'P1 Brand - Wegvervoer', loc: 'Afrit A4 Re - Hoogerheide', date: '9-4-2026', time: '16:06 - 16:41', vehicles: '201531, 201444, 201092', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Adres: Dorpskern Nieuw-Vossemeer.\n\nBestanden:\n- Veiligheidsplan Optochten 2026.pdf\n- Plattegrond carnavalsroute.pdf' }
+            ]
+        },
+        'evenementen': {
+            incidents: [
+                { id: 'ev1', type: 'B-Evenement (~300)', loc: 'Nieuw-Vossemeer', date: '23-1-2026', time: 'Hele dag', vehicles: 'Nienke Zwetsloot (Adviseur)', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Carnaval Nieuw-Vossemeer (Jan Kellerbal) + 13-02 t/m 17-02 (Carnaval).\nExtra verhoogd risico ivm wegafsluiting.' }
+            ]
+        },
+        'algemeen': {
+            tasks: [
+                { id: 'aw1', text: 'Schoonmaken vuile ruimte en ruimte wasmachine', checked: true, author: 'Paul van der Heijden' },
+                { id: 'aw2', text: 'SVM-rondpompen 20-1561', checked: false, author: 'Paul van der Heijden' },
+                { id: 'aw3', text: 'Papierbakken legen', checked: false, author: 'Paul van der Heijden' }
+            ]
+        },
+        'ademlucht': {
+            tasks: [
+                { id: 'ad1', text: 'Na einde werkzaamheden testbanken en vulbalk-pc uitschakelen', checked: false, author: 'Paul van der Heijden' }
+            ]
+        }
     };
 
     // --- RENDER FUNCTIES ---
-    // Functie voor de gekleurde functietags (Figma Ploegindeling)
-    function getFunctionTag(funcText) {
-        let color = ''; // Default Navy
-        // Groepeer functies en geef ze dezelfde kleur
-        if (funcText.includes('BV') || funcText.includes('Bevelvoerder')) color = 'gold'; // Goud voor BV
-        else if (funcText.includes('Chaff') || funcText.includes('Chauffeur')) color = 'red'; // Rood voor Chauffeur
-        else if (funcText.includes('RV') || funcText.includes('HV')) color = 'green'; // Groen voor Hoofdvoertuigen
-        else if (funcText.includes('SPEC. VOERTUIG')) color = 'purple'; // Paars voor Speciale voertuigen
-        return `<span class="func-tag" data-color="${color}">${funcText}</span>`;
-    }
-
-    // Bouw het 5x3 Ploegindeling Grid (Figma)
     function getRoosterKISHTML() {
-        const members = appState.rooster.members;
-        let html = `<h1 class="slide-title">ROOSTERPLANNING</h1><div class="kis-rooster-grid">`;
-        members.forEach(m => {
-            let funcTagsHtml = '';
-            m.functions.forEach(f => { funcTagsHtml += getFunctionTag(f); });
-            html += `<div class="kis-rooster-card">
-                        <div class="member-name">${m.name}</div>
-                        <div class="member-functions">${funcTagsHtml}</div>
-                     </div>`;
+        let html = `<h1 class="slide-title">Ploeg indeling: Breda</h1><div class="kis-rooster-grid">`;
+        appState.rooster.members.forEach(m => {
+            let tagsHtml = m.tags.map(t => `<span class="func-tag color-${t.color}">${t.text}</span>`).join('');
+            html += `<div class="kis-rooster-card"><div class="member-name">${m.name}</div><div class="member-tags">${tagsHtml}</div></div>`;
         });
         html += `</div>`;
         return html;
@@ -117,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getGlassRowsKISHTML(title, incidents) {
         let html = `<h1 class="slide-title">${title}</h1><div style="width:100%;">`;
-        html += `<div style="display:flex; gap:20px; font-weight:700; color:rgba(255,255,255,0.6); padding:0 30px 10px; font-size:16px; text-transform:uppercase;"><div style="flex:1;">Melding</div><div style="flex:1;">Locatie</div><div style="flex:1;">Datum</div><div style="flex:1;">Details</div></div>`;
+        html += `<div style="display:flex; gap:20px; font-weight:700; color:var(--text-muted); padding:0 30px 10px; font-size:16px; text-transform:uppercase;"><div style="flex:1;">Melding</div><div style="flex:1;">Locatie</div><div style="flex:1;">Datum</div><div style="flex:1;">Details</div></div>`;
         incidents.forEach(inc => {
             html += `
                 <div class="kis-glass-row">
@@ -135,16 +138,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const wysiwygEditorHTML = `<div class="editor-tabs"><div class="tab active">Nieuwe tab</div></div><div class="form-group"><label>Tab titel:</label><input type="text" class="text-input" value="Nieuwe tab"></div><div class="wysiwyg-container"><div class="wysiwyg-toolbar"><button class="toolbar-btn">P</button><button class="toolbar-btn">H1</button><button class="toolbar-btn">H2</button><div class="toolbar-divider"></div><button class="toolbar-btn" style="font-weight:900;">B</button><button class="toolbar-btn" style="font-style:italic;">I</button></div><textarea class="wysiwyg-area" placeholder="Typ inhoud..."></textarea></div><button class="btn-save">Opslaan</button>`;
 
     const blockData = {
-        'ploeg-indeling': { count: 0, editorHTML: `<div class="form-group"><label>Kazernes</label><div class="tags-wrapper"><span class="tag">Tilburg Vossenberg <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: () => getRoosterKISHTML() },
+        'ploeg-indeling': { count: 0, editorHTML: `<div class="form-group"><label>Kazerne in Roosterplanning</label><div class="tags-wrapper"><span class="tag">Breda <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: () => getRoosterKISHTML() },
         'alarmen': { count: () => appState.alarmen.incidents.length, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Datum</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>9-4-2026</td><td>P1 Brand - Wegvervoer</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: () => getGlassRowsKISHTML('ALARMEN VORIGE DIENST', appState.alarmen.incidents) },
         'evenementen': { count: () => appState.evenementen.incidents.length, editorHTML: `<div class="form-group"><label>Filter</label><div class="tags-wrapper"><span class="tag">Nieuw-Vossemeer <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: () => getGlassRowsKISHTML('EVENEMENTEN', appState.evenementen.incidents) },
-        'voertuigen': { count: 0, editorHTML: `<div class="form-group"><label>Voertuigen</label><div class="tags-wrapper"><span class="tag">201531 <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">STATUS VOERTUIGEN</h1><h3>Geen defecten gemeld.</h3>` },
-        'topdesk': { count: 0, editorHTML: `<div class="form-group"><label>Topdesk</label><div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">TOPDESK MELDINGEN</h1><p style="opacity:0.5;">Geen meldingen.</p>` },
-        'mobiliteit': { count: 0, editorHTML: `<div class="form-group"><label>Kaartlagen</label><div class="tags-wrapper"><span class="tag">Weg Info <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">MOBILITEIT</h1><div style="width:100%;height:400px;background:rgba(255,255,255,0.1);border:1px dashed rgba(255,255,255,0.3);">Kaart</div>` },
-        'gepland-onderhoud': { count: 1, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Voertuig</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>20-1571</td><td>Onderhoud</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><p>20-1571 in onderhoud.</p>` },
+        'voertuigen': { count: 0, editorHTML: `<div class="form-group"><label>Voertuigen</label><div class="tags-wrapper"><span class="tag">201531 <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">STATUS VOERTUIGEN</h1><h3 style="font-size: 24px; font-weight: 700;">Geen defecten gemeld.</h3>` },
+        'topdesk': { count: 0, editorHTML: `<div class="form-group"><label>Topdesk</label><div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">TOPDESK MELDINGEN</h1><p style="opacity:0.5; font-size: 20px;">Geen meldingen.</p>` },
+        'mobiliteit': { count: 0, editorHTML: `<div class="form-group"><label>Kaartlagen</label><div class="tags-wrapper"><span class="tag">Weg Info <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">MOBILITEIT</h1><div style="width:100%;height:400px;background:rgba(0,0,0,0.05);border:1px dashed var(--input-border);display:flex;align-items:center;justify-content:center;">Kaart</div>` },
+        'gepland-onderhoud': { count: 1, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Voertuig</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>20-1571</td><td>Onderhoud</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><p style="font-size: 20px;">20-1571 in onderhoud.</p>` },
         'algemeen': { count: () => appState.algemeen.tasks.length, editorHTML: () => getTaskEditorHTML('algemeen'), previewHTML: () => getTaskKISHTML('algemeen', 'ALG. WERKZAAMHEDEN') },
         'ademlucht': { count: () => appState.ademlucht.tasks.length, editorHTML: () => getTaskEditorHTML('ademlucht'), previewHTML: () => getTaskKISHTML('ademlucht', 'ADEMLUCHT WERKZAAMHEDEN') },
-        'vakbekwaam': { count: 0, editorHTML: `<div class="form-group"><label>Ploegen</label><div class="dropdown-input placeholder">Selecteer...<span class="chevron"></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">VAKBEKWAAM AG5</h1><p style="opacity:0.5;">Geen bijzonderheden.</p>` },
+        'vakbekwaam': { count: 0, editorHTML: `<div class="form-group"><label>Ploegen</label><div class="dropdown-input placeholder">Selecteer...</div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">VAKBEKWAAM AG5</h1><p style="opacity:0.5; font-size: 20px;">Geen bijzonderheden.</p>` },
         'default': { count: 0, editorHTML: wysiwygEditorHTML, previewHTML: `<h1 class="slide-title" id="dynamic-preview-title">ONDERDEEL</h1><p style="font-size:24px;">Inhoud presentatie.</p>` }
     };
 
@@ -156,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DIRECT DOM SYNC ---
     document.addEventListener('click', (e) => {
-        // 1. Checklist Sync
         const checkToggle = e.target.closest('.editor-check-toggle, .kis-checklist-card');
         if (checkToggle && !e.target.closest('.icon-btn')) {
             const blockId = checkToggle.getAttribute('data-block');
@@ -180,10 +182,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 2. KIS Info Pop-up (Gecentreerd Modal)
         const infoTrigger = e.target.closest('.kis-info-trigger');
         const kisModal = document.getElementById('kis-modal');
-        
         if (infoTrigger) {
             document.getElementById('kis-modal-title').innerText = infoTrigger.getAttribute('data-title');
             document.getElementById('kis-modal-text').innerText = infoTrigger.getAttribute('data-text');
@@ -271,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
         presentationSlides = []; presBgImageContainer.innerHTML = ''; 
         let contentImagePool = []; for(let i = 1; i <= 25; i++) { contentImagePool.push(`img/content-${i}.jpg`); } contentImagePool.sort(() => Math.random() - 0.5);
         
-        // Intro
         presentationSlides.push({ bgImage: `img/intro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px; border-bottom: none;">OPERATIONEEL DAGJOURNAAL</h1><h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${document.getElementById('location-trigger').innerText}</h2><p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${document.getElementById('datetime-display').innerText.split('   ')[0]}</p></div>`, blockId: null });
 
         middleList.querySelectorAll('.drag-item').forEach((block, index) => {
@@ -281,10 +280,8 @@ document.addEventListener('DOMContentLoaded', () => {
             presentationSlides.push({ bgImage: contentImagePool[index % contentImagePool.length], html: `<div style="width: 100%; text-align: left; padding: 0 40px;">${slideHtml}</div>`, blockId: id });
         });
 
-        // Outro
         presentationSlides.push({ bgImage: `img/outro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 64px; margin-bottom: 40px; border-bottom: 4px solid var(--vrmwb-red);">EINDE DAGJOURNAAL</h1><p style="font-size: 36px; opacity: 0.8; font-weight: 700;">Zijn er nog bijzonderheden of vragen?</p></div>`, blockId: null });
 
-        // Pre-render BG
         presentationSlides.forEach((slide, i) => {
             const bgLayer = document.createElement('div'); bgLayer.id = `bg-slide-${i}`;
             bgLayer.style.cssText = `position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; background-image: url('${slide.bgImage}'); opacity: ${i === 0 ? '1' : '0'}; transition: opacity 0.4s ease;`;
@@ -297,7 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
         currentSlideIndex = index;
 
         const currentSlide = presentationSlides[currentSlideIndex];
-        // Vers genereer HTML voor checklists en rooster zodat de status 100% klopt
         if (currentSlide.blockId && (currentSlide.blockId === 'algemeen' || currentSlide.blockId === 'ademlucht' || currentSlide.blockId === 'ploeg-indeling')) {
             let freshHtml = getHTML(currentSlide.blockId, 'previewHTML');
             currentSlide.html = `<div style="width: 100%; text-align: left; padding: 0 40px;">${freshHtml}</div>`;
