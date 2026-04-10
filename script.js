@@ -229,7 +229,6 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">EVENEMENTEN (REGIO BREDA)</h1><table class="rooster-table"><tr><th>Datum</th><th>Evenement</th><th>Locatie</th></tr><tr><td>Zaterdag 11 apr</td><td>Wielerronde Prinsenbeek</td><td>Centrum Prinsenbeek</td></tr></table>`
         },
         'default': {
-            // Alle andere blokken krijgen de nieuwe WYSIWYG Editor
             editorHTML: wysiwygEditorHTML,
             previewHTML: `<h1 class="slide-title" id="dynamic-preview-title">ONDERDEEL</h1><p style="font-size: 24px; margin-top: 20px; line-height: 1.5;">Dit is een voorbeeld van de opgemaakte tekst die door de beheerder is ingetypt in de editor. De tekst is makkelijk te lezen en wordt keurig uitgelijnd op het presentatiescherm.</p>`
         }
@@ -242,6 +241,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const emptyState = document.getElementById('empty-state');
     const editorTitle = document.getElementById('editor-title');
     const editorContent = document.getElementById('editor-content');
+
+    // DE HERSTELDE REGELS:
+    const leftColumn = leftList.closest('.column');
+    const middleColumn = middleList.closest('.column');
 
     let currentSelectedBlockId = null;
     let currentSelectedBlockName = "";
