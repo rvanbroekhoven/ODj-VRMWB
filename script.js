@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
-    // --- HERBRUIKBARE WYSIWYG HTML ---
     const wysiwygEditorHTML = `
         <div class="editor-tabs">
             <div class="tab active">Nieuwe tab</div>
@@ -65,9 +64,12 @@ document.addEventListener('DOMContentLoaded', () => {
         <button class="btn-save">Opslaan</button>
     `;
 
-    // --- DYNAMISCHE CONTENT MAPPING ---
+    // --- DATA GEDREVEN NOTIFICATIES ---
+    // Elke `count` hier correspondeert direct met het rode cijfer op de kaart. 
+    // Een count van 0 verbergt het rode bolletje netjes.
     const blockData = {
         'ploeg-indeling': {
+            count: 0,
             editorHTML: `
                 <div class="form-group"><label>Kazernes in Roosterplanning</label>
                     <div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div>
@@ -86,6 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">PLOEG INDELING</h1><table class="rooster-table"><tr><th>Functie</th><th>Naam</th></tr><tr><td>Bevelvoerder</td><td>J. de Vries</td></tr><tr><td>Chauffeur/Pompbediende</td><td>P. Hendriks</td></tr><tr><td>Manschap 1</td><td>A. Jansen</td></tr><tr><td>Manschap 2</td><td>M. Bakker</td></tr></table>`
         },
         'alarmen': {
+            count: 1, // Dynamische notificatie 
             editorHTML: `
                 <div class="table-container">
                     <table class="data-table">
@@ -106,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">ALARMEN VORIGE DIENST</h1><div class="incident-card"><strong>PRIO 1</strong> - Brand Wegvervoer<br><br>Locatie: Afrit A4 Re - Hoogerheide<br><span style="opacity: 0.7; font-size: 16px;">Voertuigen: 201531, 201444, 201092, 284831, 194230</span></div>`
         },
         'voertuigen': {
+            count: 0,
             editorHTML: `
                 <div class="form-group"><label>Voertuigen standaard in lijst kazerne</label>
                     <div class="tags-wrapper">
@@ -128,6 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">STATUS VOERTUIGEN</h1><h3 style="font-size: 24px; margin-bottom: 10px;">Geen defecten gemeld via OASIS.</h3><p style="font-size: 20px; opacity: 0.7;">Alle voertuigen zijn inzetbaar voor de komende dienst.</p>`
         },
         'topdesk': {
+            count: 0, 
             editorHTML: `
                 <div class="form-group"><label>Topdesk kazernes</label>
                     <div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div>
@@ -151,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">TOPDESK MELDINGEN</h1><p style="font-size: 24px; opacity: 0.5; margin-top: 50px;">Geen openstaande Topdesk meldingen gevonden voor deze kazerne.</p>`
         },
         'mobiliteit': {
+            count: 0,
             editorHTML: `
                 <div class="form-group"><label>Kaartlagen Actueel</label>
                     <div class="tags-wrapper"><span class="tag">Bereikbaarheid wegdeel (nu) <span class="close">&times;</span></span><span class="tag">Weg Info punt (nu) <span class="close">&times;</span></span></div>
@@ -169,6 +175,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">MOBILITEIT & WEGAFSLUITINGEN</h1><div style="width: 100%; height: 400px; background: rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.3);">Kaartmodule Actueel wordt hier geladen.</div>`
         },
         'gepland-onderhoud': {
+            count: 1, // Dynamische notificatie 
             editorHTML: `
                 <div class="table-container">
                     <table class="data-table">
@@ -178,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <td>20-1571</td>
                                 <td>ingezet op post Raamsdonksveer i.v.m. onderhoud 20-5271</td>
                                 <td>13 tot 17 april</td>
-                                <td style="white-space: nowrap;"><button class="icon-btn copy">⎘</button><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></td>
+                                <td><button class="icon-btn copy">⎘</button><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -191,6 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><table class="rooster-table"><tr><th>Voertuig</th><th>Omschrijving</th><th>Datum</th></tr><tr><td>20-1571</td><td>Ingezet op post Raamsdonksveer i.v.m. onderhoud 20-5271</td><td>13 tot 17 april</td></tr></table>`
         },
         'algemeen': {
+            count: 3, // Dynamische notificatie 
             editorHTML: `
                 <div class="checklist-item"><div class="check-box">✓</div><div class="check-content"><strong>Schoonmaken vuile ruimte en ruimte wasmachine</strong><span>Auteur: Paul van der Heijden automatisch toegevoegd</span></div><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></div>
                 <div class="checklist-item"><div class="check-box">✓</div><div class="check-content"><strong>SVM-rondpompen 20-1561</strong><span>Auteur: Paul van der Heijden automatisch toegevoegd</span></div><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></div>
@@ -200,6 +208,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">ALG. WERKZAAMHEDEN</h1><ul style="font-size: 24px; line-height: 2; list-style-type: square; padding-left: 30px;"><li>Schoonmaken vuile ruimte en ruimte wasmachine</li><li>SVM-rondpompen 20-1561</li><li>Papierbakken legen</li></ul>`
         },
         'ademlucht': {
+            count: 1, // Dynamische notificatie 
             editorHTML: `
                 <div class="checklist-item"><div class="check-box" style="background: var(--vrmwb-red);"></div><div class="check-content"><strong>Na einde werkzaamheden in de ademluchtwerkplaats testbanken en vulbalk-pc volledig uitschakelen</strong><span>Auteur: Paul van der Heijden automatisch toegevoegd</span></div><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></div>
                 <div class="add-item-row"><input type="text" class="text-input" placeholder="Vul hier een item in voor de werklijst..."><button class="btn-add">+</button></div>
@@ -207,6 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">ADEMLUCHT WERKZAAMHEDEN</h1><div class="incident-card" style="border-left-color: #FFFFFF;"><strong>TAAK:</strong> Na einde werkzaamheden in de ademluchtwerkplaats testbanken en vulbalk-pc volledig uitschakelen.</div>`
         },
         'vakbekwaam': {
+            count: 0,
             editorHTML: `
                 <div class="form-group"><label>Ploegen voor activiteiten</label>
                     <div class="dropdown-input placeholder">Selecteer ploeg...<span class="chevron"></span></div>
@@ -216,6 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">VAKBEKWAAM AG5</h1><p style="font-size: 24px; opacity: 0.5; margin-top: 50px;">Geen bijzonderheden voor komende dienst.</p>`
         },
         'evenementen': {
+            count: 1, // Dynamische notificatie 
             editorHTML: `
                 <div class="form-group"><label>Woonplaats filter</label>
                     <div class="tags-wrapper">
@@ -229,10 +240,32 @@ document.addEventListener('DOMContentLoaded', () => {
             previewHTML: `<h1 class="slide-title">EVENEMENTEN (REGIO BREDA)</h1><table class="rooster-table"><tr><th>Datum</th><th>Evenement</th><th>Locatie</th></tr><tr><td>Zaterdag 11 apr</td><td>Wielerronde Prinsenbeek</td><td>Centrum Prinsenbeek</td></tr></table>`
         },
         'default': {
+            count: 0,
             editorHTML: wysiwygEditorHTML,
             previewHTML: `<h1 class="slide-title" id="dynamic-preview-title">ONDERDEEL</h1><p style="font-size: 24px; margin-top: 20px; line-height: 1.5;">Dit is een voorbeeld van de opgemaakte tekst die door de beheerder is ingetypt in de editor. De tekst is makkelijk te lezen en wordt keurig uitgelijnd op het presentatiescherm.</p>`
         }
     };
+
+    // --- FUNCTIE: INJECTEER BADGES AUTOMATISCH ---
+    function initializeBadges() {
+        const allCards = document.querySelectorAll('.drag-item');
+        allCards.forEach(card => {
+            const id = card.getAttribute('data-id');
+            const data = blockData[id] || blockData['default'];
+            
+            // Als er data is en de teller is groter dan 0, toon dan de notificatie badge
+            if (data && data.count > 0) {
+                let badge = document.createElement('span');
+                badge.className = 'badge red-bg';
+                badge.innerText = data.count;
+                card.appendChild(badge);
+            }
+        });
+    }
+
+    // Direct aanroepen tijdens het inladen
+    initializeBadges();
+
 
     // --- DRAG & DROP LOGICA ---
     const draggables = document.querySelectorAll('.drag-item');
@@ -242,7 +275,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const editorTitle = document.getElementById('editor-title');
     const editorContent = document.getElementById('editor-content');
 
-    // DE HERSTELDE REGELS:
     const leftColumn = leftList.closest('.column');
     const middleColumn = middleList.closest('.column');
 
@@ -302,7 +334,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let clone = card.cloneNode(true);
         let badge = clone.querySelector('.badge');
-        if (badge) badge.remove();
+        if (badge) badge.remove(); 
         
         currentSelectedBlockName = clone.textContent.trim().toUpperCase();
         editorTitle.innerText = currentSelectedBlockName; 
@@ -495,7 +527,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Preloader voor razendsnelle start
     setTimeout(() => {
         const imagesToPreload = [];
         for (let i = 1; i <= 5; i++) { imagesToPreload.push(`img/intro-${i}.jpg`); imagesToPreload.push(`img/outro-${i}.jpg`); }
