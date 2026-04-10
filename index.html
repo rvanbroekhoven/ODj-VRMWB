@@ -117,19 +117,22 @@
     <div id="presentation-overlay" class="presentation-overlay">
         <div id="pres-bg-image" class="pres-bg-image"></div>
         <div class="pres-bg-color"></div>
-        
-        <div id="pres-info-popup" class="pres-info-popup">
-            <div class="popup-arrow"></div>
-            <h4 id="popup-title" style="margin-bottom: 8px; font-weight: 900; font-size: 16px;">Titel</h4>
-            <div class="popup-content" id="popup-text" style="font-size: 14px; line-height: 1.5;"></div>
-        </div>
 
         <button id="close-presentation" class="btn-close-presentation">&times;</button>
         <div class="pres-content-wrapper" id="pres-content"></div>
+        
         <div class="pres-controls">
             <button id="pres-prev" class="pres-nav-btn">&lt;</button>
             <span id="pres-counter" class="pres-counter">1 / 5</span>
             <button id="pres-next" class="pres-nav-btn">&gt;</button>
+        </div>
+
+        <div id="kis-modal" class="kis-modal-wrapper">
+            <div class="kis-modal-content">
+                <button class="kis-modal-close" id="kis-modal-close">&times;</button>
+                <h3 id="kis-modal-title" style="font-size: 28px; font-weight: 900; margin-bottom: 15px;">Titel</h3>
+                <div id="kis-modal-text" style="font-size: 18px; line-height: 1.6; opacity: 0.8;">Content</div>
+            </div>
         </div>
     </div>
     

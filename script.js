@@ -34,12 +34,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
-    // --- STATE MANAGEMENT: SYNC TUSSEN KIS EN BEHEER ---
-    // Dit is het brein. De render functies kijken naar deze data om de HTML op te bouwen.
+    // --- SHARED STATE (HET BREIN VAN DE APP) ---
     const appState = {
         'alarmen': {
             incidents: [
-                { id: 'al1', prio: 1, title: 'Woningbrand (Middel Brand)', loc: 'Hoofdstraat 12, Breda', desc: 'Brand wegvervoer op de A4. Voertuigen: 201531, 201444, 201092, 284831, 194230', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Carnaval Nieuw-Vossemeer is een evenement met verhoogd risico. Brandweer is lokaal aanwezig ter ondersteuning.' }
+                { id: 'al1', type: 'P1 Brand - Wegvervoer', loc: 'Afrit A4 Re - Hoogerheide', date: '9-4-2026', time: '16:06 - 16:41', vehicles: '201531, 201444, 201092', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Adres: Dorpskern Nieuw-Vossemeer.\n\nBestanden:\n- Veiligheidsplan Optochten 2026.pdf\n- Plattegrond carnavalsroute.pdf' }
+            ]
+        },
+        'evenementen': {
+            incidents: [
+                { id: 'ev1', type: 'B-Evenement (~300)', loc: 'Nieuw-Vossemeer', date: '23-1-2026', time: 'Hele dag', vehicles: 'Nienke Zwetsloot (Adviseur)', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Carnaval Nieuw-Vossemeer (Jan Kellerbal) + 13-02 t/m 17-02 (Carnaval).\nExtra verhoogd risico ivm wegafsluiting.' }
             ]
         },
         'algemeen': {
@@ -51,23 +55,20 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         'ademlucht': {
             tasks: [
-                { id: 'ad1', text: 'Na einde werkzaamheden in de ademluchtwerkplaats testbanken en vulbalk-pc volledig uitschakelen', checked: false, author: 'Paul van der Heijden' }
+                { id: 'ad1', text: 'Na einde werkzaamheden testbanken en vulbalk-pc uitschakelen', checked: false, author: 'Paul van der Heijden' }
             ]
         }
     };
 
-    // --- RENDER FUNCTIES ---
-    // Deze functies bouwen de actuele HTML op basis van de state (voor perfecte sync)
-    
+    // --- RENDER FUNCTIES VOOR HTML ---
     function getTaskEditorHTML(blockId) {
-        const tasks = appState[blockId].tasks;
         let html = '';
-        tasks.forEach(t => {
-            html += `<div class="checklist-item editor-check-toggle" data-block="${blockId}" data-id="${t.id}">
-                        <div class="check-box ${t.checked ? 'checked' : ''}">${t.checked ? '✓' : ''}</div>
+        appState[blockId].tasks.forEach(t => {
+            html += `<div class="editor-check-toggle ${t.checked ? 'checked' : ''}" data-block="${blockId}" data-id="${t.id}">
+                        <div class="check-box">${t.checked ? '✓' : ''}</div>
                         <div class="check-content"><strong>${t.text}</strong><span>Auteur: ${t.author} automatisch toegevoegd</span></div>
-                        <button class="icon-btn edit" onclick="event.stopPropagation()">✎</button>
-                        <button class="icon-btn delete" onclick="event.stopPropagation()">🗑</button>
+                        <button class="icon-btn edit">✎</button>
+                        <button class="icon-btn delete">🗑</button>
                     </div>`;
         });
         html += `<div class="add-item-row"><input type="text" class="text-input" placeholder="Vul hier een item in..."><button class="btn-add">+</button></div>`;
@@ -75,32 +76,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getTaskKISHTML(blockId, title) {
-        const tasks = appState[blockId].tasks;
-        let html = `<h1 class="slide-title">${title}</h1><ul class="kis-checklist">`;
-        tasks.forEach(t => {
-            html += `<li class="kis-checklist-item kis-check-toggle" data-block="${blockId}" data-id="${t.id}">
-                        <div class="kis-check ${t.checked ? 'checked' : ''}">${t.checked ? '✓' : ''}</div>
-                        <span>${t.text}</span>
-                     </li>`;
+        let html = `<h1 class="slide-title">${title}</h1><div style="width:100%;">`;
+        appState[blockId].tasks.forEach(t => {
+            html += `<div class="kis-checklist-card ${t.checked ? 'checked' : ''}" data-block="${blockId}" data-id="${t.id}">
+                        <div class="kis-check-square">${t.checked ? '✓' : ''}</div>
+                        <div class="kis-check-text">${t.text}<span class="kis-check-author">Auteur: ${t.author} automatisch toegevoegd</span></div>
+                     </div>`;
         });
-        html += `</ul>`;
+        html += `</div>`;
         return html;
     }
 
-    function getAlarmenKISHTML() {
-        let html = `<h1 class="slide-title">ALARMEN VORIGE DIENST</h1>`;
-        appState['alarmen'].incidents.forEach(inc => {
+    function getGlassRowsKISHTML(title, incidents) {
+        let html = `<h1 class="slide-title">${title}</h1><div style="width:100%;">`;
+        html += `<div style="display:flex; gap:20px; font-weight:700; color:rgba(255,255,255,0.6); padding:0 30px 10px; font-size:16px; text-transform:uppercase;">
+                    <div style="flex:1;">Melding</div><div style="flex:1;">Locatie</div><div style="flex:1;">Datum</div><div style="flex:1;">Details</div>
+                 </div>`;
+        incidents.forEach(inc => {
             html += `
-                <div class="kis-card prio-${inc.prio}">
-                    <div class="kis-card-icon"><span>🔥</span>PRIO ${inc.prio}</div>
-                    <div class="kis-card-content">
-                        <div class="kis-card-title">${inc.title}</div>
-                        <div class="kis-card-sub">Locatie: ${inc.loc}</div>
-                        <div class="kis-card-desc">${inc.desc}</div>
-                    </div>
-                    ${inc.infoText ? `<div class="info-trigger" data-title="${inc.infoTitle}" data-text="${inc.infoText}">i</div>` : ''}
+                <div class="kis-glass-row">
+                    <div class="kis-glass-col bold">${inc.type}</div>
+                    <div class="kis-glass-col">${inc.loc}</div>
+                    <div class="kis-glass-col">${inc.date}<br><span style="font-size:14px;opacity:0.7;">${inc.time}</span></div>
+                    <div class="kis-glass-col">${inc.vehicles}</div>
+                    ${inc.infoText ? `<div class="kis-info-trigger" data-title="${inc.infoTitle}" data-text="${inc.infoText}">i</div>` : ''}
                 </div>`;
         });
+        html += `</div>`;
         return html;
     }
 
@@ -110,31 +112,26 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="wysiwyg-container">
             <div class="wysiwyg-toolbar">
                 <button class="toolbar-btn">P</button><button class="toolbar-btn">H1</button><button class="toolbar-btn">H2</button>
-                <div class="toolbar-divider"></div>
-                <button class="toolbar-btn" style="font-weight: 900;">B</button><button class="toolbar-btn" style="font-style: italic;">I</button>
-                <div class="toolbar-divider"></div>
-                <button class="toolbar-btn">≡</button>
+                <div class="toolbar-divider"></div><button class="toolbar-btn" style="font-weight: 900;">B</button><button class="toolbar-btn" style="font-style: italic;">I</button>
             </div>
             <textarea class="wysiwyg-area" placeholder="Typ hier de inhoud voor de presentatie..."></textarea>
         </div><button class="btn-save">Opslaan</button>
     `;
 
-    // De BlockData (verwijst naar de render functies of statische HTML waar geen sync nodig is)
     const blockData = {
-        'ploeg-indeling': { count: 0, editorHTML: `<div class="form-group"><label>Kazernes</label><div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">PLOEG INDELING</h1><table class="rooster-table"><tr><th>Functie</th><th>Naam</th></tr><tr><td>Bevelvoerder</td><td>J. de Vries</td></tr><tr><td>Chauffeur</td><td>P. Hendriks</td></tr></table>` },
-        'alarmen': { count: () => appState.alarmen.incidents.length, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Datum</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>9-4-2026</td><td>P1 Brand - Wegvervoer</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: () => getAlarmenKISHTML() },
-        'voertuigen': { count: 0, editorHTML: `<div class="form-group"><label>Voertuigen in lijst</label><div class="tags-wrapper"><span class="tag">201531 <span class="close">&times;</span></span><span class="tag">201543 <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">STATUS VOERTUIGEN</h1><h3 style="font-size: 24px; margin-bottom: 10px;">Geen defecten gemeld via OASIS.</h3>` },
-        'topdesk': { count: 0, editorHTML: `<div class="form-group"><label>Topdesk kazernes</label><div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">TOPDESK MELDINGEN</h1><p style="font-size: 24px; opacity: 0.5; margin-top: 50px;">Geen openstaande Topdesk meldingen.</p>` },
-        'mobiliteit': { count: 0, editorHTML: `<div class="form-group"><label>Kaartlagen</label><div class="tags-wrapper"><span class="tag">Weg Info punt (nu) <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">MOBILITEIT</h1><div style="width: 100%; height: 400px; background: rgba(255,255,255,0.1); border: 1px dashed rgba(255,255,255,0.3);">Kaartmodule</div>` },
-        'gepland-onderhoud': { count: 1, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Voertuig</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>20-1571</td><td>ingezet op post Raamsdonksveer</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><table class="rooster-table"><tr><th>Voertuig</th><th>Omschrijving</th><th>Datum</th></tr><tr><td>20-1571</td><td>Ingezet op post Raamsdonksveer</td><td>13 tot 17 april</td></tr></table>` },
-        'algemeen': { count: () => appState.algemeen.tasks.length, editorHTML: () => getTaskEditorHTML('algemeen'), previewHTML: () => getTaskKISHTML('algemeen', 'ALGEMENE WERKZAAMHEDEN') },
+        'ploeg-indeling': { count: 0, editorHTML: `<div class="form-group"><label>Kazernes</label><div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">PLOEG INDELING</h1><p style="font-size:24px;">Ploegschema wordt hier geladen.</p>` },
+        'alarmen': { count: () => appState.alarmen.incidents.length, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Datum</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>9-4-2026</td><td>P1 Brand - Wegvervoer</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: () => getGlassRowsKISHTML('ALARMEN VORIGE DIENST', appState.alarmen.incidents) },
+        'evenementen': { count: () => appState.evenementen.incidents.length, editorHTML: `<div class="form-group"><label>Filter</label><div class="tags-wrapper"><span class="tag">Nieuw-Vossemeer <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: () => getGlassRowsKISHTML('EVENEMENTEN', appState.evenementen.incidents) },
+        'voertuigen': { count: 0, editorHTML: `<div class="form-group"><label>Voertuigen in lijst</label><div class="tags-wrapper"><span class="tag">201531 <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">STATUS VOERTUIGEN</h1><h3 style="font-size: 24px; margin-bottom: 10px;">Geen defecten gemeld.</h3>` },
+        'topdesk': { count: 0, editorHTML: `<div class="form-group"><label>Topdesk</label><div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">TOPDESK MELDINGEN</h1><p style="font-size: 24px; opacity: 0.5;">Geen meldingen.</p>` },
+        'mobiliteit': { count: 0, editorHTML: `<div class="form-group"><label>Kaartlagen</label><div class="tags-wrapper"><span class="tag">Weg Info <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">MOBILITEIT</h1><div style="width: 100%; height: 400px; background: rgba(255,255,255,0.1); border: 1px dashed rgba(255,255,255,0.3);">Kaart</div>` },
+        'gepland-onderhoud': { count: 1, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Voertuig</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>20-1571</td><td>Onderhoud Raamsdonksveer</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><p style="font-size:24px;">20-1571 in onderhoud.</p>` },
+        'algemeen': { count: () => appState.algemeen.tasks.length, editorHTML: () => getTaskEditorHTML('algemeen'), previewHTML: () => getTaskKISHTML('algemeen', 'ALG. WERKZAAMHEDEN') },
         'ademlucht': { count: () => appState.ademlucht.tasks.length, editorHTML: () => getTaskEditorHTML('ademlucht'), previewHTML: () => getTaskKISHTML('ademlucht', 'ADEMLUCHT WERKZAAMHEDEN') },
-        'vakbekwaam': { count: 0, editorHTML: `<div class="form-group"><label>Ploegen</label><div class="dropdown-input placeholder">Selecteer ploeg...<span class="chevron"></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">VAKBEKWAAM AG5</h1><p style="font-size: 24px; opacity: 0.5;">Geen bijzonderheden.</p>` },
-        'evenementen': { count: 1, editorHTML: `<div class="form-group"><label>Woonplaats filter</label><div class="tags-wrapper"><span class="tag">Breda <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">EVENEMENTEN (REGIO BREDA)</h1><table class="rooster-table"><tr><th>Datum</th><th>Evenement</th><th>Locatie</th></tr><tr><td>Zat 11 apr</td><td>Wielerronde Prinsenbeek</td><td>Centrum</td></tr></table>` },
-        'default': { count: 0, editorHTML: wysiwygEditorHTML, previewHTML: `<h1 class="slide-title" id="dynamic-preview-title">ONDERDEEL</h1><p style="font-size: 24px; line-height: 1.5;">Dit is een opgemaakte tekst voor de presentatie.</p>` }
+        'vakbekwaam': { count: 0, editorHTML: `<div class="form-group"><label>Ploegen</label><div class="dropdown-input placeholder">Selecteer...<span class="chevron"></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">VAKBEKWAAM AG5</h1><p style="font-size: 24px; opacity: 0.5;">Geen bijzonderheden.</p>` },
+        'default': { count: 0, editorHTML: wysiwygEditorHTML, previewHTML: `<h1 class="slide-title" id="dynamic-preview-title">ONDERDEEL</h1><p style="font-size: 24px; line-height: 1.5;">Inhoud presentatie.</p>` }
     };
 
-    // Helper om string vs functie af te vangen
     function getHTML(id, type) {
         const data = blockData[id] || blockData['default'];
         const content = data[type];
@@ -146,67 +143,59 @@ document.addEventListener('DOMContentLoaded', () => {
         return typeof count === 'function' ? count() : count;
     }
 
-    // --- BADGES INJECTEREN ---
     function initializeBadges() {
         document.querySelectorAll('.drag-item').forEach(card => {
-            const id = card.getAttribute('data-id');
-            const count = getBadgeCount(id);
+            const count = getBadgeCount(card.getAttribute('data-id'));
             if (count > 0) {
-                let badge = document.createElement('span');
-                badge.className = 'badge red-bg';
-                badge.innerText = count;
+                let badge = document.createElement('span'); badge.className = 'badge red-bg'; badge.innerText = count;
                 card.appendChild(badge);
             }
         });
     }
     initializeBadges();
 
-    // --- GLOBALE KLIK AFHANDELING (VOOR SYNC & POP-UPS) ---
+    // --- DIRECT DOM SYNC (Geen flikkering of data-verlies) ---
     document.addEventListener('click', (e) => {
-        
-        // 1. Checklist Toggles (Beheer & KIS)
-        const toggleBtn = e.target.closest('.editor-check-toggle, .kis-check-toggle');
-        if (toggleBtn) {
-            const blockId = toggleBtn.getAttribute('data-block');
-            const taskId = toggleBtn.getAttribute('data-id');
-            
-            // Pas centraal state aan
+        // 1. Checklist Sync
+        const checkToggle = e.target.closest('.editor-check-toggle, .kis-checklist-card');
+        if (checkToggle && !e.target.closest('.icon-btn')) {
+            const blockId = checkToggle.getAttribute('data-block');
+            const taskId = checkToggle.getAttribute('data-id');
             const task = appState[blockId].tasks.find(t => t.id === taskId);
-            if (task) task.checked = !task.checked;
-
-            // Re-render KIS als deze open staat
-            if (document.getElementById('presentation-overlay').classList.contains('active')) {
-                showSlide(currentSlideIndex); // Herlaadt huidige KIS slide met nieuwe state
-            }
-            // Re-render Beheer (Kolom 3) als deze open staat
-            if (currentSelectedBlockId === blockId) {
-                document.getElementById('editor-content').innerHTML = getHTML(blockId, 'editorHTML');
+            
+            if (task) {
+                task.checked = !task.checked; // Draai boolean om in het brein
+                // Zoek ALLE visuele weergaves van deze taak op het hele scherm en update ze direct
+                document.querySelectorAll(`[data-block="${blockId}"][data-id="${taskId}"]`).forEach(el => {
+                    if (task.checked) {
+                        el.classList.add('checked');
+                        const icon = el.querySelector('.check-box, .kis-check-square');
+                        if (icon) icon.innerText = '✓';
+                    } else {
+                        el.classList.remove('checked');
+                        const icon = el.querySelector('.check-box, .kis-check-square');
+                        if (icon) icon.innerText = '';
+                    }
+                });
             }
             return;
         }
 
-        // 2. Info Pop-ups (Figma Stijl)
-        const infoTrigger = e.target.closest('.info-trigger');
-        const popup = document.getElementById('pres-info-popup');
+        // 2. KIS Figma Pop-up (Gecentreerd Modal)
+        const infoTrigger = e.target.closest('.kis-info-trigger');
+        const kisModal = document.getElementById('kis-modal');
         
         if (infoTrigger) {
-            document.getElementById('popup-title').innerText = infoTrigger.getAttribute('data-title');
-            document.getElementById('popup-text').innerText = infoTrigger.getAttribute('data-text');
-            
-            // Plaats popup fysiek BOVEN de trigger knop
-            const rect = infoTrigger.getBoundingClientRect();
-            popup.style.left = (rect.left - (350 / 2) + 14) + 'px'; // 350 is popup breedte
-            popup.style.top = (rect.top - popup.offsetHeight - 20) + 'px'; 
-            
-            popup.classList.add('active');
+            document.getElementById('kis-modal-title').innerText = infoTrigger.getAttribute('data-title');
+            document.getElementById('kis-modal-text').innerText = infoTrigger.getAttribute('data-text');
+            kisModal.classList.add('active');
             e.stopPropagation();
-        } else if (!e.target.closest('.pres-info-popup')) {
-            // Klik buiten popup = sluiten
-            if (popup) popup.classList.remove('active');
+        } else if (e.target.closest('#kis-modal-close') || e.target === kisModal) {
+            kisModal.classList.remove('active');
         }
     });
 
-    // --- DRAG & DROP LOGICA ---
+    // --- DRAG & DROP ---
     const draggables = document.querySelectorAll('.drag-item');
     const leftList = document.getElementById('blok-selectie');
     const middleList = document.getElementById('dagjournaal-lijst');
@@ -222,8 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function checkEmptyState() {
         if (!emptyState) return;
-        const itemsInMiddle = middleList.querySelectorAll('.drag-item').length;
-        emptyState.style.display = itemsInMiddle === 0 ? 'block' : 'none';
+        emptyState.style.display = middleList.querySelectorAll('.drag-item').length === 0 ? 'block' : 'none';
     }
 
     draggables.forEach(draggable => {
@@ -231,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         draggable.addEventListener('dragend', () => {
             draggable.classList.remove('dragging');
             if (middleList.contains(draggable)) draggable.classList.add('sequence-card'); 
-            else draggable.classList.remove('sequence-card', 'active-card', 'gold'); draggable.classList.add('theme-card-light');
+            else draggable.classList.remove('sequence-card', 'active-card', 'gold'), draggable.classList.add('theme-card-light');
             checkEmptyState();
             if (!middleList.querySelector('.active-card')) {
                 editorTitle.innerText = "GEEN BLOK GESELECTEERD";
@@ -261,7 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- KLIKKEN IN DE MIDDELSTE KOLOM ---
     middleList.addEventListener('click', e => {
         const card = e.target.closest('.drag-item');
         if (!card || !middleList.contains(card)) return; 
@@ -275,12 +262,11 @@ document.addEventListener('DOMContentLoaded', () => {
         
         currentSelectedBlockName = clone.textContent.trim().toUpperCase();
         editorTitle.innerText = currentSelectedBlockName; 
-        
         currentSelectedBlockId = card.getAttribute('data-id');
         editorContent.innerHTML = getHTML(currentSelectedBlockId, 'editorHTML');
     });
 
-    // --- PREVIEW MODAL ---
+    // --- MODALS (PREVIEW & LOCATION) ---
     const btnOpenPreview = document.getElementById('btn-open-preview');
     const previewModal = document.getElementById('preview-modal');
     btnOpenPreview.addEventListener('click', () => {
@@ -292,11 +278,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('close-preview').addEventListener('click', () => previewModal.classList.remove('active'));
 
-    // --- LOCATIE MODAL ---
     const locationModal = document.getElementById('location-modal');
     document.getElementById('location-trigger').addEventListener('click', () => locationModal.classList.add('active'));
     document.getElementById('close-modal').addEventListener('click', () => locationModal.classList.remove('active'));
-    
     document.querySelectorAll('.loc-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
@@ -306,7 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- VOLLEDIG SCHERM PRESENTATIE ---
+    // --- KIS PRESENTATIE ---
     const presentationOverlay = document.getElementById('presentation-overlay');
     const presContent = document.getElementById('pres-content');
     const presBgImageContainer = document.getElementById('pres-bg-image');
@@ -318,7 +302,6 @@ document.addEventListener('DOMContentLoaded', () => {
         presentationSlides = [];
         presBgImageContainer.innerHTML = ''; 
 
-        // Willekeurige bg logica behouden
         let contentImagePool = [];
         for(let i = 1; i <= 25; i++) { contentImagePool.push(`img/content-${i}.jpg`); }
         contentImagePool.sort(() => Math.random() - 0.5);
@@ -326,29 +309,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const loc = document.getElementById('location-trigger').innerText;
         const date = document.getElementById('datetime-display').innerText.split('   ')[0];
         
-        // Intro
         presentationSlides.push({ bgImage: `img/intro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px; border-bottom: none;">OPERATIONEEL DAGJOURNAAL</h1><h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${loc}</h2><p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${date}</p></div>`, blockId: null });
 
-        // Content
-        const blocksInMiddle = middleList.querySelectorAll('.drag-item');
-        blocksInMiddle.forEach((block, index) => {
+        middleList.querySelectorAll('.drag-item').forEach((block, index) => {
             const id = block.getAttribute('data-id');
             let clone = block.cloneNode(true);
             let badge = clone.querySelector('.badge');
             if (badge) badge.remove();
-            const title = clone.textContent.trim().toUpperCase();
-
-            // BELANGRIJK: Hier roepen we de dynamische previewHTML() functie aan
+            
             let slideHtml = getHTML(id, 'previewHTML');
-            if (slideHtml.includes('id="dynamic-preview-title"')) slideHtml = slideHtml.replace('id="dynamic-preview-title">ONDERDEEL', 'id="dynamic-preview-title">' + title);
+            if (slideHtml.includes('id="dynamic-preview-title"')) slideHtml = slideHtml.replace('id="dynamic-preview-title">ONDERDEEL', 'id="dynamic-preview-title">' + clone.textContent.trim().toUpperCase());
 
             presentationSlides.push({ bgImage: contentImagePool[index % contentImagePool.length], html: `<div style="width: 100%; text-align: left; padding: 0 40px;">${slideHtml}</div>`, blockId: id });
         });
 
-        // Outro
         presentationSlides.push({ bgImage: `img/outro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 64px; margin-bottom: 40px; border-bottom: 4px solid var(--vrmwb-red);">EINDE DAGJOURNAAL</h1><p style="font-size: 36px; opacity: 0.8; font-weight: 700;">Zijn er nog bijzonderheden of vragen?</p></div>`, blockId: null });
 
-        // Pre-render Backgrounds
         presentationSlides.forEach((slide, i) => {
             const bgLayer = document.createElement('div');
             bgLayer.id = `bg-slide-${i}`;
@@ -362,27 +338,19 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index >= presentationSlides.length) index = presentationSlides.length - 1;
         currentSlideIndex = index;
 
-        // Als we refreshen door een state-change (checklist), haal dan de meest verse HTML op
         const currentSlide = presentationSlides[currentSlideIndex];
-        if (currentSlide.blockId) {
+        // Vers genereer HTML voor checklists zodat de status altijd 100% klopt bij navigeren
+        if (currentSlide.blockId && (currentSlide.blockId === 'algemeen' || currentSlide.blockId === 'ademlucht')) {
             let freshHtml = getHTML(currentSlide.blockId, 'previewHTML');
-            // Behoud de specifieke titel
-            let currentTitleMatch = currentSlide.html.match(/<h1 class="slide-title"[^>]*>(.*?)<\/h1>/);
-            if (freshHtml.includes('id="dynamic-preview-title"') && currentTitleMatch) {
-                freshHtml = freshHtml.replace('id="dynamic-preview-title">ONDERDEEL', 'id="dynamic-preview-title">' + currentTitleMatch[1]);
-            }
             currentSlide.html = `<div style="width: 100%; text-align: left; padding: 0 40px;">${freshHtml}</div>`;
         }
 
         presentationSlides.forEach((_, i) => { const layer = document.getElementById(`bg-slide-${i}`); if (layer) layer.style.opacity = (i === currentSlideIndex) ? '1' : '0'; });
-        
         presContent.innerHTML = currentSlide.html;
         document.getElementById('pres-counter').innerText = `${currentSlideIndex + 1} / ${presentationSlides.length}`;
         document.getElementById('pres-prev').style.visibility = (currentSlideIndex === 0) ? 'hidden' : 'visible';
         document.getElementById('pres-next').style.visibility = (currentSlideIndex === presentationSlides.length - 1) ? 'hidden' : 'visible';
-        
-        // Zorg dat popups sluiten bij sliden
-        document.getElementById('pres-info-popup').classList.remove('active');
+        document.getElementById('kis-modal').classList.remove('active');
     }
 
     document.getElementById('btn-start-presentation').addEventListener('click', () => {
@@ -401,14 +369,15 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('pres-next').addEventListener('click', () => showSlide(currentSlideIndex + 1));
 
     window.addEventListener('keydown', (e) => {
-        if (presentationOverlay.classList.contains('active')) {
+        if (presentationOverlay.classList.contains('active') && !document.getElementById('kis-modal').classList.contains('active')) {
             if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlideIndex + 1);
             else if (e.key === 'ArrowLeft') showSlide(currentSlideIndex - 1);
             else if (e.key === 'Escape') document.getElementById('close-presentation').click();
+        } else if (e.key === 'Escape') {
+            document.getElementById('kis-modal').classList.remove('active');
         }
     });
 
-    // Preloader
     setTimeout(() => {
         for (let i = 1; i <= 5; i++) { new Image().src = `img/intro-${i}.jpg`; new Image().src = `img/outro-${i}.jpg`; }
         for (let i = 1; i <= 25; i++) { new Image().src = `img/content-${i}.jpg`; }
