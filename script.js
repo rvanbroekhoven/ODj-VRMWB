@@ -36,23 +36,202 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
 
-    // --- DYNAMISCHE CONTENT ---
+    // --- HERBRUIKBARE WYSIWYG HTML ---
+    const wysiwygEditorHTML = `
+        <div class="editor-tabs">
+            <div class="tab active">Nieuwe tab</div>
+        </div>
+        <div class="form-group">
+            <label>Tab titel:</label>
+            <input type="text" class="text-input" value="Nieuwe tab">
+        </div>
+        <div class="wysiwyg-container">
+            <div class="wysiwyg-toolbar">
+                <button class="toolbar-btn">P</button>
+                <button class="toolbar-btn">H1</button>
+                <button class="toolbar-btn">H2</button>
+                <button class="toolbar-btn">H3</button>
+                <div class="toolbar-divider"></div>
+                <button class="toolbar-btn" style="font-weight: 900;">B</button>
+                <button class="toolbar-btn" style="font-style: italic;">I</button>
+                <button class="toolbar-btn" style="text-decoration: line-through;">S</button>
+                <button class="toolbar-btn" style="text-decoration: underline;">U</button>
+                <div class="toolbar-divider"></div>
+                <button class="toolbar-btn">≡</button>
+                <button class="toolbar-btn">☷</button>
+            </div>
+            <textarea class="wysiwyg-area" placeholder="Typ hier de inhoud voor de presentatie..."></textarea>
+        </div>
+        <button class="btn-save">Opslaan</button>
+    `;
+
+    // --- DYNAMISCHE CONTENT MAPPING ---
     const blockData = {
         'ploeg-indeling': {
-            editorHTML: `<div class="form-group"><label>Kazernes in Roosterplanning</label><div class="dropdown-input"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span><span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst MWB in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Dienstlijst ZLD in Roosterplanning</label><div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div></div><div class="form-group"><label>Ticker rooster in Roosterplanning</label><div class="dropdown-input">Bergen op Zoom<span class="chevron"></span></div></div>`,
+            editorHTML: `
+                <div class="form-group"><label>Kazernes in Roosterplanning</label>
+                    <div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div>
+                </div>
+                <div class="form-group"><label>Dienstlijst MWB in Roosterplanning</label>
+                    <div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div>
+                </div>
+                <div class="form-group"><label>Dienstlijst ZLD in Roosterplanning</label>
+                    <div class="dropdown-input placeholder">Voeg een kazerne toe om standaard naam te overschrijven...<span class="chevron"></span></div>
+                </div>
+                <div class="form-group"><label>Ticker rooster in Roosterplanning</label>
+                    <div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div>
+                </div>
+                <button class="btn-save">Opslaan</button>
+            `,
             previewHTML: `<h1 class="slide-title">PLOEG INDELING</h1><table class="rooster-table"><tr><th>Functie</th><th>Naam</th></tr><tr><td>Bevelvoerder</td><td>J. de Vries</td></tr><tr><td>Chauffeur/Pompbediende</td><td>P. Hendriks</td></tr><tr><td>Manschap 1</td><td>A. Jansen</td></tr><tr><td>Manschap 2</td><td>M. Bakker</td></tr></table>`
         },
         'alarmen': {
-            editorHTML: `<div class="form-group"><label>Selecteer incidenten ter bespreking</label><div class="dropdown-input placeholder">Kies uit recente P1/P2 meldingen...<span class="chevron"></span></div></div><div class="form-group"><label>Bijzonderheden / Leermomenten</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Typ hier eventuele notities voor de overdracht...</div></div>`,
-            previewHTML: `<h1 class="slide-title">ALARMEN VORIGE DIENST</h1><div class="incident-card"><strong>PRIO 1</strong> - Woningbrand (Middel Brand)<br><br>Locatie: Hoofdstraat 12, Breda<br><span style="opacity: 0.7; font-size: 16px;">Bijzonderheden: Binnenaanval succesvol, controleer ademlucht.</span></div><div class="incident-card" style="border-left-color: var(--vrmwb-gold);"><strong style="color: var(--vrmwb-gold);">PRIO 2</strong> - Buitenbrand<br><br>Locatie: Mastbos, Breda</div>`
+            editorHTML: `
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr><th>Datum</th><th>Adres</th><th>Melding</th><th>Voertuigen</th><th>Toelichting</th><th>Acties</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>9-4-2026<br>16:06 - 16:41</td>
+                                <td>Afrit A4 Re - Hoogerheide</td>
+                                <td>P1 Brand - Wegvervoer</td>
+                                <td>201531, 201444, 201092, 284831, 194230</td>
+                                <td></td>
+                                <td><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `,
+            previewHTML: `<h1 class="slide-title">ALARMEN VORIGE DIENST</h1><div class="incident-card"><strong>PRIO 1</strong> - Brand Wegvervoer<br><br>Locatie: Afrit A4 Re - Hoogerheide<br><span style="opacity: 0.7; font-size: 16px;">Voertuigen: 201531, 201444, 201092, 284831, 194230</span></div>`
         },
         'voertuigen': {
-            editorHTML: `<div class="form-group"><label>Defecten / Uit de uitruk</label><div class="dropdown-input">Geen defecten gemeld (OASIS)<span class="chevron"></span></div></div><div class="form-group"><label>Vervangend materieel</label><div class="dropdown-input placeholder">Selecteer indien van toepassing...<span class="chevron"></span></div></div>`,
+            editorHTML: `
+                <div class="form-group"><label>Voertuigen standaard in lijst kazerne</label>
+                    <div class="tags-wrapper">
+                        <span class="tag">201531 <span class="close">&times;</span></span><span class="tag">201543 <span class="close">&times;</span></span>
+                        <span class="tag">201551 <span class="close">&times;</span></span><span class="tag">201571 <span class="close">&times;</span></span>
+                        <span class="tag">200025 <span class="close">&times;</span></span><span class="tag">201561 <span class="close">&times;</span></span>
+                    </div>
+                </div>
+                <div class="form-group"><label>Voertuigen uitsluiten van lijst</label>
+                    <div class="dropdown-input placeholder">Voeg een voertuig toe<span class="chevron"></span></div>
+                </div>
+                <div class="form-group"><label>Voertuigen standaard in lijst regio</label>
+                    <div class="tags-wrapper">
+                        <span class="tag">201532 <span class="close">&times;</span></span><span class="tag">201161 <span class="close">&times;</span></span>
+                        <span class="tag">209461 <span class="close">&times;</span></span>
+                    </div>
+                </div>
+                <button class="btn-save">Opslaan</button>
+            `,
             previewHTML: `<h1 class="slide-title">STATUS VOERTUIGEN</h1><h3 style="font-size: 24px; margin-bottom: 10px;">Geen defecten gemeld via OASIS.</h3><p style="font-size: 20px; opacity: 0.7;">Alle voertuigen zijn inzetbaar voor de komende dienst.</p>`
         },
+        'topdesk': {
+            editorHTML: `
+                <div class="form-group"><label>Topdesk kazernes</label>
+                    <div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div>
+                </div>
+                <div class="form-group"><label>Ruimtes uitsluiten</label>
+                    <div class="dropdown-input placeholder">Voeg ruimte toe<span class="chevron"></span></div>
+                </div>
+                <div class="form-group"><label>Reservering voertuigen</label>
+                    <div class="tags-wrapper">
+                        <span class="tag">201001 <span class="close">&times;</span></span><span class="tag">201002 <span class="close">&times;</span></span>
+                        <span class="tag">201003 <span class="close">&times;</span></span><span class="tag">201093 <span class="close">&times;</span></span>
+                    </div>
+                </div>
+                <div class="form-group"><label>Tabjes</label>
+                    <div class="tags-wrapper">
+                        <span class="tag">Kazerne <span class="close">&times;</span></span><span class="tag">Voertuig <span class="close">&times;</span></span><span class="tag">ReserveringVoertuig <span class="close">&times;</span></span>
+                    </div>
+                </div>
+                <button class="btn-save">Opslaan</button>
+            `,
+            previewHTML: `<h1 class="slide-title">TOPDESK MELDINGEN</h1><p style="font-size: 24px; opacity: 0.5; margin-top: 50px;">Geen openstaande Topdesk meldingen gevonden voor deze kazerne.</p>`
+        },
+        'mobiliteit': {
+            editorHTML: `
+                <div class="form-group"><label>Kaartlagen Actueel</label>
+                    <div class="tags-wrapper"><span class="tag">Bereikbaarheid wegdeel (nu) <span class="close">&times;</span></span><span class="tag">Weg Info punt (nu) <span class="close">&times;</span></span></div>
+                </div>
+                <div class="form-group"><label>Kaartlagen Generiek</label>
+                    <div class="dropdown-input placeholder">Selecteer Lagen<span class="chevron"></span></div>
+                </div>
+                <div class="form-group"><label>Kaartlagen Toekomst</label>
+                    <div class="tags-wrapper"><span class="tag">Bereikbaarheid wegdeel <span class="close">&times;</span></span><span class="tag">Weg Info punt <span class="close">&times;</span></span></div>
+                </div>
+                <div class="form-group"><label>RDx</label><input type="text" class="text-input" value="79015"></div>
+                <div class="form-group"><label>RDy</label><input type="text" class="text-input" value="390597"></div>
+                <div class="form-group"><label>Zoom</label><input type="text" class="text-input" value="13"></div>
+                <button class="btn-save">Opslaan</button>
+            `,
+            previewHTML: `<h1 class="slide-title">MOBILITEIT & WEGAFSLUITINGEN</h1><div style="width: 100%; height: 400px; background: rgba(255,255,255,0.1); display: flex; justify-content: center; align-items: center; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.3);">Kaartmodule Actueel wordt hier geladen.</div>`
+        },
+        'gepland-onderhoud': {
+            editorHTML: `
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead><tr><th>Voertuig</th><th>Melding</th><th>van / tot</th><th>Acties</th></tr></thead>
+                        <tbody>
+                            <tr>
+                                <td>20-1571</td>
+                                <td>ingezet op post Raamsdonksveer i.v.m. onderhoud 20-5271</td>
+                                <td>13 tot 17 april</td>
+                                <td style="white-space: nowrap;"><button class="icon-btn copy">⎘</button><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="add-item-row" style="margin-top: 0;">
+                    <input type="text" class="text-input" placeholder="Voeg een nieuw voertuig toe..." style="flex: 1; border-style: dashed;">
+                    <button class="btn-add">+</button>
+                </div>
+            `,
+            previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><table class="rooster-table"><tr><th>Voertuig</th><th>Omschrijving</th><th>Datum</th></tr><tr><td>20-1571</td><td>Ingezet op post Raamsdonksveer i.v.m. onderhoud 20-5271</td><td>13 tot 17 april</td></tr></table>`
+        },
+        'algemeen': {
+            editorHTML: `
+                <div class="checklist-item"><div class="check-box">✓</div><div class="check-content"><strong>Schoonmaken vuile ruimte en ruimte wasmachine</strong><span>Auteur: Paul van der Heijden automatisch toegevoegd</span></div><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></div>
+                <div class="checklist-item"><div class="check-box">✓</div><div class="check-content"><strong>SVM-rondpompen 20-1561</strong><span>Auteur: Paul van der Heijden automatisch toegevoegd</span></div><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></div>
+                <div class="checklist-item"><div class="check-box">✓</div><div class="check-content"><strong>Papierbakken legen</strong><span>Auteur: Paul van der Heijden automatisch toegevoegd</span></div><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></div>
+                <div class="add-item-row"><input type="text" class="text-input" placeholder="Vul hier een item in voor de werklijst..."><button class="btn-add">+</button></div>
+            `,
+            previewHTML: `<h1 class="slide-title">ALG. WERKZAAMHEDEN</h1><ul style="font-size: 24px; line-height: 2; list-style-type: square; padding-left: 30px;"><li>Schoonmaken vuile ruimte en ruimte wasmachine</li><li>SVM-rondpompen 20-1561</li><li>Papierbakken legen</li></ul>`
+        },
+        'ademlucht': {
+            editorHTML: `
+                <div class="checklist-item"><div class="check-box" style="background: var(--vrmwb-red);"></div><div class="check-content"><strong>Na einde werkzaamheden in de ademluchtwerkplaats testbanken en vulbalk-pc volledig uitschakelen</strong><span>Auteur: Paul van der Heijden automatisch toegevoegd</span></div><button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button></div>
+                <div class="add-item-row"><input type="text" class="text-input" placeholder="Vul hier een item in voor de werklijst..."><button class="btn-add">+</button></div>
+            `,
+            previewHTML: `<h1 class="slide-title">ADEMLUCHT WERKZAAMHEDEN</h1><div class="incident-card" style="border-left-color: #FFFFFF;"><strong>TAAK:</strong> Na einde werkzaamheden in de ademluchtwerkplaats testbanken en vulbalk-pc volledig uitschakelen.</div>`
+        },
+        'vakbekwaam': {
+            editorHTML: `
+                <div class="form-group"><label>Ploegen voor activiteiten</label>
+                    <div class="dropdown-input placeholder">Selecteer ploeg...<span class="chevron"></span></div>
+                </div>
+                <button class="btn-save">Opslaan</button>
+            `,
+            previewHTML: `<h1 class="slide-title">VAKBEKWAAM AG5</h1><p style="font-size: 24px; opacity: 0.5; margin-top: 50px;">Geen bijzonderheden voor komende dienst.</p>`
+        },
+        'evenementen': {
+            editorHTML: `
+                <div class="form-group"><label>Woonplaats filter</label>
+                    <div class="tags-wrapper">
+                        <span class="tag">Breda <span class="close">&times;</span></span><span class="tag">Prinsenbeek <span class="close">&times;</span></span>
+                        <span class="tag">Teteringen <span class="close">&times;</span></span><span class="tag">Ginneken <span class="close">&times;</span></span>
+                        <span class="tag">Effen <span class="close">&times;</span></span><span class="tag">Ulvenhout <span class="close">&times;</span></span>
+                    </div>
+                </div>
+                <button class="btn-save">Opslaan</button>
+            `,
+            previewHTML: `<h1 class="slide-title">EVENEMENTEN (REGIO BREDA)</h1><table class="rooster-table"><tr><th>Datum</th><th>Evenement</th><th>Locatie</th></tr><tr><td>Zaterdag 11 apr</td><td>Wielerronde Prinsenbeek</td><td>Centrum Prinsenbeek</td></tr></table>`
+        },
         'default': {
-            editorHTML: `<div class="form-group"><label>Observaties en Opmerkingen</label><div class="dropdown-input placeholder" style="min-height: 120px; align-items: flex-start;">Voeg hier de details voor dit dagjournaal-onderdeel toe...</div></div>`,
-            previewHTML: `<h1 class="slide-title" id="dynamic-preview-title">ONDERDEEL</h1><p style="font-size: 24px; opacity: 0.5; margin-top: 50px;">Geen specifieke bijzonderheden ingevoerd voor dit onderdeel.</p>`
+            // Alle andere blokken krijgen de nieuwe WYSIWYG Editor
+            editorHTML: wysiwygEditorHTML,
+            previewHTML: `<h1 class="slide-title" id="dynamic-preview-title">ONDERDEEL</h1><p style="font-size: 24px; margin-top: 20px; line-height: 1.5;">Dit is een voorbeeld van de opgemaakte tekst die door de beheerder is ingetypt in de editor. De tekst is makkelijk te lezen en wordt keurig uitgelijnd op het presentatiescherm.</p>`
         }
     };
 
@@ -63,9 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const emptyState = document.getElementById('empty-state');
     const editorTitle = document.getElementById('editor-title');
     const editorContent = document.getElementById('editor-content');
-
-    const leftColumn = leftList.closest('.column');
-    const middleColumn = middleList.closest('.column');
 
     let currentSelectedBlockId = null;
     let currentSelectedBlockName = "";
@@ -173,8 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-
-    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA (MET PRE-RENDERING VOOR 0.0S LAADTIJD) ---
+    // --- VOLLEDIG SCHERM PRESENTATIE LOGICA ---
     const btnStartPresentation = document.getElementById('btn-start-presentation');
     const presentationOverlay = document.getElementById('presentation-overlay');
     const closePresentationBtn = document.getElementById('close-presentation');
@@ -201,22 +376,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function buildPresentation() {
         presentationSlides = [];
-        presBgImageContainer.innerHTML = ''; // Maak achtergrond-container leeg voor de nieuwe sessie
-        presBgImageContainer.style.backgroundImage = 'none'; // Voorkom dat er een basisafbeelding blijft hangen
+        presBgImageContainer.innerHTML = ''; 
+        presBgImageContainer.style.backgroundImage = 'none'; 
 
-        // 1. BEPAAL DE AFBEELDINGEN
         const randomIntroNum = Math.floor(Math.random() * 5) + 1;
         const randomOutroNum = Math.floor(Math.random() * 5) + 1;
         const introBg = `img/intro-${randomIntroNum}.jpg`;
         const outroBg = `img/outro-${randomOutroNum}.jpg`;
 
         let contentImagePool = [];
-        for(let i = 1; i <= 25; i++) {
-            contentImagePool.push(`img/content-${i}.jpg`);
-        }
+        for(let i = 1; i <= 25; i++) { contentImagePool.push(`img/content-${i}.jpg`); }
         contentImagePool = shuffleArray(contentImagePool);
 
-        // 2. BOUW DE INTRODUCTIE SLIDE
         const loc = document.getElementById('location-trigger').innerText;
         const date = document.getElementById('datetime-display').innerText.split('   ')[0];
         
@@ -231,7 +402,6 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         });
 
-        // 3. BOUW DE INHOUDELIJKE SLIDES
         const blocksInMiddle = middleList.querySelectorAll('.drag-item');
         blocksInMiddle.forEach((block, index) => {
             const id = block.getAttribute('data-id');
@@ -248,14 +418,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const activeBgImage = contentImagePool[index % contentImagePool.length];
-
             presentationSlides.push({
                 bgImage: activeBgImage,
                 html: `<div style="width: 100%; text-align: left; padding: 0 40px;">${slideHtml}</div>`
             });
         });
 
-        // 4. BOUW DE AFSLUITENDE SLIDE
         presentationSlides.push({
             bgImage: outroBg,
             html: `
@@ -266,22 +434,16 @@ document.addEventListener('DOMContentLoaded', () => {
             `
         });
 
-        // 5. PRE-RENDER ALLE ACHTERGRONDEN IN DE DOM
-        // Door ze allemaal nu al op te bouwen, downloadt de browser ze stilletjes op de achtergrond.
         presentationSlides.forEach((slide, i) => {
             const bgLayer = document.createElement('div');
             bgLayer.id = `bg-slide-${i}`;
             bgLayer.style.position = 'absolute';
-            bgLayer.style.top = '0'; 
-            bgLayer.style.left = '0';
-            bgLayer.style.width = '100%'; 
-            bgLayer.style.height = '100%';
-            bgLayer.style.backgroundSize = 'cover';
-            bgLayer.style.backgroundPosition = 'center';
+            bgLayer.style.top = '0'; bgLayer.style.left = '0';
+            bgLayer.style.width = '100%'; bgLayer.style.height = '100%';
+            bgLayer.style.backgroundSize = 'cover'; bgLayer.style.backgroundPosition = 'center';
             bgLayer.style.backgroundImage = `url('${slide.bgImage}')`;
-            // De eerste slide is zichtbaar, de rest is onzichtbaar (maar wel ingeladen!)
             bgLayer.style.opacity = (i === 0) ? '1' : '0';
-            bgLayer.style.transition = 'opacity 0.4s ease'; // Zorgt voor de vloeiende fade-overgang
+            bgLayer.style.transition = 'opacity 0.4s ease'; 
             presBgImageContainer.appendChild(bgLayer);
         });
     }
@@ -291,18 +453,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (index >= presentationSlides.length) index = presentationSlides.length - 1;
         currentSlideIndex = index;
 
-        // Vervaag de oude foto en schuif de nieuwe erin zonder netwerkvertraging
         presentationSlides.forEach((_, i) => {
             const layer = document.getElementById(`bg-slide-${i}`);
-            if (layer) {
-                layer.style.opacity = (i === currentSlideIndex) ? '1' : '0';
-            }
+            if (layer) { layer.style.opacity = (i === currentSlideIndex) ? '1' : '0'; }
         });
         
-        // Pas HTML content (de tekst) direct aan
         presContent.innerHTML = presentationSlides[currentSlideIndex].html;
-
-        // Update teller en pijlen
         presCounter.innerText = `${currentSlideIndex + 1} / ${presentationSlides.length}`;
         presPrev.style.visibility = (currentSlideIndex === 0) ? 'hidden' : 'visible';
         presNext.style.visibility = (currentSlideIndex === presentationSlides.length - 1) ? 'hidden' : 'visible';
@@ -312,7 +468,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const blocksInMiddle = middleList.querySelectorAll('.drag-item');
         if (blocksInMiddle.length === 0) { alert("Voeg eerst blokken toe aan het Dagjournaal om de presentatie te starten."); return; }
         
-        buildPresentation(); // Dit activeert de pre-rendering
+        buildPresentation(); 
         currentSlideIndex = 0;
         showSlide(currentSlideIndex);
         presentationOverlay.classList.add('active');
@@ -335,4 +491,12 @@ document.addEventListener('DOMContentLoaded', () => {
             else if (e.key === 'Escape') { closePresentationBtn.click(); }
         }
     });
+
+    // Preloader voor razendsnelle start
+    setTimeout(() => {
+        const imagesToPreload = [];
+        for (let i = 1; i <= 5; i++) { imagesToPreload.push(`img/intro-${i}.jpg`); imagesToPreload.push(`img/outro-${i}.jpg`); }
+        for (let i = 1; i <= 25; i++) { imagesToPreload.push(`img/content-${i}.jpg`); }
+        imagesToPreload.forEach(src => { const img = new Image(); img.src = src; });
+    }, 1000); 
 });
