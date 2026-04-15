@@ -56,12 +56,11 @@ document.addEventListener('DOMContentLoaded', () => {
             ]
         },
         'alarmen': { incidents: [{ id: 'al1', type: 'P1 Brand - Wegvervoer', loc: 'Afrit A4 Re - Hoogerheide', date: '9-4-2026', time: '16:06 - 16:41', vehicles: '201531, 201444, 201092', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Adres: Dorpskern Nieuw-Vossemeer.\n\nBestanden:\n- Veiligheidsplan Optochten 2026.pdf\n- Plattegrond carnavalsroute.pdf' }] },
-        'evenementen': { incidents: [{ id: 'ev1', type: 'B-Evenement (~300)', loc: 'Nieuw-Vossemeer', date: '23-1-2026', time: 'Hele dag', vehicles: 'Nienke Zwetsloot (Adviseur)', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Carnaval Nieuw-Vossemeer is een evenement met verhoogd risico ivm wegafsluiting.' }] },
+        'evenementen': { incidents: [{ id: 'ev1', type: 'B-Evenement (~300)', loc: 'Nieuw-Vossemeer', date: '23-1-2026', time: 'Hele dag', vehicles: 'Nienke Zwetsloot (Adviseur)', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Carnaval Nieuw-Vossemeer (Jan Kellerbal) + 13-02 t/m 17-02 (Carnaval).\nExtra verhoogd risico ivm wegafsluiting.' }] },
         'algemeen': { tasks: [ { id: 'aw1', text: 'Schoonmaken vuile ruimte en ruimte wasmachine', checked: true, author: 'Paul van der Heijden' }, { id: 'aw2', text: 'SVM-rondpompen 20-1561', checked: false, author: 'Paul van der Heijden' }, { id: 'aw3', text: 'Papierbakken legen', checked: false, author: 'Paul van der Heijden' } ] },
         'ademlucht': { tasks: [ { id: 'ad1', text: 'Na einde werkzaamheden testbanken en vulbalk-pc uitschakelen', checked: false, author: 'Paul van der Heijden' } ] }
     };
 
-    // Voeg lege state toe voor alle dynamische tekstblokken (WYSIWYG)
     const textBlocks = ['afspraken', 'nieuws', 'arbo', 'communicatie', 'iboa', 'ocb', 'rbcb', 'straten', 'tfl', 'vkb', 'waarschuwingen'];
     textBlocks.forEach(id => { appState[id] = { title: '', content: '' }; });
 
@@ -103,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getGlassRowsKISHTML(title, incidents) {
         let html = `<h1 class="slide-title">${title}</h1><div style="width:100%;">`;
-        html += `<div style="display:flex; gap:20px; font-weight:700; color:rgba(255,255,255,0.6); padding:0 30px 10px; font-size:16px; text-transform:uppercase;"><div style="flex:1;">Melding</div><div style="flex:1;">Locatie</div><div style="flex:1;">Datum</div><div style="flex:1;">Details</div><div style="flex:0 0 40px;"></div></div>`;
+        html += `<div style="display:flex; gap:20px; font-weight:700; color:var(--text-muted); padding:0 30px 10px; font-size:16px; text-transform:uppercase;"><div style="flex:1;">Melding</div><div style="flex:1;">Locatie</div><div style="flex:1;">Datum</div><div style="flex:1;">Details</div><div style="flex:0 0 36px;"></div></div>`;
         incidents.forEach(inc => {
             html += `
                 <div class="kis-glass-row">
@@ -111,14 +110,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="kis-glass-col">${inc.loc}</div>
                     <div class="kis-glass-col">${inc.date}<br><span style="font-size:14px;opacity:0.7;">${inc.time}</span></div>
                     <div class="kis-glass-col">${inc.vehicles}</div>
-                    ${inc.infoText ? `<div class="kis-info-trigger" data-title="${inc.infoTitle}" data-text="${inc.infoText}">i</div>` : '<div style="flex:0 0 40px;"></div>'}
+                    ${inc.infoText ? `<div class="kis-info-trigger" data-title="${inc.infoTitle}" data-text="${inc.infoText}">i</div>` : '<div style="flex:0 0 36px;"></div>'}
                 </div>`;
         });
         html += `</div>`;
         return html;
     }
 
-    // De herbruikbare editor en preview generator voor tekstblokken
     function getWysiwygEditorHTML(blockId) {
         const data = appState[blockId] || { title: '', content: '' };
         const tabName = data.title || 'Nieuwe tab';
@@ -141,10 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = appState[blockId] || { title: '', content: '' };
         const titleToUse = data.title ? data.title.toUpperCase() : fallbackTitle;
         const contentToUse = data.content ? data.content.replace(/\n/g, '<br>') : 'Geen inhoud opgeslagen.';
-        return `
-            <h1 class="slide-title">${titleToUse}</h1>
-            <div style="font-size: 24px; line-height: 1.6;" class="kis-text-content">${contentToUse}</div>
-        `;
+        return `<h1 class="slide-title">${titleToUse}</h1><div style="font-size: 24px; line-height: 1.6;" class="kis-text-content">${contentToUse}</div>`;
     }
 
     const blockData = {
@@ -169,7 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DIRECT DOM SYNC & SAVE LOGIC ---
     document.addEventListener('click', (e) => {
-        // Tekst opslaan voor WYSIWYG
         if (e.target.classList.contains('btn-save-text')) {
             const blockId = e.target.getAttribute('data-block');
             appState[blockId].title = document.querySelector('.tab-title-input').value;
@@ -223,8 +217,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DRAG & DROP ---
     const middleList = document.getElementById('dagjournaal-lijst');
+    const leftList = document.getElementById('blok-selectie');
     const editorContent = document.getElementById('editor-content');
-    const leftColumn = document.getElementById('blok-selectie').closest('.column');
+    const leftColumn = leftList.closest('.column');
     const middleColumn = middleList.closest('.column');
 
     let currentSelectedBlockId = null;
@@ -238,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('empty-state').style.display = middleList.querySelectorAll('.drag-item').length === 0 ? 'block' : 'none';
             if (!middleList.querySelector('.active-card')) {
                 document.getElementById('editor-title').innerText = "GEEN BLOK GESELECTEERD";
-                editorContent.innerHTML = `<div class="editor-placeholder-text">Voeg een blok toe en klik erop.</div>`;
+                editorContent.innerHTML = `<div class="editor-placeholder-text">Selecteer een blok (links of in het midden) om de instellingen te bekijken.</div>`;
                 currentSelectedBlockId = null;
             }
         });
@@ -254,16 +249,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    middleList.addEventListener('click', e => {
-        const card = e.target.closest('.drag-item');
-        if (!card || !middleList.contains(card)) return; 
-        middleList.querySelectorAll('.drag-item').forEach(c => c.classList.remove('active-card', 'gold'));
+    // UX FIX: Blokken kunnen zowel links als in het midden geselecteerd worden
+    function handleCardSelection(card) {
+        if (!card) return; 
+        document.querySelectorAll('.drag-item').forEach(c => c.classList.remove('active-card', 'gold'));
         card.classList.add('active-card', 'gold');
         currentSelectedBlockId = card.getAttribute('data-id');
-        const title = card.textContent.trim().toUpperCase();
+        
+        let clone = card.cloneNode(true);
+        let badge = clone.querySelector('.badge');
+        if (badge) badge.remove(); 
+        const title = clone.textContent.trim().toUpperCase();
+        
         document.getElementById('editor-title').innerText = title;
         editorContent.innerHTML = getHTML(currentSelectedBlockId, 'editorHTML', title);
-    });
+    }
+
+    middleList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
+    leftList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
 
     // --- MODALS ---
     const previewModal = document.getElementById('preview-modal');
@@ -276,12 +279,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('close-preview').addEventListener('click', () => previewModal.classList.remove('active'));
 
     const locationModal = document.getElementById('location-modal');
-    document.getElementById('location-trigger').addEventListener('click', () => locationModal.classList.add('active'));
+    const locationTrigger = document.getElementById('location-trigger');
+    locationTrigger.addEventListener('click', () => locationModal.classList.add('active'));
     document.getElementById('close-modal').addEventListener('click', () => locationModal.classList.remove('active'));
     document.querySelectorAll('.loc-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active'); document.getElementById('location-trigger').innerText = this.innerText;
+            this.classList.add('active'); locationTrigger.innerText = this.innerText;
             locationModal.classList.remove('active');
         });
     });
@@ -298,11 +302,14 @@ document.addEventListener('DOMContentLoaded', () => {
         presentationSlides = []; presBgImageContainer.innerHTML = ''; 
         let contentImagePool = []; for(let i = 1; i <= 25; i++) { contentImagePool.push(`img/content-${i}.jpg`); } contentImagePool.sort(() => Math.random() - 0.5);
         
-        presentationSlides.push({ bgImage: `img/intro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px; border-bottom: none;">OPERATIONEEL DAGJOURNAAL</h1><h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${document.getElementById('location-trigger').innerText}</h2><p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${document.getElementById('datetime-display').innerText.split('   ')[0]}</p></div>`, blockId: null });
+        presentationSlides.push({ bgImage: `img/intro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px; border-bottom: none;">OPERATIONEEL DAGJOURNAAL</h1><h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${locationTrigger.innerText}</h2><p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${document.getElementById('datetime-display').innerText.split('   ')[0]}</p></div>`, blockId: null });
 
         middleList.querySelectorAll('.drag-item').forEach((block, index) => {
             const id = block.getAttribute('data-id');
-            const title = block.textContent.trim().toUpperCase();
+            let clone = block.cloneNode(true);
+            let badge = clone.querySelector('.badge');
+            if (badge) badge.remove();
+            const title = clone.textContent.trim().toUpperCase();
             let slideHtml = getHTML(id, 'previewHTML', title);
             presentationSlides.push({ bgImage: contentImagePool[index % contentImagePool.length], html: `<div style="width: 100%; text-align: left; padding: 0 40px;">${slideHtml}</div>`, blockId: id, blockTitle: title });
         });
@@ -321,7 +328,6 @@ document.addEventListener('DOMContentLoaded', () => {
         currentSlideIndex = index;
 
         const currentSlide = presentationSlides[currentSlideIndex];
-        // Vers genereer de preview zodat data altijd klopt (ook voor de WYSIWYG editor blokken)
         if (currentSlide.blockId) {
             let freshHtml = getHTML(currentSlide.blockId, 'previewHTML', currentSlide.blockTitle);
             currentSlide.html = `<div style="width: 100%; text-align: left; padding: 0 40px;">${freshHtml}</div>`;
@@ -335,7 +341,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('btn-start-presentation').addEventListener('click', () => {
-        if (middleList.querySelectorAll('.drag-item').length === 0) { alert("Voeg blokken toe!"); return; }
+        // UX Validatie: Eis een kazerne selectie
+        if (locationTrigger.innerText === 'SELECTEER KAZERNE') { alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); locationModal.classList.add('active'); return; }
+        if (middleList.querySelectorAll('.drag-item').length === 0) { alert("Voeg blokken toe aan het dagjournaal!"); return; }
+        
         buildPresentation(); currentSlideIndex = 0; showSlide(currentSlideIndex); presentationOverlay.classList.add('active');
         if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(e => console.log(e));
     });
