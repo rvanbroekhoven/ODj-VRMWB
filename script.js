@@ -61,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'ademlucht': { tasks: [ { id: 'ad1', text: 'Na einde werkzaamheden testbanken en vulbalk-pc uitschakelen', checked: false, author: 'Paul van der Heijden' } ] }
     };
 
-    // UX MULTI-TAB SYSTEEM: Elk tekstblok krijgt nu standaard een array van tabbladen
     const textBlocks = ['afspraken', 'nieuws', 'arbo', 'communicatie', 'iboa', 'ocb', 'rbcb', 'straten', 'tfl', 'vkb', 'waarschuwingen'];
     textBlocks.forEach(id => { 
         appState[id] = { 
@@ -72,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- RENDER FUNCTIES ---
     function getRoosterKISHTML() {
-        let html = `<h1 class="slide-title">Ploeg indeling: Breda</h1><div class="kis-rooster-grid">`;
+        let html = `<h1 class="slide-title">Ploeg indeling</h1><div class="kis-rooster-grid">`;
         appState.rooster.members.forEach(m => {
             let tagsHtml = m.tags.map(t => `<span class="func-tag" data-color="${t.color}">${t.text}</span>`).join('');
             html += `<div class="kis-rooster-card"><div class="member-name">${m.name}</div><div class="member-tags">${tagsHtml}</div></div>`;
@@ -123,7 +122,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return html;
     }
 
-    // MULTI-TAB EDITOR RENDERER
     function getWysiwygEditorHTML(blockId) {
         const data = appState[blockId];
         const activeTab = data.tabs.find(t => t.id === data.activeTabId) || data.tabs[0];
@@ -131,9 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let tabsHtml = '';
         data.tabs.forEach(tab => {
             const isActive = tab.id === data.activeTabId ? 'active' : '';
-            // Laat een sluit-kruisje zien als er meer dan 1 tab is
             const closeBtn = data.tabs.length > 1 ? `<span class="tab-close" data-id="${tab.id}">&times;</span>` : '';
-            tabsHtml += `<div class="tab ${isActive}" data-tab-id="${tab.id}">${tab.title} ${closeBtn}</div>`;
+            tabsHtml += `<div class="tab ${isActive}" data-tab-id="${tab.id}">${tab.title || 'Nieuwe tab'} ${closeBtn}</div>`;
         });
 
         return `
@@ -157,7 +154,6 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // MULTI-TAB PREVIEW RENDERER
     function getWysiwygPreviewHTML(blockId, blockName) {
         const data = appState[blockId];
         let html = `<h1 class="slide-title">${blockName}</h1>`;
@@ -196,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DIRECT DOM SYNC & SAVE LOGIC ---
     document.addEventListener('click', (e) => {
         
-        // 1. TEKST OPSLAAN KNOP
+        // WYSIWYG: Opslaan
         if (e.target.classList.contains('btn-save-text')) {
             const blockId = e.target.getAttribute('data-block');
             const data = appState[blockId];
@@ -206,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
             activeTab.content = document.querySelector('.tab-content-input').value;
             
             const activeTabEl = document.querySelector('.editor-tabs .tab.active');
-            if (activeTabEl) { activeTabEl.childNodes[0].nodeValue = activeTab.title + ' '; }
+            if (activeTabEl) { activeTabEl.childNodes[0].nodeValue = (activeTab.title || 'Nieuwe tab') + ' '; }
 
             const btn = e.target; const orgText = btn.innerText;
             btn.innerText = 'Opgeslagen ✓'; btn.style.backgroundColor = 'var(--vrmwb-gold)'; btn.style.color = '#1E1E1E';
@@ -214,14 +210,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 2. TAB WISSELEN
+        // WYSIWYG: Tab wisselen
         const tabEl = e.target.closest('.tab');
         if (tabEl && !e.target.classList.contains('tab-close')) {
             const blockId = tabEl.closest('.editor-tabs').getAttribute('data-block');
             const data = appState[blockId];
             const tabId = parseInt(tabEl.getAttribute('data-tab-id'));
             
-            // Sla huidige inputs op VOORDAT we wisselen (UX Vangnet)
             const oldTab = data.tabs.find(t => t.id === data.activeTabId);
             if (oldTab) {
                 oldTab.title = document.querySelector('.tab-title-input').value;
@@ -232,7 +227,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 3. TAB TOEVOEGEN (+)
+        // WYSIWYG: Tab toevoegen
         if (e.target.classList.contains('add-tab-btn')) {
             const blockId = e.target.getAttribute('data-block');
             const data = appState[blockId];
@@ -249,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 4. TAB VERWIJDEREN (X)
+        // WYSIWYG: Tab verwijderen
         if (e.target.classList.contains('tab-close')) {
             const blockId = e.target.closest('.editor-tabs').getAttribute('data-block');
             const data = appState[blockId];
@@ -262,7 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 5. CHECKLIST VINKJES
+        // CHECKLIST VINKJES
         const checkToggle = e.target.closest('.editor-check-toggle, .kis-checklist-card');
         if (checkToggle && !e.target.closest('.icon-btn')) {
             const blockId = checkToggle.getAttribute('data-block');
@@ -286,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 6. KIS INFO MODAL
+        // INFO TRIGGER POP-UP
         const infoTrigger = e.target.closest('.kis-info-trigger');
         const kisModal = document.getElementById('kis-modal');
         if (infoTrigger) {

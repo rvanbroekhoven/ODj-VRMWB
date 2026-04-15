@@ -107,7 +107,7 @@
    .editor-form h1.slide-title { color: var(--text-main); border-color: var(--vrmwb-gold); font-weight: 900; }
    .editor-form .kis-checklist-card.checked .kis-check-text { color: rgba(30, 30, 30, 0.5); }
    .editor-form .kis-checklist-card.checked .kis-check-square { opacity: 0.6; }
-   .kis-text-content { color: var(--text-main); }
+   .kis-text-content { color: var(--text-main); } /* Dit zorgt voor correcte kleur in editor */
    
    .form-group { flex: 0 0 auto; margin-bottom: 20px; }
    .form-group label { display: block; font-weight: 700; font-size: 16px; margin-bottom: 8px; color: var(--text-main); letter-spacing: 0.2px; }
@@ -148,7 +148,7 @@
    .check-content strong { font-size: 15px; color: var(--text-main); transition: all 0.3s; font-weight: 700; }
    .check-content span { font-size: 12px; color: var(--text-muted); font-style: italic; font-weight: 400; }
    
-   /* === WYSIWYG EDITOR MET MULTI-TABS === */
+   /* === WYSIWYG EDITOR === */
    .editor-tabs { display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 2px solid var(--input-border); padding-bottom: 0; overflow-x: auto; align-items: flex-end; }
    .editor-tabs .tab { display: flex; align-items: center; gap: 8px; padding: 10px 20px; border-radius: 8px 8px 0 0; background: var(--input-bg); font-weight: 700; color: var(--text-muted); cursor: pointer; border: 1px solid transparent; border-bottom: none; transition: all 0.2s; white-space: nowrap; }
    .editor-tabs .tab.active { background: var(--card-bg-light); color: var(--text-main); border-color: var(--input-border); position: relative; top: 2px; }
@@ -189,6 +189,8 @@
    .preview-body { flex: 1; padding: 60px; overflow-y: auto; color: var(--text-main); }
    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
    
+   /* PREVIEW SPECIFIEK: In de modal-preview luisteren we gewoon naar de thema-kleuren. 
+      Zo is het perfect leesbaar in zowel light- als dark mode. */
    .preview-body .slide-title { color: var(--text-main); border-bottom-color: var(--vrmwb-gold); }
    .preview-body .kis-glass-row { background: var(--card-bg-light); border: 1px solid var(--input-border); color: var(--text-main); box-shadow: var(--shadow-subtle); backdrop-filter: none; -webkit-backdrop-filter: none; }
    .preview-body .kis-glass-col { color: var(--text-main); }
@@ -218,11 +220,20 @@
    
    .slide-title { font-size: 48px; font-weight: 900; margin-bottom: 40px; color: #FFFFFF; text-transform: uppercase; border-bottom: 4px solid var(--vrmwb-gold); display: inline-block; padding-bottom: 10px; }
    
+   /* FIX: Presentatie Overlay overrule. Alles wat op het grote, donkere blur-scherm getoond 
+      wordt, moet keihard wit gekleurd zijn om leesbaar te blijven. */
+   .presentation-overlay .kis-text-content,
+   .presentation-overlay .kis-text-content * { 
+       color: #FFFFFF !important; 
+   }
+   
+   /* KIS Elementen */
    .kis-glass-row { background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 25px 30px; margin-bottom: 15px; display: flex; gap: 20px; color: #FFFFFF; align-items: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1); width: 100%; }
    .kis-glass-col { flex: 1; font-size: 18px; line-height: 1.4; font-weight: 400; }
    .kis-glass-col.bold { font-weight: 700; font-size: 20px; }
    
-   .kis-info-trigger { flex: 0 0 36px; width: 36px; height: 36px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); display: flex; justify-content: center; align-items: center; cursor: pointer; font-family: serif; font-weight: 900; font-size: 18px; opacity: 0.7; transition: all 0.2s; align-self: flex-start; }
+   /* Info Trigger: Nu een perfecte cirkel */
+   .kis-info-trigger { flex: 0 0 36px; width: 36px; height: 36px; aspect-ratio: 1/1; border-radius: 50%; border: 2px solid rgba(255,255,255,0.5); display: flex; justify-content: center; align-items: center; cursor: pointer; font-family: serif; font-weight: 900; font-size: 18px; opacity: 0.7; transition: all 0.2s; align-self: flex-start; }
    .kis-info-trigger:hover { opacity: 1; background: white; color: var(--vrmwb-navy); border-color: white; }
    
    .kis-checklist-card { background: #FFFFFF; border-radius: 12px; padding: 30px 40px; margin-bottom: 15px; width: 100%; display: flex; align-items: center; gap: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); cursor: pointer; transition: transform 0.2s; }
@@ -233,7 +244,7 @@
    
    .kis-rooster-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 15px; width: 100%; height: auto; padding: 0; }
    .kis-rooster-card { background:rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 12px; padding: 20px; color: #FFFFFF; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.3); aspect-ratio: 4 / 3; }
-   .member-name { font-size: 18px; font-weight: 900; margin-bottom: 12px; color: #FFFFFF; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; flex-shrink: 0; text-transform: uppercase;}
+   .member-name { font-size: 18px; font-weight: 900; margin-bottom: 12px; color: inherit; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; flex-shrink: 0; text-transform: uppercase;}
    .member-tags { display: flex; flex-direction: column; gap: 6px; flex: 1; overflow: hidden; justify-content: flex-start; font-weight: 700;}
    .func-tag { display: inline-block; background: #FFF; color: #1E1E1E; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; text-transform: uppercase; max-width: 100%; overflow: hidden; text-overflow: ellipsis; text-align: center; }
    
