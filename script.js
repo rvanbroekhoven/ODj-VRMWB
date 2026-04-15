@@ -37,20 +37,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- SHARED STATE & FIGMA DATA ---
     const appState = {
         'rooster': {
-            // Figma 5x3 Grid Structuur voor Ploegindeling Breda
             members: [
                 { name: 'Ron Appeldoorn', tags: [{text: 'TS 1: BV', color: 'red'}] },
                 { name: 'Bart Savelsberg', tags: [{text: 'TS 1: Ch, Avond/Nacht', color: 'red'}] },
                 { name: 'Wiebo Razenberg', tags: [{text: 'TS 1: Ch, Dag', color: 'red'}] },
                 { name: 'Erik Smulders', tags: [{text: 'TS 1: 1', color: 'red'}, {text: 'WO: ass', color: 'green'}] },
                 { name: 'Dirk Magielse', tags: [{text: 'TS 1: 2, Avond/Nacht', color: 'red'}, {text: 'TS 2: 2, Dag', color: 'red'}, {text: 'WO: duiker 2', color: 'green'}] },
-                
                 { name: 'Jan Rijvers', tags: [{text: 'TS 2: Ch, Dag', color: 'red'}] },
                 { name: 'Jasper Meeusen', tags: [{text: 'TS 1: 4', color: 'red'}] },
                 { name: 'Jochem Verdonk', tags: [{text: 'TS 2: BV', color: 'red'}, {text: 'WO: BV', color: 'gold'}] },
                 { name: 'Henri Smans', tags: [{text: 'TS 2: Ch', color: 'red'}, {text: 'WO: Ch', color: 'gold'}, {text: 'Kantinist', color: 'grey'}] },
                 { name: 'Geert Tuerlings', tags: [{text: 'TS 2: 1', color: 'red'}, {text: 'SPEC. voertuig: 1', color: 'blue'}] },
-                
                 { name: 'Kjell Bastiaansen', tags: [{text: 'TS 2: 2, Avond/Nacht', color: 'red'}] },
                 { name: 'Ronnie van Dongen', tags: [{text: 'TS 2: 3', color: 'red'}, {text: 'WO: DPL', color: 'gold'}] },
                 { name: 'Nick van Melsen', tags: [{text: 'TS 2: BV', color: 'red'}, {text: 'WO: duiker 1', color: 'gold'}] },
@@ -58,29 +55,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 { name: 'Richard Broeders', tags: [{text: 'SPEC. voertuig: Ch', color: 'blue'}] }
             ]
         },
-        'alarmen': {
-            incidents: [
-                { id: 'al1', type: 'P1 Brand - Wegvervoer', loc: 'Afrit A4 Re - Hoogerheide', date: '9-4-2026', time: '16:06 - 16:41', vehicles: '201531, 201444, 201092', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Adres: Dorpskern Nieuw-Vossemeer.\n\nBestanden:\n- Veiligheidsplan Optochten 2026.pdf\n- Plattegrond carnavalsroute.pdf' }
-            ]
-        },
-        'evenementen': {
-            incidents: [
-                { id: 'ev1', type: 'B-Evenement (~300)', loc: 'Nieuw-Vossemeer', date: '23-1-2026', time: 'Hele dag', vehicles: 'Nienke Zwetsloot (Adviseur)', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Carnaval Nieuw-Vossemeer (Jan Kellerbal) + 13-02 t/m 17-02 (Carnaval).\nExtra verhoogd risico ivm wegafsluiting.' }
-            ]
-        },
-        'algemeen': {
-            tasks: [
-                { id: 'aw1', text: 'Schoonmaken vuile ruimte en ruimte wasmachine', checked: true, author: 'Paul van der Heijden' },
-                { id: 'aw2', text: 'SVM-rondpompen 20-1561', checked: false, author: 'Paul van der Heijden' },
-                { id: 'aw3', text: 'Papierbakken legen', checked: false, author: 'Paul van der Heijden' }
-            ]
-        },
-        'ademlucht': {
-            tasks: [
-                { id: 'ad1', text: 'Na einde werkzaamheden testbanken en vulbalk-pc uitschakelen', checked: false, author: 'Paul van der Heijden' }
-            ]
-        }
+        'alarmen': { incidents: [{ id: 'al1', type: 'P1 Brand - Wegvervoer', loc: 'Afrit A4 Re - Hoogerheide', date: '9-4-2026', time: '16:06 - 16:41', vehicles: '201531, 201444, 201092', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Adres: Dorpskern Nieuw-Vossemeer.\n\nBestanden:\n- Veiligheidsplan Optochten 2026.pdf\n- Plattegrond carnavalsroute.pdf' }] },
+        'evenementen': { incidents: [{ id: 'ev1', type: 'B-Evenement (~300)', loc: 'Nieuw-Vossemeer', date: '23-1-2026', time: 'Hele dag', vehicles: 'Nienke Zwetsloot (Adviseur)', infoTitle: 'Carnaval Nieuw-Vossemeer', infoText: 'Carnaval Nieuw-Vossemeer is een evenement met verhoogd risico ivm wegafsluiting.' }] },
+        'algemeen': { tasks: [ { id: 'aw1', text: 'Schoonmaken vuile ruimte en ruimte wasmachine', checked: true, author: 'Paul van der Heijden' }, { id: 'aw2', text: 'SVM-rondpompen 20-1561', checked: false, author: 'Paul van der Heijden' }, { id: 'aw3', text: 'Papierbakken legen', checked: false, author: 'Paul van der Heijden' } ] },
+        'ademlucht': { tasks: [ { id: 'ad1', text: 'Na einde werkzaamheden testbanken en vulbalk-pc uitschakelen', checked: false, author: 'Paul van der Heijden' } ] }
     };
+
+    // Voeg lege state toe voor alle dynamische tekstblokken (WYSIWYG)
+    const textBlocks = ['afspraken', 'nieuws', 'arbo', 'communicatie', 'iboa', 'ocb', 'rbcb', 'straten', 'tfl', 'vkb', 'waarschuwingen'];
+    textBlocks.forEach(id => { appState[id] = { title: '', content: '' }; });
 
     // --- RENDER FUNCTIES ---
     function getRoosterKISHTML() {
@@ -118,12 +101,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return html;
     }
 
-    // Oplossing Overlap: De Info-trigger wordt nu gerenderd als een flex-item in zijn eigen flex-kolom.
     function getGlassRowsKISHTML(title, incidents) {
         let html = `<h1 class="slide-title">${title}</h1><div style="width:100%;">`;
-        html += `<div style="display:flex; gap:20px; font-weight:700; color:rgba(255,255,255,0.6); padding:0 30px 10px; font-size:16px; text-transform:uppercase;">
-                    <div style="flex:1;">Melding</div><div style="flex:1;">Locatie</div><div style="flex:1;">Datum</div><div style="flex:1;">Details</div>
-                    <div style="flex:0 0 40px;"></div> </div>`;
+        html += `<div style="display:flex; gap:20px; font-weight:700; color:rgba(255,255,255,0.6); padding:0 30px 10px; font-size:16px; text-transform:uppercase;"><div style="flex:1;">Melding</div><div style="flex:1;">Locatie</div><div style="flex:1;">Datum</div><div style="flex:1;">Details</div><div style="flex:0 0 40px;"></div></div>`;
         incidents.forEach(inc => {
             html += `
                 <div class="kis-glass-row">
@@ -131,7 +111,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="kis-glass-col">${inc.loc}</div>
                     <div class="kis-glass-col">${inc.date}<br><span style="font-size:14px;opacity:0.7;">${inc.time}</span></div>
                     <div class="kis-glass-col">${inc.vehicles}</div>
-                    
                     ${inc.infoText ? `<div class="kis-info-trigger" data-title="${inc.infoTitle}" data-text="${inc.infoText}">i</div>` : '<div style="flex:0 0 40px;"></div>'}
                 </div>`;
         });
@@ -139,7 +118,34 @@ document.addEventListener('DOMContentLoaded', () => {
         return html;
     }
 
-    const wysiwygEditorHTML = `<div class="editor-tabs"><div class="tab active">Nieuwe tab</div></div><div class="form-group"><label>Tab titel:</label><input type="text" class="text-input" value="Nieuwe tab"></div><div class="wysiwyg-container"><div class="wysiwyg-toolbar"><button class="toolbar-btn">P</button><button class="toolbar-btn">H1</button><button class="toolbar-btn">H2</button><div class="toolbar-divider"></div><button class="toolbar-btn" style="font-weight:900;">B</button><button class="toolbar-btn" style="font-style:italic;">I</button></div><textarea class="wysiwyg-area" placeholder="Typ inhoud..."></textarea></div><button class="btn-save">Opslaan</button>`;
+    // De herbruikbare editor en preview generator voor tekstblokken
+    function getWysiwygEditorHTML(blockId) {
+        const data = appState[blockId] || { title: '', content: '' };
+        const tabName = data.title || 'Nieuwe tab';
+        return `
+            <div class="editor-tabs"><div class="tab active">${tabName}</div></div>
+            <div class="form-group"><label>Tab titel:</label><input type="text" class="text-input tab-title-input" value="${data.title}" placeholder="Typ een titel..."></div>
+            <div class="wysiwyg-container">
+                <div class="wysiwyg-toolbar">
+                    <button class="toolbar-btn">P</button><button class="toolbar-btn">H1</button><button class="toolbar-btn">H2</button>
+                    <div class="toolbar-divider"></div>
+                    <button class="toolbar-btn" style="font-weight:900;">B</button><button class="toolbar-btn" style="font-style:italic;">I</button>
+                </div>
+                <textarea class="wysiwyg-area tab-content-input" placeholder="Typ inhoud...">${data.content}</textarea>
+            </div>
+            <button class="btn-save btn-save-text" data-block="${blockId}">Opslaan</button>
+        `;
+    }
+
+    function getWysiwygPreviewHTML(blockId, fallbackTitle) {
+        const data = appState[blockId] || { title: '', content: '' };
+        const titleToUse = data.title ? data.title.toUpperCase() : fallbackTitle;
+        const contentToUse = data.content ? data.content.replace(/\n/g, '<br>') : 'Geen inhoud opgeslagen.';
+        return `
+            <h1 class="slide-title">${titleToUse}</h1>
+            <div style="font-size: 24px; line-height: 1.6;" class="kis-text-content">${contentToUse}</div>
+        `;
+    }
 
     const blockData = {
         'ploeg-indeling': { count: 0, editorHTML: `<div class="form-group"><label>Kazerne in Roosterplanning</label><div class="tags-wrapper"><span class="tag">Breda <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: () => getRoosterKISHTML() },
@@ -149,20 +155,37 @@ document.addEventListener('DOMContentLoaded', () => {
         'topdesk': { count: 0, editorHTML: `<div class="form-group"><label>Topdesk</label><div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">TOPDESK MELDINGEN</h1><p style="opacity:0.5; font-size: 20px;">Geen meldingen.</p>` },
         'mobiliteit': { count: 0, editorHTML: `<div class="form-group"><label>Kaartlagen</label><div class="tags-wrapper"><span class="tag">Weg Info <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">MOBILITEIT</h1><div style="width:100%;height:400px;background:rgba(0,0,0,0.05);border:1px dashed var(--input-border);display:flex;align-items:center;justify-content:center;">Kaart</div>` },
         'gepland-onderhoud': { count: 1, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Voertuig</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>20-1571</td><td>Onderhoud</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><p style="font-size: 20px;">20-1571 in onderhoud.</p>` },
-        'algemeen': { count: () => appState.algemeen.tasks.length, editorHTML: () => getTaskEditorHTML('algemeen'), previewHTML: () => getTaskKISHTML('algemeen', 'ALG. WERKzaamheden') },
-        'ademlucht': { count: () => appState.ademlucht.tasks.length, editorHTML: () => getTaskEditorHTML('ademlucht'), previewHTML: () => getTaskKISHTML('ademlucht', 'ADEMLUCHT WERKzaamheden') },
+        'algemeen': { count: () => appState.algemeen.tasks.length, editorHTML: () => getTaskEditorHTML('algemeen'), previewHTML: () => getTaskKISHTML('algemeen', 'ALG. WERKZAAMHEDEN') },
+        'ademlucht': { count: () => appState.ademlucht.tasks.length, editorHTML: () => getTaskEditorHTML('ademlucht'), previewHTML: () => getTaskKISHTML('ademlucht', 'ADEMLUCHT WERKZAAMHEDEN') },
         'vakbekwaam': { count: 0, editorHTML: `<div class="form-group"><label>Ploegen</label><div class="dropdown-input placeholder">Selecteer...</div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">VAKBEKWAAM AG5</h1><p style="opacity:0.5; font-size: 20px;">Geen bijzonderheden.</p>` },
-        'default': { count: 0, editorHTML: wysiwygEditorHTML, previewHTML: `<h1 class="slide-title" id="dynamic-preview-title">ONDERDEEL</h1><p style="font-size:24px;">Inhoud presentatie.</p>` }
+        'default': { count: 0, editorHTML: (id) => getWysiwygEditorHTML(id), previewHTML: (id, title) => getWysiwygPreviewHTML(id, title) }
     };
 
-    function getHTML(id, type) { const data = blockData[id] || blockData['default']; const content = data[type]; return typeof content === 'function' ? content() : content; }
+    function getHTML(id, type, defaultTitle) { const data = blockData[id] || blockData['default']; const content = data[type]; return typeof content === 'function' ? content(id, defaultTitle) : content; }
     function getBadgeCount(id) { const data = blockData[id] || blockData['default']; const count = data.count; return typeof count === 'function' ? count() : count; }
 
     function initializeBadges() { document.querySelectorAll('.drag-item').forEach(card => { const count = getBadgeCount(card.getAttribute('data-id')); if (count > 0) { let badge = document.createElement('span'); badge.className = 'badge red-bg'; badge.innerText = count; card.appendChild(badge); } }); }
     initializeBadges();
 
-    // --- DIRECT DOM SYNC ---
+    // --- DIRECT DOM SYNC & SAVE LOGIC ---
     document.addEventListener('click', (e) => {
+        // Tekst opslaan voor WYSIWYG
+        if (e.target.classList.contains('btn-save-text')) {
+            const blockId = e.target.getAttribute('data-block');
+            appState[blockId].title = document.querySelector('.tab-title-input').value;
+            appState[blockId].content = document.querySelector('.tab-content-input').value;
+            
+            const activeTab = document.querySelector('.editor-tabs .tab.active');
+            if (activeTab) activeTab.innerText = appState[blockId].title || 'Nieuwe tab';
+
+            const orgText = e.target.innerText;
+            e.target.innerText = 'Opgeslagen ✓';
+            e.target.style.backgroundColor = 'var(--vrmwb-gold)';
+            e.target.style.color = '#1E1E1E';
+            setTimeout(() => { e.target.innerText = orgText; e.target.style.backgroundColor = ''; e.target.style.color = ''; }, 1500);
+            return;
+        }
+
         const checkToggle = e.target.closest('.editor-check-toggle, .kis-checklist-card');
         if (checkToggle && !e.target.closest('.icon-btn')) {
             const blockId = checkToggle.getAttribute('data-block');
@@ -237,17 +260,17 @@ document.addEventListener('DOMContentLoaded', () => {
         middleList.querySelectorAll('.drag-item').forEach(c => c.classList.remove('active-card', 'gold'));
         card.classList.add('active-card', 'gold');
         currentSelectedBlockId = card.getAttribute('data-id');
-        document.getElementById('editor-title').innerText = card.textContent.trim().toUpperCase();
-        editorContent.innerHTML = getHTML(currentSelectedBlockId, 'editorHTML');
+        const title = card.textContent.trim().toUpperCase();
+        document.getElementById('editor-title').innerText = title;
+        editorContent.innerHTML = getHTML(currentSelectedBlockId, 'editorHTML', title);
     });
 
     // --- MODALS ---
     const previewModal = document.getElementById('preview-modal');
     document.getElementById('btn-open-preview').addEventListener('click', () => {
         if (!currentSelectedBlockId) { alert("Selecteer eerst een blok!"); return; }
-        let html = getHTML(currentSelectedBlockId, 'previewHTML');
-        if (html.includes('id="dynamic-preview-title"')) html = html.replace('id="dynamic-preview-title">ONDERDEEL', 'id="dynamic-preview-title">' + document.getElementById('editor-title').innerText);
-        document.getElementById('preview-body').innerHTML = html;
+        const title = document.getElementById('editor-title').innerText;
+        document.getElementById('preview-body').innerHTML = getHTML(currentSelectedBlockId, 'previewHTML', title);
         previewModal.classList.add('active');
     });
     document.getElementById('close-preview').addEventListener('click', () => previewModal.classList.remove('active'));
@@ -279,9 +302,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         middleList.querySelectorAll('.drag-item').forEach((block, index) => {
             const id = block.getAttribute('data-id');
-            let slideHtml = getHTML(id, 'previewHTML');
-            if (slideHtml.includes('id="dynamic-preview-title"')) slideHtml = slideHtml.replace('id="dynamic-preview-title">ONDERDEEL', 'id="dynamic-preview-title">' + block.textContent.trim().toUpperCase());
-            presentationSlides.push({ bgImage: contentImagePool[index % contentImagePool.length], html: `<div style="width: 100%; text-align: left; padding: 0 40px;">${slideHtml}</div>`, blockId: id });
+            const title = block.textContent.trim().toUpperCase();
+            let slideHtml = getHTML(id, 'previewHTML', title);
+            presentationSlides.push({ bgImage: contentImagePool[index % contentImagePool.length], html: `<div style="width: 100%; text-align: left; padding: 0 40px;">${slideHtml}</div>`, blockId: id, blockTitle: title });
         });
 
         presentationSlides.push({ bgImage: `img/outro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 64px; margin-bottom: 40px; border-bottom: 4px solid var(--vrmwb-red);">EINDE DAGJOURNAAL</h1><p style="font-size: 36px; opacity: 0.8; font-weight: 700;">Zijn er nog bijzonderheden of vragen?</p></div>`, blockId: null });
@@ -298,8 +321,9 @@ document.addEventListener('DOMContentLoaded', () => {
         currentSlideIndex = index;
 
         const currentSlide = presentationSlides[currentSlideIndex];
-        if (currentSlide.blockId && (currentSlide.blockId === 'algemeen' || currentSlide.blockId === 'ademlucht' || currentSlide.blockId === 'ploeg-indeling')) {
-            let freshHtml = getHTML(currentSlide.blockId, 'previewHTML');
+        // Vers genereer de preview zodat data altijd klopt (ook voor de WYSIWYG editor blokken)
+        if (currentSlide.blockId) {
+            let freshHtml = getHTML(currentSlide.blockId, 'previewHTML', currentSlide.blockTitle);
             currentSlide.html = `<div style="width: 100%; text-align: left; padding: 0 40px;">${freshHtml}</div>`;
         }
         presentationSlides.forEach((_, i) => { const layer = document.getElementById(`bg-slide-${i}`); if (layer) layer.style.opacity = (i === currentSlideIndex) ? '1' : '0'; });
