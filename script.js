@@ -61,8 +61,14 @@ document.addEventListener('DOMContentLoaded', () => {
         'ademlucht': { tasks: [ { id: 'ad1', text: 'Na einde werkzaamheden testbanken en vulbalk-pc uitschakelen', checked: false, author: 'Paul van der Heijden' } ] }
     };
 
+    // UX MULTI-TAB SYSTEEM: Elk tekstblok krijgt nu standaard een array van tabbladen
     const textBlocks = ['afspraken', 'nieuws', 'arbo', 'communicatie', 'iboa', 'ocb', 'rbcb', 'straten', 'tfl', 'vkb', 'waarschuwingen'];
-    textBlocks.forEach(id => { appState[id] = { title: '', content: '' }; });
+    textBlocks.forEach(id => { 
+        appState[id] = { 
+            activeTabId: 1, 
+            tabs: [{ id: 1, title: 'Nieuwe tab', content: '' }] 
+        }; 
+    });
 
     // --- RENDER FUNCTIES ---
     function getRoosterKISHTML() {
@@ -117,29 +123,54 @@ document.addEventListener('DOMContentLoaded', () => {
         return html;
     }
 
+    // MULTI-TAB EDITOR RENDERER
     function getWysiwygEditorHTML(blockId) {
-        const data = appState[blockId] || { title: '', content: '' };
-        const tabName = data.title || 'Nieuwe tab';
+        const data = appState[blockId];
+        const activeTab = data.tabs.find(t => t.id === data.activeTabId) || data.tabs[0];
+        
+        let tabsHtml = '';
+        data.tabs.forEach(tab => {
+            const isActive = tab.id === data.activeTabId ? 'active' : '';
+            // Laat een sluit-kruisje zien als er meer dan 1 tab is
+            const closeBtn = data.tabs.length > 1 ? `<span class="tab-close" data-id="${tab.id}">&times;</span>` : '';
+            tabsHtml += `<div class="tab ${isActive}" data-tab-id="${tab.id}">${tab.title} ${closeBtn}</div>`;
+        });
+
         return `
-            <div class="editor-tabs"><div class="tab active">${tabName}</div></div>
-            <div class="form-group"><label>Tab titel:</label><input type="text" class="text-input tab-title-input" value="${data.title}" placeholder="Typ een titel..."></div>
+            <div class="editor-tabs" data-block="${blockId}">
+                ${tabsHtml}
+                <button class="add-tab-btn" data-block="${blockId}">+</button>
+            </div>
+            <div class="form-group">
+                <label>Tab titel:</label>
+                <input type="text" class="text-input tab-title-input" value="${activeTab.title}" placeholder="Typ een titel...">
+            </div>
             <div class="wysiwyg-container">
                 <div class="wysiwyg-toolbar">
                     <button class="toolbar-btn">P</button><button class="toolbar-btn">H1</button><button class="toolbar-btn">H2</button>
                     <div class="toolbar-divider"></div>
                     <button class="toolbar-btn" style="font-weight:900;">B</button><button class="toolbar-btn" style="font-style:italic;">I</button>
                 </div>
-                <textarea class="wysiwyg-area tab-content-input" placeholder="Typ inhoud...">${data.content}</textarea>
+                <textarea class="wysiwyg-area tab-content-input" placeholder="Typ inhoud...">${activeTab.content}</textarea>
             </div>
             <button class="btn-save btn-save-text" data-block="${blockId}">Opslaan</button>
         `;
     }
 
-    function getWysiwygPreviewHTML(blockId, fallbackTitle) {
-        const data = appState[blockId] || { title: '', content: '' };
-        const titleToUse = data.title ? data.title.toUpperCase() : fallbackTitle;
-        const contentToUse = data.content ? data.content.replace(/\n/g, '<br>') : 'Geen inhoud opgeslagen.';
-        return `<h1 class="slide-title">${titleToUse}</h1><div style="font-size: 24px; line-height: 1.6;" class="kis-text-content">${contentToUse}</div>`;
+    // MULTI-TAB PREVIEW RENDERER
+    function getWysiwygPreviewHTML(blockId, blockName) {
+        const data = appState[blockId];
+        let html = `<h1 class="slide-title">${blockName}</h1>`;
+        
+        data.tabs.forEach(tab => {
+            const contentToUse = tab.content ? tab.content.replace(/\n/g, '<br>') : 'Geen inhoud opgeslagen.';
+            if (tab.title && tab.title.toLowerCase() !== 'nieuwe tab') {
+                html += `<h2 style="font-size: 32px; font-weight: 700; margin-bottom: 20px; color: var(--vrmwb-gold);">${tab.title}</h2>`;
+            }
+            html += `<div style="font-size: 24px; line-height: 1.6; margin-bottom: 40px;" class="kis-text-content">${contentToUse}</div>`;
+        });
+        
+        return html;
     }
 
     const blockData = {
@@ -153,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'algemeen': { count: () => appState.algemeen.tasks.length, editorHTML: () => getTaskEditorHTML('algemeen'), previewHTML: () => getTaskKISHTML('algemeen', 'ALG. WERKZAAMHEDEN') },
         'ademlucht': { count: () => appState.ademlucht.tasks.length, editorHTML: () => getTaskEditorHTML('ademlucht'), previewHTML: () => getTaskKISHTML('ademlucht', 'ADEMLUCHT WERKZAAMHEDEN') },
         'vakbekwaam': { count: 0, editorHTML: `<div class="form-group"><label>Ploegen</label><div class="dropdown-input placeholder">Selecteer...</div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">VAKBEKWAAM AG5</h1><p style="opacity:0.5; font-size: 20px;">Geen bijzonderheden.</p>` },
-        'default': { count: 0, editorHTML: (id) => getWysiwygEditorHTML(id), previewHTML: (id, title) => getWysiwygPreviewHTML(id, title) }
+        'default': { count: 0, editorHTML: (id) => getWysiwygEditorHTML(id), previewHTML: (id, blockName) => getWysiwygPreviewHTML(id, blockName) }
     };
 
     function getHTML(id, type, defaultTitle) { const data = blockData[id] || blockData['default']; const content = data[type]; return typeof content === 'function' ? content(id, defaultTitle) : content; }
@@ -164,22 +195,74 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- DIRECT DOM SYNC & SAVE LOGIC ---
     document.addEventListener('click', (e) => {
+        
+        // 1. TEKST OPSLAAN KNOP
         if (e.target.classList.contains('btn-save-text')) {
             const blockId = e.target.getAttribute('data-block');
-            appState[blockId].title = document.querySelector('.tab-title-input').value;
-            appState[blockId].content = document.querySelector('.tab-content-input').value;
+            const data = appState[blockId];
+            const activeTab = data.tabs.find(t => t.id === data.activeTabId);
             
-            const activeTab = document.querySelector('.editor-tabs .tab.active');
-            if (activeTab) activeTab.innerText = appState[blockId].title || 'Nieuwe tab';
+            activeTab.title = document.querySelector('.tab-title-input').value;
+            activeTab.content = document.querySelector('.tab-content-input').value;
+            
+            const activeTabEl = document.querySelector('.editor-tabs .tab.active');
+            if (activeTabEl) { activeTabEl.childNodes[0].nodeValue = activeTab.title + ' '; }
 
-            const orgText = e.target.innerText;
-            e.target.innerText = 'Opgeslagen ✓';
-            e.target.style.backgroundColor = 'var(--vrmwb-gold)';
-            e.target.style.color = '#1E1E1E';
-            setTimeout(() => { e.target.innerText = orgText; e.target.style.backgroundColor = ''; e.target.style.color = ''; }, 1500);
+            const btn = e.target; const orgText = btn.innerText;
+            btn.innerText = 'Opgeslagen ✓'; btn.style.backgroundColor = 'var(--vrmwb-gold)'; btn.style.color = '#1E1E1E';
+            setTimeout(() => { btn.innerText = orgText; btn.style.backgroundColor = ''; btn.style.color = ''; }, 1500);
             return;
         }
 
+        // 2. TAB WISSELEN
+        const tabEl = e.target.closest('.tab');
+        if (tabEl && !e.target.classList.contains('tab-close')) {
+            const blockId = tabEl.closest('.editor-tabs').getAttribute('data-block');
+            const data = appState[blockId];
+            const tabId = parseInt(tabEl.getAttribute('data-tab-id'));
+            
+            // Sla huidige inputs op VOORDAT we wisselen (UX Vangnet)
+            const oldTab = data.tabs.find(t => t.id === data.activeTabId);
+            if (oldTab) {
+                oldTab.title = document.querySelector('.tab-title-input').value;
+                oldTab.content = document.querySelector('.tab-content-input').value;
+            }
+            data.activeTabId = tabId;
+            document.getElementById('editor-content').innerHTML = getHTML(blockId, 'editorHTML', document.getElementById('editor-title').innerText);
+            return;
+        }
+
+        // 3. TAB TOEVOEGEN (+)
+        if (e.target.classList.contains('add-tab-btn')) {
+            const blockId = e.target.getAttribute('data-block');
+            const data = appState[blockId];
+            
+            const oldTab = data.tabs.find(t => t.id === data.activeTabId);
+            if (oldTab) {
+                oldTab.title = document.querySelector('.tab-title-input').value;
+                oldTab.content = document.querySelector('.tab-content-input').value;
+            }
+            const newId = Date.now();
+            data.tabs.push({ id: newId, title: 'Nieuwe tab', content: '' });
+            data.activeTabId = newId;
+            document.getElementById('editor-content').innerHTML = getHTML(blockId, 'editorHTML', document.getElementById('editor-title').innerText);
+            return;
+        }
+
+        // 4. TAB VERWIJDEREN (X)
+        if (e.target.classList.contains('tab-close')) {
+            const blockId = e.target.closest('.editor-tabs').getAttribute('data-block');
+            const data = appState[blockId];
+            const tabId = parseInt(e.target.getAttribute('data-id'));
+            
+            data.tabs = data.tabs.filter(t => t.id !== tabId);
+            if (data.activeTabId === tabId) { data.activeTabId = data.tabs[data.tabs.length - 1].id; }
+            document.getElementById('editor-content').innerHTML = getHTML(blockId, 'editorHTML', document.getElementById('editor-title').innerText);
+            e.stopPropagation();
+            return;
+        }
+
+        // 5. CHECKLIST VINKJES
         const checkToggle = e.target.closest('.editor-check-toggle, .kis-checklist-card');
         if (checkToggle && !e.target.closest('.icon-btn')) {
             const blockId = checkToggle.getAttribute('data-block');
@@ -203,6 +286,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // 6. KIS INFO MODAL
         const infoTrigger = e.target.closest('.kis-info-trigger');
         const kisModal = document.getElementById('kis-modal');
         if (infoTrigger) {
@@ -249,7 +333,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // UX FIX: Blokken kunnen zowel links als in het midden geselecteerd worden
     function handleCardSelection(card) {
         if (!card) return; 
         document.querySelectorAll('.drag-item').forEach(c => c.classList.remove('active-card', 'gold'));
@@ -341,7 +424,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById('btn-start-presentation').addEventListener('click', () => {
-        // UX Validatie: Eis een kazerne selectie
         if (locationTrigger.innerText === 'SELECTEER KAZERNE') { alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); locationModal.classList.add('active'); return; }
         if (middleList.querySelectorAll('.drag-item').length === 0) { alert("Voeg blokken toe aan het dagjournaal!"); return; }
         
