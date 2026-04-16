@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Operationeel Dagjournaal - VRMWB</title>
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="style.css">
 </head>
 <body data-theme="light">
@@ -13,9 +14,22 @@
         <div class="gradient-fade"></div>
     </div>
 
-    <header class="top-header">
-        <div id="location-trigger" class="location-pill">SELECTEER KAZERNE</div>
-        <button id="theme-toggle" class="theme-btn">🌙 Dark Mode</button>
+    <header class="topbar">
+        <div class="tb-left">
+            <a href="https://ralphsmits.github.io/vrmwb/" class="tb-btn white">ODj Widget</a>
+            <div class="tb-divider"></div>
+            <button id="location-trigger" class="loc-btn-header">
+                <svg viewBox="0 0 24 24" class="loc-ico" style="width:14px;height:14px;stroke:none;fill:var(--vrmwb-navy);flex-shrink:0;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                <span id="loc-label">SELECTEER KAZERNE</span>
+                <svg viewBox="0 0 24 24" class="loc-chevron" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+        </div>
+        <div class="tb-logos">
+            <img src="img/logo.png" alt="VRMWB Brandweer" class="tb-logo-img" id="tb-logo">
+        </div>
+        <div class="tb-right">
+            <div class="tb-datetime" id="datetime-display">Laden...</div>
+        </div>
     </header>
 
     <main class="app-container">
@@ -72,13 +86,43 @@
 
     <footer class="bottom-bar">
         <div class="logo-section"><div class="title-logo"><strong>OPERATIONEEL DAGJOURNAAL</strong>BEHEER</div></div>
-        <div class="date-controls">
+        
+        <div class="date-controls" id="bb-date-nav">
             <button id="btn-prev-day" class="nav-btn">&lt;</button>
-            <button id="btn-today" class="nav-btn-text">Vandaag</button>
+            <button id="btn-today" class="nav-btn-text" style="background: transparent; padding: 0 10px;">Vandaag</button>
             <button id="btn-next-day" class="nav-btn">&gt;</button>
         </div>
-        <div class="status-clock" id="datetime-display">Laden...</div>
+        
+        <div class="bb-right" style="display: flex; align-items: center; gap: 20px;">
+            <button class="bb-profile" id="profile-btn">
+                <div class="bb-avatar" id="bb-avatar">?</div>
+                <div class="bb-pinfo">
+                    <div class="bb-pname" id="bb-pname">Naam Achternaam</div>
+                    <div class="bb-prole" id="bb-prole">Rol</div>
+                </div>
+            </button>
+        </div>
     </footer>
+
+    <div class="profile-panel" id="profile-panel">
+        <div class="pp-avatar" id="pp-avatar-large">?</div>
+        <div class="pp-head">Profielinstellingen</div>
+        <label class="pp-lbl">Voornaam</label>
+        <input class="pp-inp" id="pp-voornaam" type="text" placeholder="Voornaam">
+        <label class="pp-lbl">Achternaam</label>
+        <input class="pp-inp" id="pp-achternaam" type="text" placeholder="Achternaam">
+        <label class="pp-lbl">Rol</label>
+        <input class="pp-inp" id="pp-rol" type="text" placeholder="bijv. Ploegcommandant">
+        <div class="pp-toggle-row">
+            <span class="pp-toggle-lbl">Dark mode</span>
+            <button class="pp-toggle" id="dark-toggle" role="switch" aria-checked="false">
+                <span class="pp-toggle-thumb"></span>
+            </button>
+        </div>
+        <button class="pp-save" id="btn-save-profile">Opslaan</button>
+    </div>
+    
+    <div class="toast" id="toast"></div>
 
     <div id="location-modal" class="modal-overlay">
         <div class="modal-content">
@@ -120,6 +164,9 @@
             </div>
         </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/nl.js"></script>
     
     <script src="script.js"></script>
 </body>

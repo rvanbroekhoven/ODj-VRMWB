@@ -1,38 +1,139 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    const themeToggle = document.getElementById('theme-toggle');
-    const body = document.body;
-
-    themeToggle.addEventListener('click', () => {
-        const currentTheme = body.getAttribute('data-theme');
-        if (currentTheme === 'light') { body.setAttribute('data-theme', 'dark'); themeToggle.innerText = '☀️ Light Mode'; } 
-        else { body.setAttribute('data-theme', 'light'); themeToggle.innerText = '🌙 Dark Mode'; }
-    });
-
-    let selectedDate = new Date(); 
-    const btnPrev = document.getElementById('btn-prev-day');
-    const btnNext = document.getElementById('btn-next-day');
-    const btnTodayText = document.getElementById('btn-today'); 
-    const datetimeDisplay = document.getElementById('datetime-display');
-
-    function updateCenterNavigation() {
-        const today = new Date();
-        const isToday = selectedDate.getDate() === today.getDate() && selectedDate.getMonth() === today.getMonth() && selectedDate.getFullYear() === today.getFullYear();
-        if (isToday) { btnTodayText.innerText = "Vandaag"; } 
-        else { btnTodayText.innerText = selectedDate.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }); }
+    // --- 1. TOAST NOTIFICATIONS ---
+    function showToast(m) {
+        const t = document.getElementById('toast');
+        t.textContent = m;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2300);
     }
+
+    // --- 2. DARK MODE (In Profile Panel) ---
+    const darkToggle = document.getElementById('dark-toggle');
+    function applyDark(on) {
+        if (on) {
+            document.body.setAttribute('data-theme', 'dark');
+            if(darkToggle) darkToggle.setAttribute('aria-checked', 'true');
+            const logo = document.getElementById('tb-logo');
+            if(logo) logo.src = 'img/darklogo.png';
+        } else {
+            document.body.setAttribute('data-theme', 'light');
+            if(darkToggle) darkToggle.setAttribute('aria-checked', 'false');
+            const logo = document.getElementById('tb-logo');
+            if(logo) logo.src = 'img/logo.png';
+        }
+    }
+    if(darkToggle) {
+        darkToggle.addEventListener('click', () => {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            applyDark(!isDark);
+        });
+    }
+    applyDark(document.body.getAttribute('data-theme') === 'dark');
+
+    // --- 3. PROFILE PANEL (Rechtsboven via Footer) ---
+    const PROF_KEY = 'vrmwb_profile';
+    function loadProfile() {
+        const p = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
+        const naam = p.voornaam || '';
+        const ach = p.achternaam || '';
+        const rol = p.rol || '';
+        const initials = ((naam[0] || '') + (ach[0] || '')).toUpperCase() || '?';
+        
+        const bbAvatar = document.getElementById('bb-avatar');
+        const ppAvatar = document.getElementById('pp-avatar-large');
+        if(bbAvatar) bbAvatar.textContent = initials;
+        if(ppAvatar) ppAvatar.textContent = initials;
+        
+        const bbPname = document.getElementById('bb-pname');
+        const bbProle = document.getElementById('bb-prole');
+        if(bbPname) bbPname.textContent = (naam + ' ' + ach).trim() || 'Naam Achternaam';
+        if(bbProle) bbProle.textContent = rol || 'Rol';
+        
+        const ppVoornaam = document.getElementById('pp-voornaam');
+        const ppAchternaam = document.getElementById('pp-achternaam');
+        const ppRol = document.getElementById('pp-rol');
+        if(ppVoornaam) ppVoornaam.value = naam;
+        if(ppAchternaam) ppAchternaam.value = ach;
+        if(ppRol) ppRol.value = rol;
+    }
+    
+    function saveProfile() {
+        const voornaam = document.getElementById('pp-voornaam').value.trim();
+        const achternaam = document.getElementById('pp-achternaam').value.trim();
+        const rol = document.getElementById('pp-rol').value.trim();
+        localStorage.setItem(PROF_KEY, JSON.stringify({voornaam, achternaam, rol}));
+        loadProfile();
+        document.getElementById('profile-panel').classList.remove('open');
+        showToast('Profiel opgeslagen');
+    }
+    
+    const profileBtn = document.getElementById('profile-btn');
+    if(profileBtn) {
+        profileBtn.addEventListener('click', () => {
+            document.getElementById('profile-panel').classList.toggle('open');
+        });
+    }
+    
+    const btnSaveProfile = document.getElementById('btn-save-profile');
+    if(btnSaveProfile) {
+        btnSaveProfile.addEventListener('click', saveProfile);
+    }
+    
+    document.addEventListener('click', (e) => {
+        const panel = document.getElementById('profile-panel');
+        const btn = document.getElementById('profile-btn');
+        if (panel && btn && panel.classList.contains('open') && !panel.contains(e.target) && !btn.contains(e.target)) {
+            panel.classList.remove('open');
+        }
+    });
+    loadProfile();
+
+    // --- 4. KLOK & FLATPICKR DATUM ---
+    let selectedDate = new Date(); 
+    const datetimeDisplay = document.getElementById('datetime-display');
+    const btnTodayText = document.getElementById('btn-today');
+
     function updateRealTimeClock() {
         const now = new Date();
         let dateString = now.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
         dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1).replace(' ', ', ');
-        datetimeDisplay.innerHTML = `${dateString} &nbsp;&nbsp; ${now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`;
+        if(datetimeDisplay) datetimeDisplay.innerHTML = `${dateString} &nbsp;&nbsp; ${now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`;
+    }
+    updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
+
+    let fpInstance = null;
+    function initDatepicker() {
+        if(document.getElementById('btn-today')) {
+            fpInstance = flatpickr('#btn-today', {
+                locale: 'nl',
+                defaultDate: 'today',
+                position: 'above center',
+                disableMobile: true,
+                onChange: function(dates) {
+                    if (dates[0]) {
+                        selectedDate = dates[0];
+                        updateCenterNavigation();
+                    }
+                }
+            });
+        }
+    }
+    initDatepicker();
+
+    function updateCenterNavigation() {
+        if(!btnTodayText) return;
+        const today = new Date();
+        const isToday = selectedDate.getDate() === today.getDate() && selectedDate.getMonth() === today.getMonth() && selectedDate.getFullYear() === today.getFullYear();
+        if (isToday) { btnTodayText.innerText = "Vandaag"; } 
+        else { btnTodayText.innerText = selectedDate.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' }); }
+        if (fpInstance) fpInstance.setDate(selectedDate, false);
     }
 
-    btnPrev.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() - 1); updateCenterNavigation(); });
-    btnNext.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() + 1); updateCenterNavigation(); });
-    btnTodayText.addEventListener('click', () => { selectedDate = new Date(); updateCenterNavigation(); });
-
-    updateCenterNavigation(); updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
+    const btnPrevDay = document.getElementById('btn-prev-day');
+    const btnNextDay = document.getElementById('btn-next-day');
+    if(btnPrevDay) btnPrevDay.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() - 1); updateCenterNavigation(); });
+    if(btnNextDay) btnNextDay.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() + 1); updateCenterNavigation(); });
 
     // --- SHARED STATE & FIGMA DATA ---
     const appState = {
@@ -62,16 +163,11 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const textBlocks = ['afspraken', 'nieuws', 'arbo', 'communicatie', 'iboa', 'ocb', 'rbcb', 'straten', 'tfl', 'vkb', 'waarschuwingen'];
-    textBlocks.forEach(id => { 
-        appState[id] = { 
-            activeTabId: 1, 
-            tabs: [{ id: 1, title: 'Nieuwe tab', content: '' }] 
-        }; 
-    });
+    textBlocks.forEach(id => { appState[id] = { activeTabId: 1, tabs: [{ id: 1, title: 'Nieuwe tab', content: '' }] }; });
 
     // --- RENDER FUNCTIES ---
     function getRoosterKISHTML() {
-        let html = `<h1 class="slide-title">Ploeg indeling</h1><div class="kis-rooster-grid">`;
+        let html = `<h1 class="slide-title">Ploeg indeling: Breda</h1><div class="kis-rooster-grid">`;
         appState.rooster.members.forEach(m => {
             let tagsHtml = m.tags.map(t => `<span class="func-tag" data-color="${t.color}">${t.text}</span>`).join('');
             html += `<div class="kis-rooster-card"><div class="member-name">${m.name}</div><div class="member-tags">${tagsHtml}</div></div>`;
@@ -138,10 +234,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ${tabsHtml}
                 <button class="add-tab-btn" data-block="${blockId}">+</button>
             </div>
-            <div class="form-group">
-                <label>Tab titel:</label>
-                <input type="text" class="text-input tab-title-input" value="${activeTab.title}" placeholder="Typ een titel...">
-            </div>
+            <div class="form-group"><label>Tab titel:</label><input type="text" class="text-input tab-title-input" value="${activeTab.title}" placeholder="Typ een titel..."></div>
             <div class="wysiwyg-container">
                 <div class="wysiwyg-toolbar">
                     <button class="toolbar-btn">P</button><button class="toolbar-btn">H1</button><button class="toolbar-btn">H2</button>
@@ -165,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             html += `<div style="font-size: 24px; line-height: 1.6; margin-bottom: 40px;" class="kis-text-content">${contentToUse}</div>`;
         });
-        
         return html;
     }
 
@@ -189,10 +281,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeBadges() { document.querySelectorAll('.drag-item').forEach(card => { const count = getBadgeCount(card.getAttribute('data-id')); if (count > 0) { let badge = document.createElement('span'); badge.className = 'badge red-bg'; badge.innerText = count; card.appendChild(badge); } }); }
     initializeBadges();
 
-    // --- DIRECT DOM SYNC & SAVE LOGIC ---
+    // --- DOM SYNC ---
     document.addEventListener('click', (e) => {
-        
-        // WYSIWYG: Opslaan
         if (e.target.classList.contains('btn-save-text')) {
             const blockId = e.target.getAttribute('data-block');
             const data = appState[blockId];
@@ -210,7 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // WYSIWYG: Tab wisselen
         const tabEl = e.target.closest('.tab');
         if (tabEl && !e.target.classList.contains('tab-close')) {
             const blockId = tabEl.closest('.editor-tabs').getAttribute('data-block');
@@ -227,7 +316,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // WYSIWYG: Tab toevoegen
         if (e.target.classList.contains('add-tab-btn')) {
             const blockId = e.target.getAttribute('data-block');
             const data = appState[blockId];
@@ -244,7 +332,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // WYSIWYG: Tab verwijderen
         if (e.target.classList.contains('tab-close')) {
             const blockId = e.target.closest('.editor-tabs').getAttribute('data-block');
             const data = appState[blockId];
@@ -257,7 +344,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // CHECKLIST VINKJES
         const checkToggle = e.target.closest('.editor-check-toggle, .kis-checklist-card');
         if (checkToggle && !e.target.closest('.icon-btn')) {
             const blockId = checkToggle.getAttribute('data-block');
@@ -281,7 +367,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // INFO TRIGGER POP-UP
         const infoTrigger = e.target.closest('.kis-info-trigger');
         const kisModal = document.getElementById('kis-modal');
         if (infoTrigger) {
@@ -290,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
             kisModal.classList.add('active');
             e.stopPropagation();
         } else if (e.target.closest('#kis-modal-close') || e.target === kisModal) {
-            kisModal.classList.remove('active');
+            if(kisModal) kisModal.classList.remove('active');
         }
     });
 
@@ -298,8 +383,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const middleList = document.getElementById('dagjournaal-lijst');
     const leftList = document.getElementById('blok-selectie');
     const editorContent = document.getElementById('editor-content');
-    const leftColumn = leftList.closest('.column');
-    const middleColumn = middleList.closest('.column');
+    const leftColumn = leftList ? leftList.closest('.column') : null;
+    const middleColumn = middleList ? middleList.closest('.column') : null;
 
     let currentSelectedBlockId = null;
 
@@ -320,13 +405,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function getDragAfterElement(container, y) { const draggableElements = [...container.querySelectorAll('.drag-item:not(.dragging)')]; return draggableElements.reduce((closest, child) => { const box = child.getBoundingClientRect(); const offset = y - box.top - box.height / 2; if (offset < 0 && offset > closest.offset) return { offset: offset, element: child }; else return closest; }, { offset: Number.NEGATIVE_INFINITY }).element; }
 
-    [leftColumn, middleColumn].forEach(col => {
-        col.addEventListener('dragover', e => {
-            e.preventDefault(); const draggable = document.querySelector('.dragging'); if (!draggable) return;
-            const zone = col.querySelector('.scroll-area'); const afterElement = getDragAfterElement(zone, e.clientY);
-            if (afterElement == null) zone.appendChild(draggable); else zone.insertBefore(draggable, afterElement);
+    if(leftColumn && middleColumn) {
+        [leftColumn, middleColumn].forEach(col => {
+            col.addEventListener('dragover', e => {
+                e.preventDefault(); const draggable = document.querySelector('.dragging'); if (!draggable) return;
+                const zone = col.querySelector('.scroll-area'); const afterElement = getDragAfterElement(zone, e.clientY);
+                if (afterElement == null) zone.appendChild(draggable); else zone.insertBefore(draggable, afterElement);
+            });
         });
-    });
+    }
 
     function handleCardSelection(card) {
         if (!card) return; 
@@ -343,27 +430,34 @@ document.addEventListener('DOMContentLoaded', () => {
         editorContent.innerHTML = getHTML(currentSelectedBlockId, 'editorHTML', title);
     }
 
-    middleList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
-    leftList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
+    if(middleList) middleList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
+    if(leftList) leftList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
 
     // --- MODALS ---
     const previewModal = document.getElementById('preview-modal');
-    document.getElementById('btn-open-preview').addEventListener('click', () => {
-        if (!currentSelectedBlockId) { alert("Selecteer eerst een blok!"); return; }
-        const title = document.getElementById('editor-title').innerText;
-        document.getElementById('preview-body').innerHTML = getHTML(currentSelectedBlockId, 'previewHTML', title);
-        previewModal.classList.add('active');
-    });
-    document.getElementById('close-preview').addEventListener('click', () => previewModal.classList.remove('active'));
+    const btnOpenPreview = document.getElementById('btn-open-preview');
+    if(btnOpenPreview) {
+        btnOpenPreview.addEventListener('click', () => {
+            if (!currentSelectedBlockId) { alert("Selecteer eerst een blok!"); return; }
+            const title = document.getElementById('editor-title').innerText;
+            document.getElementById('preview-body').innerHTML = getHTML(currentSelectedBlockId, 'previewHTML', title);
+            previewModal.classList.add('active');
+        });
+    }
+    const closePreviewBtn = document.getElementById('close-preview');
+    if(closePreviewBtn) closePreviewBtn.addEventListener('click', () => previewModal.classList.remove('active'));
 
     const locationModal = document.getElementById('location-modal');
     const locationTrigger = document.getElementById('location-trigger');
-    locationTrigger.addEventListener('click', () => locationModal.classList.add('active'));
-    document.getElementById('close-modal').addEventListener('click', () => locationModal.classList.remove('active'));
+    const locLabel = document.getElementById('loc-label');
+    if(locationTrigger) locationTrigger.addEventListener('click', () => locationModal.classList.add('active'));
+    const closeModal = document.getElementById('close-modal');
+    if(closeModal) closeModal.addEventListener('click', () => locationModal.classList.remove('active'));
     document.querySelectorAll('.loc-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active'); locationTrigger.innerText = this.innerText;
+            this.classList.add('active'); 
+            if(locLabel) locLabel.innerText = this.innerText;
             locationModal.classList.remove('active');
         });
     });
@@ -380,17 +474,22 @@ document.addEventListener('DOMContentLoaded', () => {
         presentationSlides = []; presBgImageContainer.innerHTML = ''; 
         let contentImagePool = []; for(let i = 1; i <= 25; i++) { contentImagePool.push(`img/content-${i}.jpg`); } contentImagePool.sort(() => Math.random() - 0.5);
         
-        presentationSlides.push({ bgImage: `img/intro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px; border-bottom: none;">OPERATIONEEL DAGJOURNAAL</h1><h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${locationTrigger.innerText}</h2><p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${document.getElementById('datetime-display').innerText.split('   ')[0]}</p></div>`, blockId: null });
+        const locText = locLabel ? locLabel.innerText : 'KAZERNE';
+        const dateText = document.getElementById('datetime-display') ? document.getElementById('datetime-display').innerText.split('   ')[0] : '';
+        
+        presentationSlides.push({ bgImage: `img/intro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px; border-bottom: none;">OPERATIONEEL DAGJOURNAAL</h1><h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${locText}</h2><p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${dateText}</p></div>`, blockId: null });
 
-        middleList.querySelectorAll('.drag-item').forEach((block, index) => {
-            const id = block.getAttribute('data-id');
-            let clone = block.cloneNode(true);
-            let badge = clone.querySelector('.badge');
-            if (badge) badge.remove();
-            const title = clone.textContent.trim().toUpperCase();
-            let slideHtml = getHTML(id, 'previewHTML', title);
-            presentationSlides.push({ bgImage: contentImagePool[index % contentImagePool.length], html: `<div style="width: 100%; text-align: left; padding: 0 40px;">${slideHtml}</div>`, blockId: id, blockTitle: title });
-        });
+        if(middleList) {
+            middleList.querySelectorAll('.drag-item').forEach((block, index) => {
+                const id = block.getAttribute('data-id');
+                let clone = block.cloneNode(true);
+                let badge = clone.querySelector('.badge');
+                if (badge) badge.remove();
+                const title = clone.textContent.trim().toUpperCase();
+                let slideHtml = getHTML(id, 'previewHTML', title);
+                presentationSlides.push({ bgImage: contentImagePool[index % contentImagePool.length], html: `<div style="width: 100%; text-align: left; padding: 0 40px;">${slideHtml}</div>`, blockId: id, blockTitle: title });
+            });
+        }
 
         presentationSlides.push({ bgImage: `img/outro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 64px; margin-bottom: 40px; border-bottom: 4px solid var(--vrmwb-red);">EINDE DAGJOURNAAL</h1><p style="font-size: 36px; opacity: 0.8; font-weight: 700;">Zijn er nog bijzonderheden of vragen?</p></div>`, blockId: null });
 
@@ -411,36 +510,59 @@ document.addEventListener('DOMContentLoaded', () => {
             currentSlide.html = `<div style="width: 100%; text-align: left; padding: 0 40px;">${freshHtml}</div>`;
         }
         presentationSlides.forEach((_, i) => { const layer = document.getElementById(`bg-slide-${i}`); if (layer) layer.style.opacity = (i === currentSlideIndex) ? '1' : '0'; });
-        presContent.innerHTML = currentSlide.html;
-        document.getElementById('pres-counter').innerText = `${currentSlideIndex + 1} / ${presentationSlides.length}`;
-        document.getElementById('pres-prev').style.visibility = (currentSlideIndex === 0) ? 'hidden' : 'visible';
-        document.getElementById('pres-next').style.visibility = (currentSlideIndex === presentationSlides.length - 1) ? 'hidden' : 'visible';
-        document.getElementById('kis-modal').classList.remove('active');
+        if(presContent) presContent.innerHTML = currentSlide.html;
+        
+        const presCounter = document.getElementById('pres-counter');
+        if(presCounter) presCounter.innerText = `${currentSlideIndex + 1} / ${presentationSlides.length}`;
+        
+        const presPrev = document.getElementById('pres-prev');
+        if(presPrev) presPrev.style.visibility = (currentSlideIndex === 0) ? 'hidden' : 'visible';
+        
+        const presNext = document.getElementById('pres-next');
+        if(presNext) presNext.style.visibility = (currentSlideIndex === presentationSlides.length - 1) ? 'hidden' : 'visible';
+        
+        const kisModal = document.getElementById('kis-modal');
+        if(kisModal) kisModal.classList.remove('active');
     }
 
-    document.getElementById('btn-start-presentation').addEventListener('click', () => {
-        if (locationTrigger.innerText === 'SELECTEER KAZERNE') { alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); locationModal.classList.add('active'); return; }
-        if (middleList.querySelectorAll('.drag-item').length === 0) { alert("Voeg blokken toe aan het dagjournaal!"); return; }
-        
-        buildPresentation(); currentSlideIndex = 0; showSlide(currentSlideIndex); presentationOverlay.classList.add('active');
-        if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(e => console.log(e));
-    });
+    const btnStartPres = document.getElementById('btn-start-presentation');
+    if(btnStartPres) {
+        btnStartPres.addEventListener('click', () => {
+            if (locLabel && locLabel.innerText === 'SELECTEER KAZERNE') { alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); locationModal.classList.add('active'); return; }
+            if (middleList && middleList.querySelectorAll('.drag-item').length === 0) { alert("Voeg blokken toe aan het dagjournaal!"); return; }
+            
+            buildPresentation(); currentSlideIndex = 0; showSlide(currentSlideIndex); 
+            if(presentationOverlay) presentationOverlay.classList.add('active');
+            if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(e => console.log(e));
+        });
+    }
 
-    document.getElementById('close-presentation').addEventListener('click', () => {
-        presentationOverlay.classList.remove('active');
-        if (document.fullscreenElement) document.exitFullscreen().catch(e => console.log(e));
-    });
+    const closePresBtn = document.getElementById('close-presentation');
+    if(closePresBtn) {
+        closePresBtn.addEventListener('click', () => {
+            if(presentationOverlay) presentationOverlay.classList.remove('active');
+            if (document.fullscreenElement) document.exitFullscreen().catch(e => console.log(e));
+        });
+    }
 
-    document.getElementById('pres-prev').addEventListener('click', () => showSlide(currentSlideIndex - 1));
-    document.getElementById('pres-next').addEventListener('click', () => showSlide(currentSlideIndex + 1));
+    const presPrevBtn = document.getElementById('pres-prev');
+    if(presPrevBtn) presPrevBtn.addEventListener('click', () => showSlide(currentSlideIndex - 1));
+    const presNextBtn = document.getElementById('pres-next');
+    if(presNextBtn) presNextBtn.addEventListener('click', () => showSlide(currentSlideIndex + 1));
 
     window.addEventListener('keydown', (e) => {
-        if (presentationOverlay.classList.contains('active') && !document.getElementById('kis-modal').classList.contains('active')) {
+        const kisModal = document.getElementById('kis-modal');
+        if (presentationOverlay && presentationOverlay.classList.contains('active') && !(kisModal && kisModal.classList.contains('active'))) {
             if (e.key === 'ArrowRight' || e.key === ' ') showSlide(currentSlideIndex + 1);
             else if (e.key === 'ArrowLeft') showSlide(currentSlideIndex - 1);
-            else if (e.key === 'Escape') document.getElementById('close-presentation').click();
-        } else if (e.key === 'Escape') { document.getElementById('kis-modal').classList.remove('active'); }
+            else if (e.key === 'Escape' && closePresBtn) closePresBtn.click();
+        } else if (e.key === 'Escape' && kisModal) { 
+            kisModal.classList.remove('active'); 
+        }
     });
 
-    setTimeout(() => { for (let i = 1; i <= 5; i++) { new Image().src = `img/intro-${i}.jpg`; new Image().src = `img/outro-${i}.jpg`; } for (let i = 1; i <= 25; i++) { new Image().src = `img/content-${i}.jpg`; } }, 1000); 
+    setTimeout(() => { 
+        for (let i = 1; i <= 5; i++) { new Image().src = `img/intro-${i}.jpg`; new Image().src = `img/outro-${i}.jpg`; } 
+        for (let i = 1; i <= 25; i++) { new Image().src = `img/content-${i}.jpg`; } 
+    }, 1000); 
 });
