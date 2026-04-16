@@ -3,24 +3,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 1. TOAST NOTIFICATIONS ---
     function showToast(m) {
         const t = document.getElementById('toast');
-        t.textContent = m;
-        t.classList.add('show');
+        t.textContent = m; t.classList.add('show');
         setTimeout(() => t.classList.remove('show'), 2300);
     }
 
-    // --- 2. DARK MODE (In Profile Panel) ---
+    // --- 2. DARK MODE & LOGO SYNC ---
     const darkToggle = document.getElementById('dark-toggle');
     function applyDark(on) {
         if (on) {
             document.body.setAttribute('data-theme', 'dark');
             if(darkToggle) darkToggle.setAttribute('aria-checked', 'true');
             const logo = document.getElementById('tb-logo');
-            if(logo) logo.src = 'img/darklogo.png';
+            // AANGEPAST: Zoekt nu in de hoofdmap
+            if(logo) logo.src = 'darklogo.png';
         } else {
             document.body.setAttribute('data-theme', 'light');
             if(darkToggle) darkToggle.setAttribute('aria-checked', 'false');
             const logo = document.getElementById('tb-logo');
-            if(logo) logo.src = 'img/logo.png';
+            // AANGEPAST: Zoekt nu in de hoofdmap
+            if(logo) logo.src = 'logo.png';
         }
     }
     if(darkToggle) {
@@ -76,14 +77,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     const btnSaveProfile = document.getElementById('btn-save-profile');
-    if(btnSaveProfile) {
-        btnSaveProfile.addEventListener('click', saveProfile);
-    }
+    if(btnSaveProfile) btnSaveProfile.addEventListener('click', saveProfile);
     
     document.addEventListener('click', (e) => {
         const panel = document.getElementById('profile-panel');
-        const btn = document.getElementById('profile-btn');
-        if (panel && btn && panel.classList.contains('open') && !panel.contains(e.target) && !btn.contains(e.target)) {
+        if (panel && profileBtn && panel.classList.contains('open') && !panel.contains(e.target) && !profileBtn.contains(e.target)) {
             panel.classList.remove('open');
         }
     });
@@ -281,19 +279,17 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeBadges() { document.querySelectorAll('.drag-item').forEach(card => { const count = getBadgeCount(card.getAttribute('data-id')); if (count > 0) { let badge = document.createElement('span'); badge.className = 'badge red-bg'; badge.innerText = count; card.appendChild(badge); } }); }
     initializeBadges();
 
-    // --- DOM SYNC ---
+    // --- DOM SYNC & EVENTS ---
     document.addEventListener('click', (e) => {
+        // WYSIWYG Logica
         if (e.target.classList.contains('btn-save-text')) {
             const blockId = e.target.getAttribute('data-block');
             const data = appState[blockId];
             const activeTab = data.tabs.find(t => t.id === data.activeTabId);
-            
             activeTab.title = document.querySelector('.tab-title-input').value;
             activeTab.content = document.querySelector('.tab-content-input').value;
-            
             const activeTabEl = document.querySelector('.editor-tabs .tab.active');
             if (activeTabEl) { activeTabEl.childNodes[0].nodeValue = (activeTab.title || 'Nieuwe tab') + ' '; }
-
             const btn = e.target; const orgText = btn.innerText;
             btn.innerText = 'Opgeslagen ✓'; btn.style.backgroundColor = 'var(--vrmwb-gold)'; btn.style.color = '#1E1E1E';
             setTimeout(() => { btn.innerText = orgText; btn.style.backgroundColor = ''; btn.style.color = ''; }, 1500);
@@ -305,7 +301,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const blockId = tabEl.closest('.editor-tabs').getAttribute('data-block');
             const data = appState[blockId];
             const tabId = parseInt(tabEl.getAttribute('data-tab-id'));
-            
             const oldTab = data.tabs.find(t => t.id === data.activeTabId);
             if (oldTab) {
                 oldTab.title = document.querySelector('.tab-title-input').value;
@@ -319,7 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target.classList.contains('add-tab-btn')) {
             const blockId = e.target.getAttribute('data-block');
             const data = appState[blockId];
-            
             const oldTab = data.tabs.find(t => t.id === data.activeTabId);
             if (oldTab) {
                 oldTab.title = document.querySelector('.tab-title-input').value;
@@ -336,7 +330,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const blockId = e.target.closest('.editor-tabs').getAttribute('data-block');
             const data = appState[blockId];
             const tabId = parseInt(e.target.getAttribute('data-id'));
-            
             data.tabs = data.tabs.filter(t => t.id !== tabId);
             if (data.activeTabId === tabId) { data.activeTabId = data.tabs[data.tabs.length - 1].id; }
             document.getElementById('editor-content').innerHTML = getHTML(blockId, 'editorHTML', document.getElementById('editor-title').innerText);
@@ -344,12 +337,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // Checklist Vinkjes
         const checkToggle = e.target.closest('.editor-check-toggle, .kis-checklist-card');
         if (checkToggle && !e.target.closest('.icon-btn')) {
             const blockId = checkToggle.getAttribute('data-block');
             const taskId = checkToggle.getAttribute('data-id');
             const task = appState[blockId].tasks.find(t => t.id === taskId);
-            
             if (task) {
                 task.checked = !task.checked; 
                 document.querySelectorAll(`[data-block="${blockId}"][data-id="${taskId}"]`).forEach(el => {
@@ -367,6 +360,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // KIS Modal
         const infoTrigger = e.target.closest('.kis-info-trigger');
         const kisModal = document.getElementById('kis-modal');
         if (infoTrigger) {
@@ -379,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- DRAG & DROP ---
+    // --- DRAG & DROP & KOLOM SELECTIE ---
     const middleList = document.getElementById('dagjournaal-lijst');
     const leftList = document.getElementById('blok-selectie');
     const editorContent = document.getElementById('editor-content');
@@ -433,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(middleList) middleList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
     if(leftList) leftList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
 
-    // --- MODALS ---
+    // --- MODALS (Preview & Location) ---
     const previewModal = document.getElementById('preview-modal');
     const btnOpenPreview = document.getElementById('btn-open-preview');
     if(btnOpenPreview) {
@@ -453,6 +447,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(locationTrigger) locationTrigger.addEventListener('click', () => locationModal.classList.add('active'));
     const closeModal = document.getElementById('close-modal');
     if(closeModal) closeModal.addEventListener('click', () => locationModal.classList.remove('active'));
+    
     document.querySelectorAll('.loc-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
@@ -475,7 +470,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let contentImagePool = []; for(let i = 1; i <= 25; i++) { contentImagePool.push(`img/content-${i}.jpg`); } contentImagePool.sort(() => Math.random() - 0.5);
         
         const locText = locLabel ? locLabel.innerText : 'KAZERNE';
-        const dateText = document.getElementById('datetime-display') ? document.getElementById('datetime-display').innerText.split('   ')[0] : '';
+        const dateTextElement = document.getElementById('datetime-display');
+        const dateText = dateTextElement ? dateTextElement.innerText.split(/\s{2,}/)[0] : '';
         
         presentationSlides.push({ bgImage: `img/intro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px; border-bottom: none;">OPERATIONEEL DAGJOURNAAL</h1><h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${locText}</h2><p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${dateText}</p></div>`, blockId: null });
 
