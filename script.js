@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    initLoc(); // Laad de locatie direct in
+    initLoc(); 
 
     // --- 5. KLOK & FLATPICKR DATUM ---
     let selectedDate = new Date(); 
@@ -202,6 +202,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const textBlocks = ['afspraken', 'nieuws', 'arbo', 'communicatie', 'iboa', 'ocb', 'rbcb', 'straten', 'tfl', 'vkb', 'waarschuwingen'];
     textBlocks.forEach(id => { appState[id] = { activeTabId: 1, tabs: [{ id: 1, title: 'Nieuwe tab', content: '' }] }; });
 
+    // Failsafe functie voor tekstblokken die nog niet bestaan in appState
+    function ensureWysiwygState(blockId) {
+        if (!appState[blockId]) {
+            appState[blockId] = { activeTabId: 1, tabs: [{ id: 1, title: 'Nieuwe tab', content: '' }] };
+        }
+    }
+
     // --- 7. RENDER FUNCTIES ---
     function getRoosterKISHTML() {
         let html = `<h1 class="slide-title">Ploeg indeling</h1><div class="kis-rooster-grid">`;
@@ -256,6 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getWysiwygEditorHTML(blockId) {
+        ensureWysiwygState(blockId);
         const data = appState[blockId];
         const activeTab = data.tabs.find(t => t.id === data.activeTabId) || data.tabs[0];
         
@@ -285,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function getWysiwygPreviewHTML(blockId, blockName) {
+        ensureWysiwygState(blockId);
         const data = appState[blockId];
         let html = `<h1 class="slide-title">${blockName}</h1>`;
         
@@ -305,7 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'voertuigen': { count: 0, editorHTML: `<div class="form-group"><label>Voertuigen</label><div class="tags-wrapper"><span class="tag">201531 <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">STATUS VOERTUIGEN</h1><h3 style="font-size: 24px; font-weight: 700;">Geen defecten gemeld.</h3>` },
         'topdesk': { count: 0, editorHTML: `<div class="form-group"><label>Topdesk</label><div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">TOPDESK MELDINGEN</h1><p style="opacity:0.5; font-size: 20px;">Geen meldingen.</p>` },
         'mobiliteit': { count: 0, editorHTML: `<div class="form-group"><label>Kaartlagen</label><div class="tags-wrapper"><span class="tag">Weg Info <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">MOBILITEIT</h1><div style="width:100%;height:400px;background:rgba(0,0,0,0.05);border:1px dashed var(--input-border);display:flex;align-items:center;justify-content:center;">Kaart</div>` },
-        'gepland-onderhoud': { count: 1, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Voertuig</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>20-1571</td><td>Onderhoud</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><p style="font-size: 20px;">20-1571 in onderhoud.</p>` },
+        'onderhoud': { count: 1, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Voertuig</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>20-1571</td><td>Onderhoud</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><p style="font-size: 20px;">20-1571 in onderhoud.</p>` },
         'algemeen': { count: () => appState.algemeen.tasks.length, editorHTML: () => getTaskEditorHTML('algemeen'), previewHTML: () => getTaskKISHTML('algemeen', 'ALG. WERKZAAMHEDEN') },
         'ademlucht': { count: () => appState.ademlucht.tasks.length, editorHTML: () => getTaskEditorHTML('ademlucht'), previewHTML: () => getTaskKISHTML('ademlucht', 'ADEMLUCHT WERKZAAMHEDEN') },
         'vakbekwaam': { count: 0, editorHTML: `<div class="form-group"><label>Ploegen</label><div class="dropdown-input placeholder">Selecteer...</div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">VAKBEKWAAM AG5</h1><p style="opacity:0.5; font-size: 20px;">Geen bijzonderheden.</p>` },
@@ -318,11 +327,12 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeBadges() { document.querySelectorAll('.drag-item').forEach(card => { const count = getBadgeCount(card.getAttribute('data-id')); if (count > 0) { let badge = document.createElement('span'); badge.className = 'badge red-bg'; badge.innerText = count; card.appendChild(badge); } }); }
     initializeBadges();
 
-    // --- 8. DOM SYNC & EVENTS ---
+    // --- DOM SYNC & EVENTS ---
     document.addEventListener('click', (e) => {
         // WYSIWYG Logica
         if (e.target.classList.contains('btn-save-text')) {
             const blockId = e.target.getAttribute('data-block');
+            ensureWysiwygState(blockId);
             const data = appState[blockId];
             const activeTab = data.tabs.find(t => t.id === data.activeTabId);
             activeTab.title = document.querySelector('.tab-title-input').value;
@@ -338,6 +348,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const tabEl = e.target.closest('.tab');
         if (tabEl && !e.target.classList.contains('tab-close')) {
             const blockId = tabEl.closest('.editor-tabs').getAttribute('data-block');
+            ensureWysiwygState(blockId);
             const data = appState[blockId];
             const tabId = parseInt(tabEl.getAttribute('data-tab-id'));
             const oldTab = data.tabs.find(t => t.id === data.activeTabId);
@@ -352,6 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (e.target.classList.contains('add-tab-btn')) {
             const blockId = e.target.getAttribute('data-block');
+            ensureWysiwygState(blockId);
             const data = appState[blockId];
             const oldTab = data.tabs.find(t => t.id === data.activeTabId);
             if (oldTab) {
@@ -367,6 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (e.target.classList.contains('tab-close')) {
             const blockId = e.target.closest('.editor-tabs').getAttribute('data-block');
+            ensureWysiwygState(blockId);
             const data = appState[blockId];
             const tabId = parseInt(e.target.getAttribute('data-id'));
             data.tabs = data.tabs.filter(t => t.id !== tabId);
@@ -547,7 +560,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnStartPres = document.getElementById('btn-start-presentation');
     if(btnStartPres) {
         btnStartPres.addEventListener('click', () => {
-            if (locLabel && locLabel.innerText === 'SELECTEER KAZERNE') { alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); locWrap.classList.add('active'); return; }
+            // UX Fix: Dropdown opent automatisch als geen kazerne is geselecteerd
+            if (locLabel && locLabel.innerText === 'SELECTEER KAZERNE') { 
+                alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); 
+                if (locWrap) locWrap.classList.add('open'); 
+                return; 
+            }
             if (middleList && middleList.querySelectorAll('.drag-item').length === 0) { alert("Voeg blokken toe aan het dagjournaal!"); return; }
             
             buildPresentation(); currentSlideIndex = 0; showSlide(currentSlideIndex); 

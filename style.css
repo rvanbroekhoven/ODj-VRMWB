@@ -59,7 +59,6 @@
    .tb-divider { width: 1px; height: 28px; background: var(--input-border); margin: 0 5px; }
    .tb-datetime { font-size: 18px; font-weight: 400; color: var(--text-muted); }
    
-   /* WIDGETPAGINA STIJL: Locatie Dropdown */
    .loc-wrap { position: relative; }
    .loc-btn { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px 0 10px; border-radius: 25px; border: none; background: rgba(0,0,0,.06); color: var(--text-main); font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: background .15s; white-space: nowrap; }
    .loc-btn:hover { background: rgba(0,0,0,.11); }
@@ -238,7 +237,6 @@
    /* Algemene Modals */
    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 1000; display: none; justify-content: center; align-items: center; }
    .modal-overlay.active { display: flex; animation: fadeIn 0.2s ease forwards; }
-   .modal-content { background: var(--panel-bg); border-radius: var(--radius-outer); padding: 40px; width: 450px; max-width: 90%; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; border: 1px solid var(--glass-border); }
    
    /* Preview Modal */
    .preview-content { background: var(--panel-bg); width: 80vw; height: 80vh; border-radius: var(--radius-outer); display: flex; flex-direction: column; box-shadow: 0 25px 50px rgba(0,0,0,0.5); overflow: hidden; border: 1px solid var(--glass-border); }
