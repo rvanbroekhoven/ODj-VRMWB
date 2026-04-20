@@ -18,11 +18,22 @@
         <div class="tb-left">
             <a href="https://ralphsmits.github.io/vrmwb/" class="tb-btn white">ODj Widget</a>
             <div class="tb-divider"></div>
-            <button id="location-trigger" class="loc-btn-header">
-                <svg viewBox="0 0 24 24" class="loc-ico" style="width:14px;height:14px;stroke:none;fill:var(--text-main);flex-shrink:0;"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="var(--panel-bg)"/></svg>
-                <span id="loc-label">SELECTEER KAZERNE</span>
-                <svg viewBox="0 0 24 24" class="loc-chevron" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;"><polyline points="6 9 12 15 18 9"/></svg>
-            </button>
+            
+            <div class="loc-wrap" id="loc-wrap">
+                <button class="loc-btn" id="loc-btn">
+                    <svg viewBox="0 0 24 24" class="loc-ico"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                    <span id="loc-label">SELECTEER KAZERNE</span>
+                    <svg viewBox="0 0 24 24" class="loc-chevron"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+                <div class="loc-menu" id="loc-menu">
+                    <button class="loc-item" data-val="Bergen op Zoom">Bergen op Zoom</button>
+                    <button class="loc-item" data-val="Breda">Breda</button>
+                    <button class="loc-item" data-val="Moerdijk-Haven">Moerdijk-Haven</button>
+                    <button class="loc-item" data-val="Roosendaal">Roosendaal</button>
+                    <button class="loc-item" data-val="Tilburg Centrum">Tilburg Centrum</button>
+                    <button class="loc-item" data-val="Tilburg Vossenberg">Tilburg Vossenberg</button>
+                </div>
+            </div>
         </div>
         <div class="tb-logos">
             <img src="logo.png" alt="VRMWB Brandweer" class="tb-logo-img" id="tb-logo">
@@ -124,21 +135,6 @@
     
     <div class="toast" id="toast"></div>
 
-    <div id="location-modal" class="modal-overlay">
-        <div class="modal-content">
-            <h3>SELECTEER KAZERNE</h3>
-            <div class="location-options">
-                <button class="loc-btn">Bergen op Zoom</button>
-                <button class="loc-btn">Breda</button>
-                <button class="loc-btn">Moerdijk-Haven</button>
-                <button class="loc-btn">Roosendaal</button>
-                <button class="loc-btn">Tilburg Centrum</button>
-                <button class="loc-btn">Tilburg Vossenberg</button>
-            </div>
-            <button id="close-modal" class="btn-cancel">Annuleren</button>
-        </div>
-    </div>
-
     <div id="preview-modal" class="modal-overlay">
         <div class="preview-content">
             <div class="preview-header"><div class="preview-logo">BMWB</div><button id="close-preview" class="btn-close-preview">&times;</button></div>
@@ -156,6 +152,7 @@
             <span id="pres-counter" class="pres-counter">1 / 5</span>
             <button id="pres-next" class="pres-nav-btn">&gt;</button>
         </div>
+        
         <div id="kis-modal" class="kis-modal-wrapper">
             <div class="kis-modal-content">
                 <button class="kis-modal-close" id="kis-modal-close">&times;</button>

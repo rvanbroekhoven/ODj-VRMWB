@@ -14,13 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.setAttribute('data-theme', 'dark');
             if(darkToggle) darkToggle.setAttribute('aria-checked', 'true');
             const logo = document.getElementById('tb-logo');
-            // AANGEPAST: Zoekt nu in de hoofdmap
             if(logo) logo.src = 'darklogo.png';
         } else {
             document.body.setAttribute('data-theme', 'light');
             if(darkToggle) darkToggle.setAttribute('aria-checked', 'false');
             const logo = document.getElementById('tb-logo');
-            // AANGEPAST: Zoekt nu in de hoofdmap
             if(logo) logo.src = 'logo.png';
         }
     }
@@ -32,13 +30,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     applyDark(document.body.getAttribute('data-theme') === 'dark');
 
-    // --- 3. PROFILE PANEL (Rechtsboven via Footer) ---
+    // --- 3. PROFILE PANEL ---
     const PROF_KEY = 'vrmwb_profile';
     function loadProfile() {
         const p = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
-        const naam = p.voornaam || '';
-        const ach = p.achternaam || '';
-        const rol = p.rol || '';
+        const naam = p.voornaam || ''; const ach = p.achternaam || ''; const rol = p.rol || '';
         const initials = ((naam[0] || '') + (ach[0] || '')).toUpperCase() || '?';
         
         const bbAvatar = document.getElementById('bb-avatar');
@@ -87,7 +83,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     loadProfile();
 
-    // --- 4. KLOK & FLATPICKR DATUM ---
+    // --- 4. LOCATIE DROPDOWN SYNC MET WIDGET ---
+    const LOC_KEY = 'vrmwb_location';
+    const locLabel = document.getElementById('loc-label');
+    const locWrap = document.getElementById('loc-wrap');
+
+    function initLoc() {
+        const saved = localStorage.getItem(LOC_KEY);
+        if (saved) { setLocActive(saved, false); } 
+        else { if(locLabel) locLabel.textContent = 'SELECTEER KAZERNE'; }
+    }
+
+    function selectLoc(name) {
+        localStorage.setItem(LOC_KEY, name);
+        setLocActive(name, true);
+    }
+
+    function setLocActive(name, close) {
+        if(locLabel) locLabel.textContent = name;
+        document.querySelectorAll('.loc-item').forEach(el => {
+            el.classList.toggle('active', el.getAttribute('data-val') === name);
+        });
+        if (close && locWrap) locWrap.classList.remove('open');
+    }
+
+    const locBtn = document.getElementById('loc-btn');
+    if(locBtn) {
+        locBtn.addEventListener('click', () => { if(locWrap) locWrap.classList.toggle('open'); });
+    }
+
+    document.querySelectorAll('.loc-item').forEach(btn => {
+        btn.addEventListener('click', function() {
+            selectLoc(this.getAttribute('data-val'));
+        });
+    });
+
+    document.addEventListener('click', function(e) {
+        if (locWrap && locWrap.classList.contains('open') && !locWrap.contains(e.target)) {
+            locWrap.classList.remove('open');
+        }
+    });
+
+    initLoc(); // Laad de locatie direct in
+
+    // --- 5. KLOK & FLATPICKR DATUM ---
     let selectedDate = new Date(); 
     const datetimeDisplay = document.getElementById('datetime-display');
     const btnTodayText = document.getElementById('btn-today');
@@ -133,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(btnPrevDay) btnPrevDay.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() - 1); updateCenterNavigation(); });
     if(btnNextDay) btnNextDay.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate() + 1); updateCenterNavigation(); });
 
-    // --- SHARED STATE & FIGMA DATA ---
+    // --- 6. SHARED STATE & FIGMA DATA ---
     const appState = {
         'rooster': {
             members: [
@@ -163,9 +202,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const textBlocks = ['afspraken', 'nieuws', 'arbo', 'communicatie', 'iboa', 'ocb', 'rbcb', 'straten', 'tfl', 'vkb', 'waarschuwingen'];
     textBlocks.forEach(id => { appState[id] = { activeTabId: 1, tabs: [{ id: 1, title: 'Nieuwe tab', content: '' }] }; });
 
-    // --- RENDER FUNCTIES ---
+    // --- 7. RENDER FUNCTIES ---
     function getRoosterKISHTML() {
-        let html = `<h1 class="slide-title">Ploeg indeling: Breda</h1><div class="kis-rooster-grid">`;
+        let html = `<h1 class="slide-title">Ploeg indeling</h1><div class="kis-rooster-grid">`;
         appState.rooster.members.forEach(m => {
             let tagsHtml = m.tags.map(t => `<span class="func-tag" data-color="${t.color}">${t.text}</span>`).join('');
             html += `<div class="kis-rooster-card"><div class="member-name">${m.name}</div><div class="member-tags">${tagsHtml}</div></div>`;
@@ -279,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeBadges() { document.querySelectorAll('.drag-item').forEach(card => { const count = getBadgeCount(card.getAttribute('data-id')); if (count > 0) { let badge = document.createElement('span'); badge.className = 'badge red-bg'; badge.innerText = count; card.appendChild(badge); } }); }
     initializeBadges();
 
-    // --- DOM SYNC & EVENTS ---
+    // --- 8. DOM SYNC & EVENTS ---
     document.addEventListener('click', (e) => {
         // WYSIWYG Logica
         if (e.target.classList.contains('btn-save-text')) {
@@ -427,7 +466,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if(middleList) middleList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
     if(leftList) leftList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
 
-    // --- MODALS (Preview & Location) ---
+    // --- MODALS (Preview) ---
     const previewModal = document.getElementById('preview-modal');
     const btnOpenPreview = document.getElementById('btn-open-preview');
     if(btnOpenPreview) {
@@ -440,22 +479,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     const closePreviewBtn = document.getElementById('close-preview');
     if(closePreviewBtn) closePreviewBtn.addEventListener('click', () => previewModal.classList.remove('active'));
-
-    const locationModal = document.getElementById('location-modal');
-    const locationTrigger = document.getElementById('location-trigger');
-    const locLabel = document.getElementById('loc-label');
-    if(locationTrigger) locationTrigger.addEventListener('click', () => locationModal.classList.add('active'));
-    const closeModal = document.getElementById('close-modal');
-    if(closeModal) closeModal.addEventListener('click', () => locationModal.classList.remove('active'));
-    
-    document.querySelectorAll('.loc-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.loc-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active'); 
-            if(locLabel) locLabel.innerText = this.innerText;
-            locationModal.classList.remove('active');
-        });
-    });
 
     // --- KIS PRESENTATIE ---
     const presentationOverlay = document.getElementById('presentation-overlay');
@@ -524,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnStartPres = document.getElementById('btn-start-presentation');
     if(btnStartPres) {
         btnStartPres.addEventListener('click', () => {
-            if (locLabel && locLabel.innerText === 'SELECTEER KAZERNE') { alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); locationModal.classList.add('active'); return; }
+            if (locLabel && locLabel.innerText === 'SELECTEER KAZERNE') { alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); locWrap.classList.add('active'); return; }
             if (middleList && middleList.querySelectorAll('.drag-item').length === 0) { alert("Voeg blokken toe aan het dagjournaal!"); return; }
             
             buildPresentation(); currentSlideIndex = 0; showSlide(currentSlideIndex); 
