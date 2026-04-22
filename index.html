@@ -1,25 +1,71 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="nl-NL">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Operationeel Dagjournaal - VRMWB</title>
     <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Topbar dimensions — matched to sister site (ODj-VRMWB) */
+        :root {
+            --topbar-h: 80px;
+        }
+        .topbar {
+            flex: 0 0 var(--topbar-h);
+            height: var(--topbar-h);
+            background: rgba(255, 255, 255, 1);
+            display: flex;
+            align-items: center;
+            padding: 0 50px;
+            z-index: 100;
+            position: relative;
+        }
+        .tb-logos {
+            position: absolute;
+            left: 0; right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            height: var(--topbar-h);
+        }
+        .tb-logo-img {
+            height: 44px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+            pointer-events: auto;
+        }
+        .tb-left  { display: flex; align-items: center; gap: 8px; }
+        .tb-right { display: flex; align-items: center; gap: 8px; margin-left: auto; justify-content: flex-end; }
+        .tb-divider { width: 1px; height: 28px; background: rgba(0,0,0,.12); margin: 0 4px; }
+        .tb-datetime { font-size: 18px; font-weight: 400; color: rgba(0,0,0,.65); letter-spacing: .2px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+ 
+        /* loc dropdown */
+        .loc-wrap { position: relative; }
+        .loc-btn { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; border: 1px solid rgba(0,0,0,.12); border-radius: 25px; background: rgba(0,0,0,.04); cursor: pointer; font-size: 12px; font-weight: 700; letter-spacing: .4px; text-transform: uppercase; transition: background .15s; white-space: nowrap; }
+        .loc-btn:hover { background: rgba(0,0,0,.08); }
+        .loc-ico { width: 14px; height: 14px; fill: currentColor; }
+        .loc-chevron { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform .18s; }
+        .loc-wrap.open .loc-chevron { transform: rotate(180deg); }
+        .loc-menu { position: absolute; top: calc(100% + 8px); left: 0; background: #fff; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,.14), 0 1px 4px rgba(0,0,0,.07); border: 1px solid rgba(0,0,0,.07); min-width: 160px; padding: 6px; opacity: 0; pointer-events: none; transform: translateY(-6px); transition: opacity .18s, transform .18s; z-index: 300; }
+        .loc-wrap.open .loc-menu { opacity: 1; pointer-events: all; transform: none; }
+        .loc-item { display: block; width: 100%; padding: 9px 14px; border: none; border-radius: 8px; background: transparent; text-align: left; font-size: 14px; font-weight: 700; cursor: pointer; transition: background .12s; }
+        .loc-item:hover { background: rgba(0,0,0,.05); }
+        .loc-item.active { color: #17428C; background: rgba(23,66,140,.07); }
+    </style>
 </head>
 <body data-theme="light">
     
-    <div class="bg-layer">
-        <div class="backdrop-img"></div>
-        <div class="gradient-fade"></div>
-    </div>
-
+    <div class="bg-layer"></div>
+ 
     <header class="topbar">
         <div class="tb-left">
             <a href="https://ralphsmits.github.io/vrmwb/" class="tb-btn white">ODj Widget</a>
             <div class="tb-divider"></div>
             <div class="loc-wrap" id="loc-wrap">
-                <button class="loc-btn" id="loc-btn">
+                <button class="loc-btn" id="loc-btn" onclick="toggleLocMenu()">
                     <svg viewBox="0 0 24 24" class="loc-ico"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
                     <span id="loc-label">SELECTEER KAZERNE</span>
                     <svg viewBox="0 0 24 24" class="loc-chevron"><polyline points="6 9 12 15 18 9"/></svg>
@@ -38,10 +84,12 @@
             <img src="logo.png" alt="VRMWB Brandweer" class="tb-logo-img" id="tb-logo">
         </div>
         <div class="tb-right">
-            <div class="tb-datetime" id="datetime-display">Laden...</div>
+            <div class="tb-datetime"><span id="bbdate">—</span>&nbsp;&nbsp;<span id="bbtime"></span></div>
+            <div class="tb-divider"></div>
+            <button id="btn-start-presentation" class="tb-btn gold">START</button>
         </div>
     </header>
-
+ 
     <main class="app-container">
         
         <section class="column">
@@ -72,17 +120,23 @@
                 <div class="card theme-card-light drag-item" draggable="true" data-id="waarschuwingen">Waarschuwingen &<br>Operationele Fases</div>
             </div>
         </section>
-
+ 
         <section class="column glass-panel">
             <header class="col-header consistent-header">
                 <h2>DAGJOURNAAL</h2>
-                <button id="btn-start-presentation" class="btn-preview" style="background-color: var(--vrmwb-gold); color: #1E1E1E;">Start</button>
+                <button id="btn-magic-wand" class="tb-btn white" style="padding: 0 10px; border: none; background: transparent; box-shadow: none;" title="Automatisch vullen">
+                    <svg viewBox="0 0 24 24" style="width:18px;height:18px;stroke:var(--text-main);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;">
+                        <path d="m21 21-6-6m4.5-9.5L18 4l-1.5 1.5L15 4l-1.5 1.5L12 4l-1.5 1.5L9 4l-1.5 1.5L6 4l-1.5 1.5L3 4v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2z" stroke="none"/><path d="m15 5-2.5 2.5L15 10l2.5-2.5zm-5 5L7.5 12.5 10 15l2.5-2.5z"/>
+                        <path d="m8 14 6-6"/>
+                        <circle cx="17" cy="7" r="1"/><circle cx="7" cy="17" r="1"/>
+                    </svg>
+                </button>
             </header>
             <div class="scroll-area sequence-list" id="dagjournaal-lijst">
-                <div id="empty-state" class="empty-state-consistent">Sleep blokken hierheen</div>
+                <div id="empty-state" class="empty-state-consistent">Sleep blokken hierheen of gebruik de Magic Wand tool.</div>
             </div>
         </section>
-
+ 
         <section class="column solid-panel">
             <header class="col-header consistent-header">
                 <h2 id="editor-title">GEEN BLOK GESELECTEERD</h2>
@@ -93,17 +147,27 @@
             </div>
         </section>
     </main>
-
-    <footer class="bottom-bar">
-        <div class="logo-section"><div class="title-logo"><strong>OPERATIONEEL DAGJOURNAAL</strong>BEHEER</div></div>
-        
-        <div class="date-controls" id="bb-date-nav">
-            <button id="btn-prev-day" class="nav-btn">&lt;</button>
-            <button id="btn-today" class="nav-btn-text" style="background: transparent; padding: 0 10px;">Vandaag</button>
-            <button id="btn-next-day" class="nav-btn">&gt;</button>
+ 
+    <footer class="btmbar">
+        <div class="bb-left">
+            <div class="bb-logo">
+                <strong>Operationeel Dagjournaal</strong>
+                <span>Beheer</span>
+                <div class="bb-release">production 20260330.4</div>
+            </div>
         </div>
         
-        <div class="bb-right" style="display: flex; align-items: center; gap: 20px;">
+        <div class="bb-center">
+            <div class="bb-date-nav" id="bb-date-nav">
+                <button class="bb-nav-arrow" id="btn-prev-day">&#8249;</button>
+                <button class="bb-date-trigger" id="btn-today">
+                    <span id="bb-date-display">Vandaag</span>
+                </button>
+                <button class="bb-nav-arrow" id="btn-next-day">&#8250;</button>
+            </div>
+        </div>
+        
+        <div class="bb-right">
             <button class="bb-profile" id="profile-btn">
                 <div class="bb-avatar" id="bb-avatar">?</div>
                 <div class="bb-pinfo">
@@ -113,7 +177,7 @@
             </button>
         </div>
     </footer>
-
+ 
     <div class="profile-panel" id="profile-panel">
         <div class="pp-avatar" id="pp-avatar-large">?</div>
         <div class="pp-head">Profielinstellingen</div>
@@ -133,14 +197,14 @@
     </div>
     
     <div class="toast" id="toast"></div>
-
+ 
     <div id="preview-modal" class="modal-overlay">
         <div class="preview-content">
             <div class="preview-header"><div class="preview-logo">BMWB</div><button id="close-preview" class="btn-close-preview">&times;</button></div>
             <div id="preview-body" class="preview-body"></div>
         </div>
     </div>
-
+ 
     <div id="presentation-overlay" class="presentation-overlay">
         <div id="pres-bg-image" class="pres-bg-image"></div>
         <div class="pres-bg-color"></div>
@@ -161,6 +225,18 @@
         </div>
     </div>
     
+    <script>
+        // Topbar location dropdown (matches ODj-VRMWB sister site)
+        function toggleLocMenu() {
+            document.querySelector('.loc-wrap').classList.toggle('open');
+        }
+        document.addEventListener('click', function(e) {
+            const wrap = document.querySelector('.loc-wrap');
+            if (wrap && wrap.classList.contains('open') && !wrap.contains(e.target)) {
+                wrap.classList.remove('open');
+            }
+        });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/nl.js"></script>
     <script src="script.js"></script>

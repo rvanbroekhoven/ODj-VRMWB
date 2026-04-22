@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    const DAYS=['Zo','Ma','Di','Wo','Do','Vr','Za'];
+    const MONTHS=['januari','februari','maart','april','mei','juni','juli','augustus','september','oktober','november','december'];
+
     // --- 1. TOAST NOTIFICATIONS ---
     function showToast(m) {
         const t = document.getElementById('toast');
@@ -126,18 +129,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initLoc(); 
 
-    // --- 5. KLOK & FLATPICKR DATUM ---
+    // --- 5. KLOK & FLATPICKR DATUM (Identiek aan Widget) ---
     let selectedDate = new Date(); 
-    const datetimeDisplay = document.getElementById('datetime-display');
-    const btnTodayText = document.getElementById('btn-today');
+    let _lastDate='', _lastTime='';
 
-    function updateRealTimeClock() {
-        const now = new Date();
-        let dateString = now.toLocaleDateString('nl-NL', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
-        dateString = dateString.charAt(0).toUpperCase() + dateString.slice(1).replace(' ', ', ');
-        if(datetimeDisplay) datetimeDisplay.innerHTML = `${dateString} &nbsp;&nbsp; ${now.toLocaleTimeString('nl-NL', { hour: '2-digit', minute: '2-digit' })}`;
+    function tick() {
+        const d = new Date(), p = n => String(n).padStart(2,'0');
+        const dateStr = `${DAYS[d.getDay()]}, ${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
+        const timeStr = `${p(d.getHours())}:${p(d.getMinutes())}`;
+        
+        if (dateStr !== _lastDate) { 
+            const bbdate = document.getElementById('bbdate');
+            if (bbdate) bbdate.textContent = dateStr; 
+            _lastDate = dateStr; 
+        }
+        if (timeStr !== _lastTime) { 
+            const bbtime = document.getElementById('bbtime');
+            if (bbtime) bbtime.textContent = timeStr; 
+            _lastTime = timeStr; 
+        }
     }
-    updateRealTimeClock(); setInterval(updateRealTimeClock, 1000);
+    setInterval(tick, 1000); tick();
 
     let fpInstance = null;
     function initDatepicker() {
@@ -159,6 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initDatepicker();
 
     function updateCenterNavigation() {
+        const btnTodayText = document.getElementById('bb-date-display');
         if(!btnTodayText) return;
         const today = new Date();
         const isToday = selectedDate.getDate() === today.getDate() && selectedDate.getMonth() === today.getMonth() && selectedDate.getFullYear() === today.getFullYear();
@@ -202,7 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const textBlocks = ['afspraken', 'nieuws', 'arbo', 'communicatie', 'iboa', 'ocb', 'rbcb', 'straten', 'tfl', 'vkb', 'waarschuwingen'];
     textBlocks.forEach(id => { appState[id] = { activeTabId: 1, tabs: [{ id: 1, title: 'Nieuwe tab', content: '' }] }; });
 
-    // Failsafe functie voor tekstblokken die nog niet bestaan in appState
     function ensureWysiwygState(blockId) {
         if (!appState[blockId]) {
             appState[blockId] = { activeTabId: 1, tabs: [{ id: 1, title: 'Nieuwe tab', content: '' }] };
@@ -225,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         appState[blockId].tasks.forEach(t => {
             html += `<div class="editor-check-toggle ${t.checked ? 'checked' : ''}" data-block="${blockId}" data-id="${t.id}">
                         <div class="check-box">${t.checked ? '✓' : ''}</div>
-                        <div class="check-content"><strong>${t.text}</strong><span>Auteur: ${t.author} automatisch toegevoegd</span></div>
+                        <div class="check-content"><strong>${t.text}</strong><span>Auteur: ${t.author}</span></div>
                         <button class="icon-btn edit">✎</button><button class="icon-btn delete">🗑</button>
                     </div>`;
         });
@@ -238,7 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
         appState[blockId].tasks.forEach(t => {
             html += `<div class="kis-checklist-card ${t.checked ? 'checked' : ''}" data-block="${blockId}" data-id="${t.id}">
                         <div class="kis-check-square">${t.checked ? '✓' : ''}</div>
-                        <div class="kis-check-text">${t.text}<span class="kis-check-author">Auteur: ${t.author} automatisch toegevoegd</span></div>
+                        <div class="kis-check-text">${t.text}</div>
                      </div>`;
         });
         html += `</div>`;
@@ -309,11 +321,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const blockData = {
         'ploeg-indeling': { count: 0, editorHTML: `<div class="form-group"><label>Kazerne in Roosterplanning</label><div class="tags-wrapper"><span class="tag">Breda <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: () => getRoosterKISHTML() },
-        'alarmen': { count: () => appState.alarmen.incidents.length, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Datum</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>9-4-2026</td><td>P1 Brand - Wegvervoer</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: () => getGlassRowsKISHTML('ALARMEN VORIGE DIENST', appState.alarmen.incidents) },
+        'alarmen': { count: () => appState.alarmen.incidents.length, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Datum</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>9-4-2026</td><td>P1 Brand</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: () => getGlassRowsKISHTML('ALARMEN VORIGE DIENST', appState.alarmen.incidents) },
         'evenementen': { count: () => appState.evenementen.incidents.length, editorHTML: `<div class="form-group"><label>Filter</label><div class="tags-wrapper"><span class="tag">Nieuw-Vossemeer <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: () => getGlassRowsKISHTML('EVENEMENTEN', appState.evenementen.incidents) },
         'voertuigen': { count: 0, editorHTML: `<div class="form-group"><label>Voertuigen</label><div class="tags-wrapper"><span class="tag">201531 <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">STATUS VOERTUIGEN</h1><h3 style="font-size: 24px; font-weight: 700;">Geen defecten gemeld.</h3>` },
         'topdesk': { count: 0, editorHTML: `<div class="form-group"><label>Topdesk</label><div class="tags-wrapper"><span class="tag">Bergen op Zoom <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">TOPDESK MELDINGEN</h1><p style="opacity:0.5; font-size: 20px;">Geen meldingen.</p>` },
-        'mobiliteit': { count: 0, editorHTML: `<div class="form-group"><label>Kaartlagen</label><div class="tags-wrapper"><span class="tag">Weg Info <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">MOBILITEIT</h1><div style="width:100%;height:400px;background:rgba(0,0,0,0.05);border:1px dashed var(--input-border);display:flex;align-items:center;justify-content:center;">Kaart</div>` },
+        'mobiliteit': { count: 0, editorHTML: `<div class="form-group"><label>Kaart</label><div class="tags-wrapper"><span class="tag">Weg Info <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">MOBILITEIT</h1><div style="width:100%;height:400px;background:rgba(0,0,0,0.05);border:1px dashed var(--input-border);display:flex;align-items:center;justify-content:center;">Kaart module</div>` },
         'onderhoud': { count: 1, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Voertuig</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>20-1571</td><td>Onderhoud</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: `<h1 class="slide-title">GEPLAND ONDERHOUD VOERTUIGEN</h1><p style="font-size: 20px;">20-1571 in onderhoud.</p>` },
         'algemeen': { count: () => appState.algemeen.tasks.length, editorHTML: () => getTaskEditorHTML('algemeen'), previewHTML: () => getTaskKISHTML('algemeen', 'ALG. WERKZAAMHEDEN') },
         'ademlucht': { count: () => appState.ademlucht.tasks.length, editorHTML: () => getTaskEditorHTML('ademlucht'), previewHTML: () => getTaskKISHTML('ademlucht', 'ADEMLUCHT WERKZAAMHEDEN') },
@@ -327,9 +339,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function initializeBadges() { document.querySelectorAll('.drag-item').forEach(card => { const count = getBadgeCount(card.getAttribute('data-id')); if (count > 0) { let badge = document.createElement('span'); badge.className = 'badge red-bg'; badge.innerText = count; card.appendChild(badge); } }); }
     initializeBadges();
 
-    // --- DOM SYNC & EVENTS ---
+    // --- 8. DOM EVENTS ---
     document.addEventListener('click', (e) => {
-        // WYSIWYG Logica
         if (e.target.classList.contains('btn-save-text')) {
             const blockId = e.target.getAttribute('data-block');
             ensureWysiwygState(blockId);
@@ -389,7 +400,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Checklist Vinkjes
         const checkToggle = e.target.closest('.editor-check-toggle, .kis-checklist-card');
         if (checkToggle && !e.target.closest('.icon-btn')) {
             const blockId = checkToggle.getAttribute('data-block');
@@ -412,7 +422,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // KIS Modal
         const infoTrigger = e.target.closest('.kis-info-trigger');
         const kisModal = document.getElementById('kis-modal');
         if (infoTrigger) {
@@ -424,6 +433,27 @@ document.addEventListener('DOMContentLoaded', () => {
             if(kisModal) kisModal.classList.remove('active');
         }
     });
+
+    // --- MAGIC WAND TOOL ---
+    const btnMagicWand = document.getElementById('btn-magic-wand');
+    if(btnMagicWand) {
+        btnMagicWand.addEventListener('click', () => {
+            const middleList = document.getElementById('dagjournaal-lijst');
+            const leftList = document.getElementById('blok-selectie');
+            const blocksToAdd = ['ploeg-indeling', 'alarmen', 'mobiliteit', 'onderhoud', 'algemeen', 'evenementen'];
+            
+            blocksToAdd.forEach(id => {
+                const card = leftList.querySelector(`[data-id="${id}"]`);
+                if(card) {
+                    card.classList.remove('theme-card-light');
+                    card.classList.add('sequence-card');
+                    middleList.appendChild(card);
+                }
+            });
+            document.getElementById('empty-state').style.display = 'none';
+            showToast('Dagjournaal automatisch gevuld!');
+        });
+    }
 
     // --- DRAG & DROP & KOLOM SELECTIE ---
     const middleList = document.getElementById('dagjournaal-lijst');
@@ -479,7 +509,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if(middleList) middleList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
     if(leftList) leftList.addEventListener('click', e => handleCardSelection(e.target.closest('.drag-item')));
 
-    // --- MODALS (Preview) ---
     const previewModal = document.getElementById('preview-modal');
     const btnOpenPreview = document.getElementById('btn-open-preview');
     if(btnOpenPreview) {
@@ -505,9 +534,9 @@ document.addEventListener('DOMContentLoaded', () => {
         presentationSlides = []; presBgImageContainer.innerHTML = ''; 
         let contentImagePool = []; for(let i = 1; i <= 25; i++) { contentImagePool.push(`img/content-${i}.jpg`); } contentImagePool.sort(() => Math.random() - 0.5);
         
-        const locText = locLabel ? locLabel.innerText : 'KAZERNE';
-        const dateTextElement = document.getElementById('datetime-display');
-        const dateText = dateTextElement ? dateTextElement.innerText.split(/\s{2,}/)[0] : '';
+        const locText = locLabel && locLabel.innerText !== 'SELECTEER KAZERNE' ? locLabel.innerText : 'KAZERNE';
+        const dateTextElement = document.getElementById('bbdate');
+        const dateText = dateTextElement ? dateTextElement.innerText : '';
         
         presentationSlides.push({ bgImage: `img/intro-${Math.floor(Math.random() * 5) + 1}.jpg`, html: `<div style="text-align: center; width: 100%;"><h1 class="slide-title" style="font-size: 72px; margin-bottom: 20px; border-bottom: none;">OPERATIONEEL DAGJOURNAAL</h1><h2 style="font-size: 48px; color: var(--vrmwb-gold); margin-bottom: 40px; text-transform: uppercase;">${locText}</h2><p style="font-size: 32px; opacity: 0.7; font-weight: 700;">${dateText}</p></div>`, blockId: null });
 
@@ -560,12 +589,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnStartPres = document.getElementById('btn-start-presentation');
     if(btnStartPres) {
         btnStartPres.addEventListener('click', () => {
-            // UX Fix: Dropdown opent automatisch als geen kazerne is geselecteerd
-            if (locLabel && locLabel.innerText === 'SELECTEER KAZERNE') { 
-                alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); 
-                if (locWrap) locWrap.classList.add('open'); 
-                return; 
-            }
+            if (locLabel && locLabel.innerText === 'SELECTEER KAZERNE') { alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); if(locWrap) locWrap.classList.add('open'); return; }
             if (middleList && middleList.querySelectorAll('.drag-item').length === 0) { alert("Voeg blokken toe aan het dagjournaal!"); return; }
             
             buildPresentation(); currentSlideIndex = 0; showSlide(currentSlideIndex); 
