@@ -90,11 +90,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const LOC_KEY = 'vrmwb_location';
     const locLabel = document.getElementById('loc-label');
     const locWrap = document.getElementById('loc-wrap');
+    const locBtn = document.getElementById('loc-btn');
 
     function initLoc() {
         const saved = localStorage.getItem(LOC_KEY);
         if (saved) { setLocActive(saved, false); } 
-        else { if(locLabel) locLabel.textContent = 'SELECTEER KAZERNE'; }
+        else { if(locLabel) locLabel.textContent = 'Selecteer kazerne'; }
     }
 
     function selectLoc(name) {
@@ -110,14 +111,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (close && locWrap) locWrap.classList.remove('open');
     }
 
-    const locBtn = document.getElementById('loc-btn');
+    // Fix voor Locatie Selectie (Geen dubbele events)
     if(locBtn) {
-        locBtn.addEventListener('click', () => { if(locWrap) locWrap.classList.toggle('open'); });
+        locBtn.addEventListener('click', (e) => { 
+            e.stopPropagation();
+            if(locWrap) locWrap.classList.toggle('open'); 
+        });
     }
 
     document.querySelectorAll('.loc-item').forEach(btn => {
-        btn.addEventListener('click', function() {
-            selectLoc(this.getAttribute('data-val'));
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selectLoc(btn.getAttribute('data-val'));
         });
     });
 
@@ -129,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initLoc(); 
 
-    // --- 5. KLOK & FLATPICKR DATUM (Identiek aan Widget) ---
+    // --- 5. KLOK & FLATPICKR DATUM ---
     let selectedDate = new Date(); 
     let _lastDate='', _lastTime='';
 
@@ -221,7 +226,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 7. RENDER FUNCTIES ---
     function getRoosterKISHTML() {
         let html = `<h1 class="slide-title">Ploeg indeling</h1><div class="kis-rooster-grid">`;
         appState.rooster.members.forEach(m => {
@@ -320,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const blockData = {
-        'ploeg-indeling': { count: 0, editorHTML: `<div class="form-group"><label>Kazerne in Roosterplanning</label><div class="tags-wrapper"><span class="tag">Breda <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: () => getRoosterKISHTML() },
+        'ploeg-indeling': { count: 0, editorHTML: `<div class="form-group"><label>Rooster</label><div class="tags-wrapper"><span class="tag">Breda <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: () => getRoosterKISHTML() },
         'alarmen': { count: () => appState.alarmen.incidents.length, editorHTML: `<div class="table-container"><table class="data-table"><thead><tr><th>Datum</th><th>Melding</th><th>Acties</th></tr></thead><tbody><tr><td>9-4-2026</td><td>P1 Brand</td><td><button class="icon-btn edit">✎</button></td></tr></tbody></table></div>`, previewHTML: () => getGlassRowsKISHTML('ALARMEN VORIGE DIENST', appState.alarmen.incidents) },
         'evenementen': { count: () => appState.evenementen.incidents.length, editorHTML: `<div class="form-group"><label>Filter</label><div class="tags-wrapper"><span class="tag">Nieuw-Vossemeer <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: () => getGlassRowsKISHTML('EVENEMENTEN', appState.evenementen.incidents) },
         'voertuigen': { count: 0, editorHTML: `<div class="form-group"><label>Voertuigen</label><div class="tags-wrapper"><span class="tag">201531 <span class="close">&times;</span></span></div></div><button class="btn-save">Opslaan</button>`, previewHTML: `<h1 class="slide-title">STATUS VOERTUIGEN</h1><h3 style="font-size: 24px; font-weight: 700;">Geen defecten gemeld.</h3>` },
@@ -534,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
         presentationSlides = []; presBgImageContainer.innerHTML = ''; 
         let contentImagePool = []; for(let i = 1; i <= 25; i++) { contentImagePool.push(`img/content-${i}.jpg`); } contentImagePool.sort(() => Math.random() - 0.5);
         
-        const locText = locLabel && locLabel.innerText !== 'SELECTEER KAZERNE' ? locLabel.innerText : 'KAZERNE';
+        const locText = locLabel && locLabel.innerText !== 'Selecteer kazerne' ? locLabel.innerText : 'KAZERNE';
         const dateTextElement = document.getElementById('bbdate');
         const dateText = dateTextElement ? dateTextElement.innerText : '';
         
@@ -589,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnStartPres = document.getElementById('btn-start-presentation');
     if(btnStartPres) {
         btnStartPres.addEventListener('click', () => {
-            if (locLabel && locLabel.innerText === 'SELECTEER KAZERNE') { alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); if(locWrap) locWrap.classList.add('open'); return; }
+            if (locLabel && locLabel.innerText === 'Selecteer kazerne') { alert("Selecteer eerst een Kazerne linksboven om de presentatie te starten."); if(locWrap) locWrap.classList.add('open'); return; }
             if (middleList && middleList.querySelectorAll('.drag-item').length === 0) { alert("Voeg blokken toe aan het dagjournaal!"); return; }
             
             buildPresentation(); currentSlideIndex = 0; showSlide(currentSlideIndex); 
