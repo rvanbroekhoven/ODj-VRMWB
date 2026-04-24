@@ -179,23 +179,64 @@ body { font-family: 'Frutiger', sans-serif; font-weight: 400; height: 100vh; dis
 
 /* PDF: date pill height 81px (overlaps border), width 280px, border-radius 40px (perfect pill) */
 .bb-date-nav {
-    position: absolute; left: 50%; transform: translateX(-50%);
-    top: -1px; height: 81px; border: none;
-    border-radius: 40px; /* PDF: 40px for perfect pill */
-    display: flex; align-items: center; justify-content: center;
-    background: var(--text-main);
-    color: #fff; width: 280px; padding: 0 8px; gap: 0;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    transition: transform .15s, box-shadow .15s;
+    position: absolute;
+    left: 50%;
+    top: 49%;
+    transform: translate(-50%, -50%); /* Zorgt voor perfecte verticale centrering in de 80px bottom bar */
+    height: 52px;
+    border: none;
+    border-radius: 26px; /* Zorgt voor de afgeronde pill-vorm bij exact 52px hoogte */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--vrmwb-navy); /* Visuele stijl van de start knop */
+    color: #F6F6F6;
+    width: 280px;
+    padding: 0 8px;
+    gap: 0;
+    box-shadow: 0 6px 20px rgba(18,32,83,0.4);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-.bb-date-nav:hover { transform: translateX(-50%) translateY(-2px); box-shadow: var(--shadow-hover); }
-/* PDF: dark mode pill – more visible */
-[data-theme="dark"] .bb-date-nav { background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.12); }
+[data-theme="dark"] .bb-date-nav {
+    background: var(--vrmwb-navy); /* Blijft goud in dark mode */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 5px 17px rgba(18, 32, 83, 0.6);
+}
+.bb-date-nav:hover {
+    /* calc(-50% - 2px) zorgt dat hij in het midden blijft, maar 2px omhoog lift */
+    transform: translate(-50%, calc(-50% - 2px)); 
+    /* Maakt de gouden glow iets intenser en groter bij een muis-hover */
+    box-shadow: 0 6px 20px rgba(18, 32, 83, 0.6);
+}
 
-.bb-nav-arrow { background: transparent; border: none; color: rgba(255,255,255,.7); font-size: 32px; font-weight: 300; line-height: 1; cursor: pointer; padding: 0 12px; flex-shrink: 0; transition: color .15s; font-family: 'Frutiger', sans-serif; }
-.bb-nav-arrow:hover { color: #fff; }
-.bb-date-trigger { flex: 1; background: transparent; border: none; font-family: 'Frutiger', sans-serif; font-size: 17px; font-weight: 700; color: #fff; cursor: pointer; white-space: nowrap; letter-spacing: .2px; padding: 0 4px; }
+.bb-nav-arrow {
+    background: transparent;
+    border: none;
+    color: #F6F6F6; /* Zwarte pijltjes */
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 0;
+    cursor: pointer;
+    padding: 0 12px;
+    flex-shrink: 0;
+    font-family: 'Frutiger', sans-serif;
+    transform: translateY(-2px);
+}
 
+.bb-date-trigger {
+    flex: 1;
+    background: transparent;
+    border: none;
+    font-family: 'Frutiger', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #F6F6F6; /* Zwarte tekst */
+    cursor: pointer;
+    white-space: nowrap;
+    letter-spacing: .2px;
+    padding: 0 px;
+    /* Hover transitie/animatie verwijderd */
+}
 /* PDF: profile – name 13px Bold, role 11px Regular margin-top 1px */
 .bb-profile { display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 6px 10px; border-radius: 12px; border: none; background: transparent; font-family: inherit; transition: background .15s; }
 .bb-profile:hover { background: rgba(0,0,0,.06); }
