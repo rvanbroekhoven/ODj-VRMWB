@@ -112,6 +112,74 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnPrevDay = document.getElementById('btn-prev-day'); const btnNextDay = document.getElementById('btn-next-day');
     if(btnPrevDay) btnPrevDay.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate()-1); updateCenterNavigation(); });
     if(btnNextDay) btnNextDay.addEventListener('click', () => { selectedDate.setDate(selectedDate.getDate()+1); updateCenterNavigation(); });
+    const dateTrigger = document.querySelector('.bb-date-trigger');
+let currentDate = new Date();
+
+const fp = flatpickr(dateTrigger, {
+    locale: "nl",
+    dateFormat: "d-m-Y",
+    defaultDate: currentDate,
+    position: "above center",
+    onChange: function(selectedDates, dateStr) {
+        if(selectedDates[0]) {
+            currentDate = selectedDates[0];
+            updateDateDisplay();
+        }
+    },
+    onReady: function(selectedDates, dateStr, instance) {
+        const customHeader = document.createElement('div');
+        customHeader.className = 'custom-header-bg';
+        customHeader.innerHTML = `
+            <div class="c-month-group">
+                <button type="button" class="c-arrow prev-month">&#8249;</button>
+                <span class="c-val month-val"></span>
+                <button type="button" class="c-arrow next-month">&#8250;</button>
+            </div>
+            <div class="c-year-group">
+                <button type="button" class="c-arrow prev-year">&#8249;</button>
+                <span class="c-val year-val"></span>
+                <button type="button" class="c-arrow next-year">&#8250;</button>
+            </div>
+        `;
+
+        const updateCustomHeader = () => {
+            const months = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
+            customHeader.querySelector('.month-val').innerText = months[instance.currentMonth];
+            customHeader.querySelector('.year-val').innerText = instance.currentYear;
+        };
+
+        customHeader.querySelector('.prev-month').addEventListener('click', e => { e.stopPropagation(); instance.changeMonth(-1); updateCustomHeader(); });
+        customHeader.querySelector('.next-month').addEventListener('click', e => { e.stopPropagation(); instance.changeMonth(1); updateCustomHeader(); });
+        customHeader.querySelector('.prev-year').addEventListener('click', e => { e.stopPropagation(); instance.changeYear(instance.currentYear - 1); updateCustomHeader(); });
+        customHeader.querySelector('.next-year').addEventListener('click', e => { e.stopPropagation(); instance.changeYear(instance.currentYear + 1); updateCustomHeader(); });
+
+        instance.calendarContainer.prepend(customHeader);
+        instance.config.onMonthChange.push(updateCustomHeader);
+        instance.config.onYearChange.push(updateCustomHeader);
+        updateCustomHeader();
+
+        const todayBtn = document.createElement('button');
+        todayBtn.className = 'flatpickr-today-btn';
+        todayBtn.innerText = 'Vandaag';
+        todayBtn.addEventListener('click', () => {
+            instance.setDate(new Date(), true);
+            instance.close();
+        });
+        instance.calendarContainer.appendChild(todayBtn);
+    }
+        });
+
+        function updateDateDisplay() {
+            const today = new Date();
+            const isToday = currentDate.getDate() === today.getDate() && currentDate.getMonth() === today.getMonth() && currentDate.getFullYear() === today.getFullYear();
+            dateTrigger.innerText = isToday ? "Vandaag" : currentDate.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+        }
+
+        const navArrows = document.querySelectorAll('.bb-nav-arrow');
+        if(navArrows.length >= 2) {
+            navArrows[0].addEventListener('click', () => { currentDate.setDate(currentDate.getDate() - 1); fp.setDate(currentDate, true); });
+            navArrows[1].addEventListener('click', () => { currentDate.setDate(currentDate.getDate() + 1); fp.setDate(currentDate, true); });
+        }
 
     // --- 6. APP STATE & DATA ---
     const appState = {

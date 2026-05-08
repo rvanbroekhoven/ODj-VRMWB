@@ -451,3 +451,102 @@
    /* VERNIEUWD: Centrering KIS Modal Sluitknop */
    .kis-modal-close { position: absolute; bottom: 20px; right: 20px; background: var(--vrmwb-red); color: white; border: none; width: 35px; height: 35px; border-radius: 6px; font-size: 24px; font-weight: bold; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: all 0.2s; line-height: 0; padding-bottom: 2px; }
    .kis-modal-close:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+   /* =========================================
+   CUSTOM DATEPICKER (FLATPICKR)
+   ========================================= */
+    .flatpickr-calendar { 
+        font-family: 'Frutiger', sans-serif !important; 
+        border-radius: 14px !important; 
+        box-shadow: 0 10px 40px rgba(0,0,0,.2) !important; 
+        border: none !important; 
+        padding: 0 !important; 
+        width: 320px !important; 
+        box-sizing: border-box !important;
+        overflow: hidden; 
+    }
+
+    .custom-header-bg { 
+        background: var(--vrmwb-navy); 
+        padding: 15px 20px; 
+        color: #FFF; 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        border-radius: 14px 14px 0 0; 
+    }
+
+    .c-month-group, .c-year-group { display: flex; align-items: center; gap: 8px; }
+    .c-arrow { 
+        background: none; 
+        border: none; 
+        cursor: pointer; 
+        font-size: 24px; 
+        color: rgba(255,255,255,0.6); 
+        transition: color 0.2s; 
+        user-select: none; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        /* DE FIX: 3px padding aan de onderkant (0 boven, 5px rechts, 3px onder, 5px links) duwt het pijltje visueel exact naar het midden */
+        padding: 0 5px 5px 5px; 
+        line-height: 1; 
+    }    
+    .c-arrow:hover { color: var(--vrmwb-gold); }
+    .c-val { font-size: 16px; font-weight: 700; color: #FFF; text-align: center; text-transform: lowercase; display: inline-block; }
+    .month-val { width: 95px; } 
+    .year-val { width: 45px; }  
+
+    .flatpickr-innerContainer { 
+        width: 100% !important; 
+        box-sizing: border-box !important; 
+        padding: 15px !important; 
+        display: block !important;
+    }
+    .flatpickr-rContainer, .flatpickr-days, .dayContainer, .flatpickr-weekdaycontainer { 
+        width: 100% !important; 
+        min-width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important; 
+    }
+
+    .flatpickr-weekdaycontainer, .dayContainer { 
+        display: grid !important; 
+        grid-template-columns: repeat(7, 1fr) !important; 
+        gap: 2px !important; 
+    }
+
+    .flatpickr-weekday { 
+        color: var(--text-muted) !important; 
+        font-weight: 900 !important; 
+        font-size: 11px !important; 
+        text-transform: lowercase; 
+        text-align: center !important;
+        margin-bottom: 10px !important;
+    }
+
+    .flatpickr-day { 
+        width: 100% !important; 
+        max-width: 100% !important; 
+        height: 34px !important; 
+        display: flex !important; 
+        align-items: center !important; 
+        justify-content: center !important;
+        border-radius: 8px !important; 
+        font-weight: 700 !important; 
+        color: var(--text-main) !important; 
+        border: none !important; 
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .flatpickr-day.today { background: rgba(0,0,0,0.05) !important; }
+    .flatpickr-day.selected { background: var(--vrmwb-navy) !important; color: #FFF !important; }
+    .flatpickr-day:hover { background: rgba(0,0,0,0.08) !important; }
+
+    .flatpickr-day.prevMonthDay { visibility: hidden !important; pointer-events: none !important; }
+    .flatpickr-day.nextMonthDay { display: none !important; pointer-events: none !important; }
+
+    .flatpickr-today-btn { background: #F0F2F5; color: var(--vrmwb-navy); font-weight: 900; text-align: center; padding: 12px; cursor: pointer; text-transform: uppercase; font-size: 12px; transition: background 0.2s; border: none; width: 100%; border-top: 1px solid var(--input-border); }
+    .flatpickr-today-btn:hover { background: #E2E5E9; color: var(--vrmwb-gold); }
+    .flatpickr-months { display: none !important; }
