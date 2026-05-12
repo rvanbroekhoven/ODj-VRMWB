@@ -80,6 +80,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('.loc-item').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); selectLoc(btn.getAttribute('data-val')); }));
     document.addEventListener('click', (e) => { if(locWrap && locWrap.classList.contains('open') && !locWrap.contains(e.target)) locWrap.classList.remove('open'); });
     initLoc();
+    
+    // Piket Geneste Dropdown Logica
+    const piketWrap = document.getElementById('piket-wrap');
+    const piketToggle = document.getElementById('piket-toggle');
+    if(piketToggle) {
+        piketToggle.addEventListener('click', (e) => {
+            e.stopPropagation(); // Voorkomt dat het hele menu sluit bij het uitklappen van Piket
+            if(piketWrap) piketWrap.classList.toggle('open');
+        });
+    }
 
     // --- 5. CLOCK & DATEPICKER ---
     let selectedDate = new Date();
