@@ -5,24 +5,68 @@
 
   
    :root {
-       --vrmwb-navy: #122053;
-       --vrmwb-red:  #D2100B;
-       --vrmwb-gold: #CC9933;
-   
-       --text-main: #1E1E1E; --text-muted: #707172; --text-light: #9DA3B0;
-       --bg-grad-solid: #F6F6F6;
-   
-       --glass-bg: rgba(255, 255, 255, 0.68); --glass-border: rgba(255, 255, 255, 0.9);
-       --panel-bg: #FFFFFF; --card-bg-light: #FFFFFF; --card-border: rgba(0, 0, 0, 0.08);
-       --input-bg: rgba(0,0,0,.04); --input-border: #E5E5E5; --dashed-border: rgba(30, 30, 30, 0.2);
-       --scrollbar-thumb: rgba(30, 30, 30, 0.15);
-   
-       --radius-outer: 10px; --radius-inner: 12px;
-       --topbar-h: 80px;
-       --shadow-subtle: 0 4px 10px rgba(0,0,0,0.04);
-       --shadow-hover: 0 8px 20px rgba(0,0,0,0.1);
-       --shadow-panel: 0 4px 24px rgba(0,0,0,.12),0 1px 4px rgba(0,0,0,.08);
-   }
+    /* 1. Nieuw Palet */
+    --navy: #122053; --red: #D2100B; --gold: #CC9933;
+    --bg-color: #0A0C10; --surface: #FFFFFF; --surface-alt: #F4F5F8;
+    --text-main-color: #1E1E1E; --text-sub: #707172; --text-muted-color: #9DA3B0;
+    --black-90: rgba(0,0,0,0.90); --black-70: rgba(0,0,0,0.70); --black-40: rgba(0,0,0,0.40); --black-15: rgba(0,0,0,0.15); --black-08: rgba(0,0,0,0.08); --black-04: rgba(0,0,0,0.04);
+    --white-90: rgba(255,255,255,0.90); --white-70: rgba(255,255,255,0.70); --white-15: rgba(255,255,255,0.15); --white-08: rgba(255,255,255,0.08); --white-04: rgba(255,255,255,0.04);
+
+    /* 2. Koppeling aan Beheer (Light Theme) */
+    --vrmwb-navy: var(--navy);
+    --vrmwb-red:  var(--red);
+    --vrmwb-gold: var(--gold);
+
+    --text-main: var(--text-main-color); 
+    --text-muted: var(--text-sub); 
+    --text-light: var(--text-muted-color);
+    --bg-grad-solid: var(--surface-alt);
+
+    --glass-bg: var(--white-70); 
+    --glass-border: var(--white-90);
+    --panel-bg: var(--surface); 
+    --card-bg-light: var(--surface); 
+    --card-border: var(--black-08);
+    --input-bg: var(--black-04); 
+    --input-border: var(--black-08); 
+    --dashed-border: var(--black-15);
+    --scrollbar-thumb: var(--black-15);
+
+    --radius-outer: 10px; --radius-inner: 12px;
+    --topbar-h: 80px;
+    --shadow-subtle: 0 4px 10px var(--black-04);
+    --shadow-hover: 0 8px 20px var(--black-08);
+    --shadow-panel: 0 4px 24px var(--black-15),0 1px 4px var(--black-08);
+}
+
+[data-theme="dark"] {
+    /* Specifieke dark-mode aanpassingen uit palet */
+    --surface: #16181F; 
+    --surface-alt: #1E2030; 
+    --text-main-color: #E8EAED; 
+    --text-sub: #8A909E; 
+    --text-muted-color: #4E5566; 
+    --black-70: rgba(0, 0, 0, 0.85);
+
+    --text-main: var(--text-main-color); 
+    --text-muted: var(--text-sub); 
+    --text-light: var(--text-muted-color);
+    --bg-grad-solid: var(--surface-alt);
+    
+    --glass-bg: var(--black-90); 
+    --glass-border: var(--white-04);
+    --panel-bg: var(--surface); 
+    --card-bg-light: var(--surface); 
+    --card-border: var(--white-04);
+    --input-bg: var(--white-04); 
+    --input-border: var(--white-08); 
+    --dashed-border: var(--white-15);
+    --scrollbar-thumb: var(--white-15);
+    
+    --shadow-subtle: 0 4px 10px var(--black-40); 
+    --shadow-hover: 0 8px 20px var(--black-70); 
+    --shadow-panel: 0 4px 24px var(--black-90), 0 1px 4px var(--black-40);
+}
    
    [data-theme="dark"] {
        --text-main: #E8EAED; --text-muted: #8A909E; --text-light: #4E5566;
@@ -571,3 +615,86 @@
     .flatpickr-today-btn { background: #F0F2F5; color: var(--vrmwb-navy); font-weight: 800; text-align: center; padding: 12px; cursor: pointer; text-transform: uppercase; font-size: 12px; transition: background 0.2s; border: none; width: 100%; border-top: 1px solid var(--input-border); }
     .flatpickr-today-btn:hover { background: #E2E5E9; color: var(--vrmwb-gold); }
     .flatpickr-months { display: none !important; }
+
+    /* =========================================
+      HARDE KLEUREN OVERSCHRIJVINGEN (PALET COMPLIANCE)
+      ========================================= */
+   .tb-btn.white { background: var(--surface) !important; color: var(--text-main-color) !important; border-color: var(--black-15) !important; }
+   .tb-btn.white:hover { background: var(--white-90) !important; }
+   .loc-btn { background: var(--black-04) !important; }
+   .loc-btn:hover { background: var(--black-08) !important; }
+   .loc-menu { background: var(--surface) !important; box-shadow: 0 8px 32px var(--black-15), 0 1px 4px var(--black-08) !important; border-color: var(--black-08) !important; }
+   .loc-item:hover { background: var(--black-04) !important; }
+   .loc-item.active { background: var(--black-08) !important; }
+   .loc-nested-wrap { border-color: var(--black-08) !important; }
+   .loc-nested-menu { background: var(--black-04) !important; }
+   .size-mobile { background: var(--navy) !important; border-color: var(--white-08) !important; }
+   .size-mobile .w-tab { background: var(--black-40) !important; color: var(--white-70) !important; }
+   .size-mobile .w-tab:hover { background: var(--white-04) !important; }
+   .w-photo-thumb { background: var(--black-04) !important; }
+   .data-table tbody tr:nth-child(even) td { background-color: var(--black-04) !important; }
+   .size-mobile .data-table tbody tr:nth-child(even) td { background-color: var(--white-04) !important; }
+   .data-table-clickable tbody tr:hover { background-color: var(--black-08) !important; }
+   .size-mobile .data-table-clickable tbody tr:hover { background-color: var(--white-08) !important; }
+   .editor-check-toggle:hover { background: var(--black-04) !important; }
+   .size-mobile .editor-check-toggle:hover { background: var(--white-04) !important; }
+   .alert-card { background: var(--black-04) !important; }
+   [data-theme="dark"] .alert-card { background: var(--white-04) !important; }
+   .flatpickr-day.today { background: var(--black-04) !important; }
+   .flatpickr-day:hover { background: var(--black-08) !important; }
+   .flatpickr-today-btn { background: var(--surface-alt) !important; border-color: var(--black-08) !important; }
+   .flatpickr-today-btn:hover { background: var(--black-04) !important; }
+   .topbar { background: var(--white-90) !important; border-color: var(--black-08) !important; box-shadow: 0 3px 14px var(--black-08) !important; }
+   .btmbar { background: var(--white-90) !important; border-color: var(--black-08) !important; box-shadow: 0 -3px 14px var(--black-08) !important; }
+   [data-theme="dark"] .topbar, [data-theme="dark"] .btmbar { background: var(--bg-color) !important; border-color: var(--white-08) !important; box-shadow: 0 3px 14px var(--black-40) !important; }
+   .tb-divider { background: var(--black-15) !important; }
+   [data-theme="dark"] .tb-divider { background: var(--white-15) !important; }
+   .kis-glass-row, .kis-rooster-card { background: var(--white-15) !important; border-color: var(--white-15) !important; box-shadow: 0 10px 30px var(--black-40) !important; }
+   .bg-layer::after { background: linear-gradient(to bottom, var(--white-90) 20%, transparent 65%) !important; }
+   [data-theme="dark"] .bg-layer::after { background: linear-gradient(to bottom, var(--black-70) 20%, transparent 65%) !important; }
+
+   /* Wijzig donkerblauwe tekst naar rood in darkmode (UITGEZONDERD Size Mobile) */
+   [data-theme="dark"] .w-card:not(.size-mobile) .w-table-info-text,
+   [data-theme="dark"] .w-card:not(.size-mobile) .w-footer-link,
+   [data-theme="dark"] .w-card:not(.size-mobile) .td-highlight,
+   [data-theme="dark"] .flatpickr-today-btn {
+       color: var(--vrmwb-red) !important;
+   }
+
+   /* Zorg dat alert-cards in Size Mobile altijd licht transparant zijn, ongeacht het thema */
+   .size-mobile .alert-card {
+       background: var(--white-04) !important;
+   }
+
+   /* Locatie Dropdown Dark Mode highlights */
+   [data-theme="dark"] .loc-ico { fill: var(--vrmwb-gold) !important; }
+   [data-theme="dark"] .loc-item.active { color: var(--vrmwb-gold) !important; }
+
+   /* =========================================
+    PROFIEL MENU TABS & EXTRA ACTIES
+    ========================================= */
+    .pp-tabs { display: flex; gap: 15px; border-bottom: 2px solid var(--input-border); margin-bottom: 20px; padding: 0 5px; }
+    .pp-tab { font-size: 11px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); cursor: pointer; padding-bottom: 8px; position: relative; transition: color 0.2s; letter-spacing: 0.5px; }
+    .pp-tab:hover { color: var(--text-main); }
+    .pp-tab.active { color: var(--vrmwb-navy); }
+    [data-theme="dark"] .pp-tab.active { color: var(--text-main); }
+    .pp-tab.active::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 2px; background: var(--vrmwb-navy); }
+    [data-theme="dark"] .pp-tab.active::after { background: var(--vrmwb-gold); }
+
+    .pp-tab-content { display: none; flex-direction: column; }
+    .pp-tab-content.active { display: flex; }
+
+    .pp-select { width: 100%; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-main); font-size: 13px; font-family: inherit; font-weight: 600; cursor: pointer; }
+
+    .pp-action-btn { width: 100%; padding: 10px; border-radius: 8px; font-size: 12px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+    .pp-action-btn.secondary { background: var(--input-bg); color: var(--text-main); border-color: var(--input-border); }
+    .pp-action-btn.secondary:hover { background: var(--card-border); }
+    .pp-action-btn.destructive { background: transparent; color: var(--vrmwb-red); border-color: var(--vrmwb-red); }
+    .pp-action-btn.destructive:hover { background: var(--vrmwb-red); color: #FFF; }
+
+    /* Fix voor het profiel menu: overschrijft oude onzichtbaarheids-regels */
+    .profile-panel {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: none !important;
+    }

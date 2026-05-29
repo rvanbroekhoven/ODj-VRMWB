@@ -129,34 +129,93 @@
                 <button class="bb-nav-arrow next-day">&#8250;</button>
             </div>
         </div>
-        <div class="bb-right">
-            <button class="bb-profile" id="profile-btn">
-                <div class="bb-avatar" id="bb-avatar">?</div>
-                <div class="bb-pinfo">
-                    <div class="bb-pname" id="bb-pname">Naam Achternaam</div>
-                    <div class="bb-prole" id="bb-prole">Rol</div>
+        <div class="bb-right" id="ui-profile-wrapper" style="position: relative;">
+            <button class="bb-profile" id="ui-profile-trigger" style="display: flex; align-items: center; justify-content: flex-end; padding: 6px 10px; border: none; background: transparent; cursor: pointer;">
+                <div class="bb-avatar" id="ui-avatar-trigger" style="background: var(--vrmwb-navy); color: #FFF; width: 38px; height: 38px; font-size: 14px; font-weight: 800; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-right: 10px;">RV</div>
+                <div class="bb-pinfo" style="text-align: left;">
+                    <div class="bb-pname" id="ui-pname-trigger" style="color: var(--text-main); font-size: 13px; font-weight: 900;">Robbe van Broekhoven</div>
+                    <div class="bb-prole" id="ui-prole-trigger" style="color: var(--text-muted); font-size: 11px; font-weight: 400;">Beheerder</div>
                 </div>
             </button>
+
+            <div class="profile-panel" id="ui-profile-panel" style="position: absolute; bottom: calc(100% + 15px); right: 0; width: 320px; box-shadow: var(--shadow-widget); display: none; background: var(--surface); border: 1px solid var(--card-border); border-radius: 14px; padding: 20px; z-index: 1000;">
+                
+                <div class="pp-tabs">
+                    <div class="pp-tab active" data-target="pp-overzicht">Overzicht</div>
+                    <div class="pp-tab" data-target="pp-instellingen">Instellingen</div>
+                </div>
+
+                <div id="pp-overzicht" class="pp-tab-content active">
+                    <div class="pp-avatar" id="ui-panel-avatar" style="background: var(--vrmwb-navy); color: #FFF; margin: 0 auto 12px; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 50%; font-size: 20px; font-weight: 900;">RV</div>
+                    
+                    <div style="text-align: center; margin-bottom: 20px; background: var(--input-bg); padding: 12px; border-radius: 8px; border: 1px solid var(--input-border);">
+                        <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px;">Account-type</span>
+                        <span style="font-size: 13px; font-weight: 700; color: var(--text-main); display: block; margin-bottom: 10px;">Persoonsgebonden</span>
+                        
+                        <span style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px;">Gebruikersrol</span>
+                        <span style="font-size: 13px; font-weight: 700; color: var(--text-main); display: block;">Beheerder</span>
+                    </div>
+                    
+                    <label class="pp-lbl" style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px;">Voornaam</label>
+                    <input type="text" class="pp-inp" id="ui-inp-voornaam" value="Robbe" placeholder="Voornaam" style="width: 100%; margin-bottom: 10px; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-main); font-size: 13px;">
+                    
+                    <label class="pp-lbl" style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px;">Achternaam</label>
+                    <input type="text" class="pp-inp" id="ui-inp-achternaam" value="van Broekhoven" placeholder="Achternaam" style="width: 100%; margin-bottom: 10px; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-main); font-size: 13px;">
+                    
+                    <label class="pp-lbl" style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 4px;">Functie</label>
+                    <input type="text" class="pp-inp" id="ui-inp-rol" value="Beheerder" placeholder="bijv. Ploegcommandant" style="width: 100%; margin-bottom: 16px; padding: 8px 12px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-main); font-size: 13px;">
+                </div>
+
+                <div id="pp-instellingen" class="pp-tab-content">
+                    
+                    <div class="pp-toggle-row" style="margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-top:none; margin-top:0; padding-top:0;">
+                        <span style="font-size: 13px; font-weight: 700; color: var(--text-main);">Dark mode</span>
+                        <button class="pp-toggle" id="ui-theme-toggle" role="switch" aria-checked="false" style="width: 44px; height: 24px;">
+                            <span class="pp-toggle-thumb" style="width: 18px; height: 18px;"></span>
+                        </button>
+                    </div>
+
+                    <div class="pp-toggle-row" style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; border-top:none;">
+                        <div>
+                            <span style="font-size: 13px; font-weight: 700; color: var(--text-main); display: block;">Start op vandaag</span>
+                            <span style="font-size: 10px; color: var(--text-muted);">ODj opent standaard op huidige datum</span>
+                        </div>
+                        <button class="pp-toggle" role="switch" aria-checked="true" onclick="this.setAttribute('aria-checked', this.getAttribute('aria-checked') === 'true' ? 'false' : 'true');" style="width: 44px; height: 24px;">
+                            <span class="pp-toggle-thumb" style="width: 18px; height: 18px;"></span>
+                        </button>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label class="pp-lbl" style="font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); display: block; margin-bottom: 6px;">Presentatieperiode</label>
+                        <select class="pp-select">
+                            <option>Standaard (Automatisch)</option>
+                            <option>Week 1</option>
+                            <option>Week 2</option>
+                            <option>Week 4</option>
+                        </select>
+                        <span style="font-size: 10px; color: var(--text-muted); display: block; margin-top: 4px;">Periode bij openen van de Presentatie</span>
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <span class="pp-toggle-lbl" style="display: block; font-size: 10px; font-weight: 900; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;">Achtergrond</span>
+                        <div id="ui-bg-menu" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;">
+                            <div class="bg-thumb solid active" data-bg="none" style="width: 100%; aspect-ratio: 16/9; height: auto; border-radius: 4px; border-color: var(--vrmwb-navy);"></div>
+                            <div class="bg-thumb" data-bg="url('img/intro-1.jpg')" style="width: 100%; aspect-ratio: 16/9; height: auto; border-radius: 4px; background-color: var(--black-15); background-image: url('img/intro-1.jpg'); background-size: cover;"></div>
+                            <div class="bg-thumb" data-bg="url('img/intro-2.jpg')" style="width: 100%; aspect-ratio: 16/9; height: auto; border-radius: 4px; background-color: var(--black-15); background-image: url('img/intro-2.jpg'); background-size: cover;"></div>
+                            <div class="bg-thumb" data-bg="url('img/intro-3.jpg')" style="width: 100%; aspect-ratio: 16/9; height: auto; border-radius: 4px; background-color: var(--black-15); background-image: url('img/intro-3.jpg'); background-size: cover;"></div>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px solid var(--input-border); padding-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                        <button class="pp-action-btn secondary">Applicatie Verversen</button>
+                        <button class="pp-action-btn destructive">Gebruiker Uitloggen</button>
+                    </div>
+                </div>
+                
+                <button class="pp-save" id="ui-profile-save" style="width: 100%; background: var(--vrmwb-navy); color: #FFF; padding: 10px; border-radius: 8px; border: none; font-size: 12px; font-weight: 900; text-transform: uppercase; cursor: pointer; transition: transform 0.2s; margin-top: 15px;">Opslaan</button>
+            </div>
         </div>
     </footer>
-
-    <div class="profile-panel" id="profile-panel">
-        <div class="pp-avatar" id="pp-avatar-large">?</div>
-        <div class="pp-head">Profielinstellingen</div>
-        <label class="pp-lbl">Voornaam</label>
-        <input class="pp-inp" id="pp-voornaam" type="text" placeholder="Voornaam">
-        <label class="pp-lbl">Achternaam</label>
-        <input class="pp-inp" id="pp-achternaam" type="text" placeholder="Achternaam">
-        <label class="pp-lbl">Rol</label>
-        <input class="pp-inp" id="pp-rol" type="text" placeholder="bijv. Ploegcommandant">
-        <div class="pp-toggle-row">
-            <span class="pp-toggle-lbl">Dark mode</span>
-            <button class="pp-toggle" id="dark-toggle" role="switch" aria-checked="false">
-                <span class="pp-toggle-thumb"></span>
-            </button>
-        </div>
-        <button class="pp-save" id="btn-save-profile">Opslaan</button>
-    </div>
 
     <div class="toast" id="toast"></div>
 

@@ -15,52 +15,6 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => t.classList.remove('show'), 2300);
     }
 
-    // --- 2. DARK MODE & LOGO ---
-    const darkToggle = document.getElementById('dark-toggle');
-    function applyDark(on) {
-        document.body.setAttribute('data-theme', on ? 'dark' : 'light');
-        if(darkToggle) darkToggle.setAttribute('aria-checked', on ? 'true' : 'false');
-        const logo = document.getElementById('tb-logo');
-        if(logo) logo.src = on ? 'darklogo.png' : 'logo.png';
-    }
-    if(darkToggle) {
-        darkToggle.addEventListener('click', () => {
-            applyDark(document.body.getAttribute('data-theme') !== 'dark');
-        });
-    }
-    applyDark(document.body.getAttribute('data-theme') === 'dark');
-
-    // --- 3. PROFILE PANEL ---
-    const PROF_KEY = 'vrmwb_profile';
-    function loadProfile() {
-        const p = JSON.parse(localStorage.getItem(PROF_KEY) || '{}');
-        const naam = p.voornaam || ''; const ach = p.achternaam || ''; const rol = p.rol || '';
-        const initials = ((naam[0]||'')+(ach[0]||'')).toUpperCase()||'?';
-        const bbAvatar = document.getElementById('bb-avatar'); const ppAvatar = document.getElementById('pp-avatar-large');
-        if(bbAvatar) bbAvatar.textContent = initials; if(ppAvatar) ppAvatar.textContent = initials;
-        const bbPname = document.getElementById('bb-pname'); const bbProle = document.getElementById('bb-prole');
-        if(bbPname) bbPname.textContent = (naam+' '+ach).trim()||'Naam Achternaam';
-        if(bbProle) bbProle.textContent = rol||'Rol';
-        const ppV = document.getElementById('pp-voornaam'); const ppA = document.getElementById('pp-achternaam'); const ppR = document.getElementById('pp-rol');
-        if(ppV) ppV.value = naam; if(ppA) ppA.value = ach; if(ppR) ppR.value = rol;
-    }
-    function saveProfile() {
-        const voornaam = document.getElementById('pp-voornaam').value.trim();
-        const achternaam = document.getElementById('pp-achternaam').value.trim();
-        const rol = document.getElementById('pp-rol').value.trim();
-        localStorage.setItem(PROF_KEY, JSON.stringify({voornaam, achternaam, rol}));
-        loadProfile(); document.getElementById('profile-panel').classList.remove('open'); showToast('Profiel opgeslagen');
-    }
-    const profileBtn = document.getElementById('profile-btn');
-    if(profileBtn) profileBtn.addEventListener('click', () => document.getElementById('profile-panel').classList.toggle('open'));
-    const btnSaveProfile = document.getElementById('btn-save-profile');
-    if(btnSaveProfile) btnSaveProfile.addEventListener('click', saveProfile);
-    document.addEventListener('click', (e) => {
-        const panel = document.getElementById('profile-panel');
-        if(panel && profileBtn && panel.classList.contains('open') && !panel.contains(e.target) && !profileBtn.contains(e.target)) panel.classList.remove('open');
-    });
-    loadProfile();
-
     // --- 4. LOCATION DROPDOWN ---
     const LOC_KEY = 'vrmwb_location';
     const locLabel = document.getElementById('loc-label');
@@ -429,6 +383,97 @@ const fp = flatpickr(dateTrigger, {
             showToast('Dagjournaal automatisch gevuld!');
         });
     }
+
+    // --- INTERACTIEVE PROFIEL & TAB LOGICA ---
+const uiTrigger = document.getElementById('ui-profile-trigger');
+const uiPanel = document.getElementById('ui-profile-panel');
+const uiWrapper = document.getElementById('ui-profile-wrapper');
+const uiSaveBtn = document.getElementById('ui-profile-save');
+
+if (uiTrigger && uiPanel) {
+    uiTrigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isOpen = uiPanel.style.display === 'block';
+        uiPanel.style.display = isOpen ? 'none' : 'block';
+    });
+
+    uiPanel.addEventListener('click', (e) => e.stopPropagation());
+
+    document.addEventListener('click', (e) => {
+        if (uiWrapper && !uiWrapper.contains(e.target)) {
+            uiPanel.style.display = 'none';
+        }
+    });
+
+    uiSaveBtn.addEventListener('click', () => {
+        const vn = document.getElementById('ui-inp-voornaam').value.trim();
+        const an = document.getElementById('ui-inp-achternaam').value.trim();
+        const rol = document.getElementById('ui-inp-rol').value.trim();
+        
+        const i1 = vn ? vn[0].toUpperCase() : '';
+        const i2 = an ? an[0].toUpperCase() : '';
+        const initials = (i1 + i2) || '?';
+
+        document.getElementById('ui-avatar-trigger').innerText = initials;
+        document.getElementById('ui-panel-avatar').innerText = initials;
+        document.getElementById('ui-pname-trigger').innerText = `${vn} ${an}`.trim() || 'Naam';
+        document.getElementById('ui-prole-trigger').innerText = rol || 'Geen Rol';
+
+        uiPanel.style.display = 'none';
+    });
+}
+
+// Thema Toggle (Geoptimaliseerd voor Beheer Logo)
+const themeToggle = document.getElementById('ui-theme-toggle');
+if (themeToggle) {
+    themeToggle.addEventListener('click', function() {
+        const isDark = this.getAttribute('aria-checked') === 'true';
+        this.setAttribute('aria-checked', !isDark ? 'true' : 'false');
+        document.body.setAttribute('data-theme', !isDark ? 'dark' : 'light');
+        
+        // Zorg dat het brandweer logo linksboven meeschakelt
+        const logo = document.getElementById('tb-logo');
+        if(logo) logo.src = !isDark ? 'darklogo.png' : 'logo.png';
+    });
+}
+
+// Achtergrond Selector
+const bgMenu = document.getElementById('ui-bg-menu');
+if (bgMenu) {
+    bgMenu.querySelectorAll('.bg-thumb').forEach(thumb => {
+        thumb.addEventListener('click', (e) => {
+            e.stopPropagation();
+            bgMenu.querySelectorAll('.bg-thumb').forEach(t => t.classList.remove('active'));
+            thumb.classList.add('active');
+            
+            const bg = thumb.getAttribute('data-bg');
+            if (bg === 'none') {
+                document.body.style.backgroundImage = 'none';
+            } else {
+                document.body.style.backgroundImage = bg;
+                document.body.style.backgroundSize = 'cover';
+                document.body.style.backgroundPosition = 'center';
+                document.body.style.backgroundAttachment = 'fixed';
+            }
+        });
+    });
+}
+
+    // Tab Navigatie
+    document.querySelectorAll('.pp-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const tabsContainer = tab.closest('.pp-tabs');
+            tabsContainer.querySelectorAll('.pp-tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            
+            const panel = tab.closest('.profile-panel');
+            panel.querySelectorAll('.pp-tab-content').forEach(c => c.classList.remove('active'));
+            
+            const targetId = tab.getAttribute('data-target');
+            panel.querySelector('#' + targetId).classList.add('active');
+        });
+    });
 
     // --- DRAG & DROP ---
     const middleList = document.getElementById('dagjournaal-lijst');
