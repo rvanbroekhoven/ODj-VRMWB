@@ -3,92 +3,55 @@
    ========================================= */
    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  
    :root {
-    /* 1. Nieuw Palet */
-    --navy: #122053; --red: #D2100B; --gold: #CC9933;
-    --bg-color: #0A0C10; --surface: #FFFFFF; --surface-alt: #F4F5F8;
-    --text-main-color: #1E1E1E; --text-sub: #707172; --text-muted-color: #9DA3B0;
-    --black-90: rgba(0,0,0,0.90); --black-70: rgba(0,0,0,0.70); --black-40: rgba(0,0,0,0.40); --black-15: rgba(0,0,0,0.15); --black-08: rgba(0,0,0,0.08); --black-04: rgba(0,0,0,0.04);
-    --white-90: rgba(255,255,255,0.90); --white-70: rgba(255,255,255,0.70); --white-15: rgba(255,255,255,0.15); --white-08: rgba(255,255,255,0.08); --white-04: rgba(255,255,255,0.04);
-
-    /* 2. Koppeling aan Beheer (Light Theme) */
-    --vrmwb-navy: var(--navy);
-    --vrmwb-red:  var(--red);
-    --vrmwb-gold: var(--gold);
-
-    --text-main: var(--text-main-color); 
-    --text-muted: var(--text-sub); 
-    --text-light: var(--text-muted-color);
-    --bg-grad-solid: var(--surface-alt);
-
-    --glass-bg: var(--white-70); 
-    --glass-border: var(--white-90);
-    --panel-bg: var(--surface); 
-    --card-bg-light: var(--surface); 
-    --card-border: var(--black-08);
-    --input-bg: var(--black-04); 
-    --input-border: var(--black-08); 
-    --dashed-border: var(--black-15);
-    --scrollbar-thumb: var(--black-15);
-
-    --radius-outer: 10px; --radius-inner: 12px;
-    --topbar-h: 80px;
-    --shadow-subtle: 0 4px 10px var(--black-04);
-    --shadow-hover: 0 8px 20px var(--black-08);
-    --shadow-panel: 0 4px 24px var(--black-15),0 1px 4px var(--black-08);
-}
-
-[data-theme="dark"] {
-    /* Specifieke dark-mode aanpassingen uit palet */
-    --surface: #16181F; 
-    --surface-alt: #1E2030; 
-    --text-main-color: #E8EAED; 
-    --text-sub: #8A909E; 
-    --text-muted-color: #4E5566; 
-    --black-70: rgba(0, 0, 0, 0.85);
-
-    --text-main: var(--text-main-color); 
-    --text-muted: var(--text-sub); 
-    --text-light: var(--text-muted-color);
-    --bg-grad-solid: var(--surface-alt);
-    
-    --glass-bg: var(--black-90); 
-    --glass-border: var(--white-04);
-    --panel-bg: var(--surface); 
-    --card-bg-light: var(--surface); 
-    --card-border: var(--white-04);
-    --input-bg: var(--white-04); 
-    --input-border: var(--white-08); 
-    --dashed-border: var(--white-15);
-    --scrollbar-thumb: var(--white-15);
-    
-    --shadow-subtle: 0 4px 10px var(--black-40); 
-    --shadow-hover: 0 8px 20px var(--black-70); 
-    --shadow-panel: 0 4px 24px var(--black-90), 0 1px 4px var(--black-40);
-}
+       /* 1. Nieuw Palet */
+       --navy: #122053; --red: #D2100B; --gold: #CC9933;
+       --bg-color: #0A0C10; --surface: #FFFFFF; --surface-alt: #F4F5F8;
+       --text-main-color: #1E1E1E; --text-sub: #707172; --text-muted-color: #9DA3B0;
+       --black-90: rgba(0,0,0,0.90); --black-70: rgba(0,0,0,0.70); --black-40: rgba(0,0,0,0.40); --black-15: rgba(0,0,0,0.15); --black-08: rgba(0,0,0,0.08); --black-04: rgba(0,0,0,0.04);
+       --white-90: rgba(255,255,255,0.90); --white-70: rgba(255,255,255,0.70); --white-15: rgba(255,255,255,0.15); --white-08: rgba(255,255,255,0.08); --white-04: rgba(255,255,255,0.04);
+   
+       /* 2. Koppeling aan Beheer (Light Theme) */
+       --vrmwb-navy: var(--navy); --vrmwb-red: var(--red); --vrmwb-gold: var(--gold);
+       --text-main: var(--text-main-color); --text-muted: var(--text-sub); --text-light: var(--text-muted-color);
+       --bg-grad-solid: var(--surface-alt);
+       --glass-bg: var(--white-70); --glass-border: var(--white-90);
+       --panel-bg: var(--surface); --card-bg-light: var(--surface); --card-border: var(--black-08);
+       --input-bg: var(--black-04); --input-border: var(--black-08); --dashed-border: var(--black-15);
+       --scrollbar-thumb: var(--black-15);
+       --radius-outer: 10px; --radius-inner: 12px; --topbar-h: 80px;
+       --shadow-subtle: 0 4px 10px var(--black-04); --shadow-hover: 0 8px 20px var(--black-08);
+       --shadow-panel: 0 4px 24px var(--black-15),0 1px 4px var(--black-08);
+   }
    
    [data-theme="dark"] {
-       --text-main: #E8EAED; --text-muted: #8A909E; --text-light: #4E5566;
-       --bg-grad-solid: #121418;
-       --glass-bg: rgba(24, 27, 36, 0.9); --glass-border: rgba(255, 255, 255, 0.04);
-       --panel-bg: rgba(24, 27, 36, 0.9); --card-bg-light: #2A2C33; --card-border: rgba(255, 255, 255, 0.05);
-       --input-bg: rgba(255,255,255,.06); --input-border: rgba(255,255,255,.1); --dashed-border: rgba(255, 255, 255, 0.2);
-       --scrollbar-thumb: rgba(255, 255, 255, 0.1);
-       --shadow-subtle: 0 4px 10px rgba(0,0,0,0.3); --shadow-hover: 0 8px 20px rgba(0,0,0,0.5); --shadow-panel: 0 4px 24px rgba(0,0,0,.5),0 1px 4px rgba(0,0,0,.3);
+       /* Exacte overname uit de UI Kit, geen hardcoded vervuiling meer */
+       --surface: #16181F; --surface-alt: #1E2030; 
+       --text-main-color: #E8EAED; --text-sub: #8A909E; --text-muted-color: #4E5566; 
+       --black-70: rgba(0, 0, 0, 0.85);
+       --text-main: var(--text-main-color); --text-muted: var(--text-sub); --text-light: var(--text-muted-color);
+       --bg-grad-solid: var(--surface-alt);
+       --glass-bg: var(--black-90); --glass-border: var(--white-04);
+       --panel-bg: var(--surface); --card-bg-light: var(--surface); --card-border: var(--white-04);
+       --input-bg: var(--white-04); --input-border: var(--white-08); --dashed-border: var(--white-15);
+       --scrollbar-thumb: var(--white-15);
+       --shadow-subtle: 0 4px 10px var(--black-40); --shadow-hover: 0 8px 20px var(--black-70); 
+       --shadow-panel: 0 4px 24px var(--black-90), 0 1px 4px var(--black-40);
    }
    
    body {
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 400;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    background-color: var(--bg-grad-solid);
-    color: var(--text-main);
-    -webkit-font-smoothing: antialiased;
-} 
+       font-family: 'Open Sans', sans-serif; font-weight: 400; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background-color: var(--bg-grad-solid); color: var(--text-main); -webkit-font-smoothing: antialiased;
+   }
+   
+   /* =========================================
+      BLOK INDICATOREN (Handmatig vs Automatisch)
+      ========================================= */
+   .indicator-manual { position: absolute; top: 0; left: 0; width: 34px; height: 34px; background: var(--vrmwb-red); clip-path: polygon(0 0, 100% 0, 0 100%); display: flex; align-items: flex-start; justify-content: flex-start; padding: 3px; color: #FFF; z-index: 2; border-top-left-radius: var(--radius-inner); }
+   .indicator-manual svg { width: 11px; height: 11px; fill: currentColor; margin: 1px 0 0 1px; }
+   
+   .indicator-auto { position: absolute; bottom: 6px; right: 8px; color: var(--vrmwb-red); z-index: 2; display: flex; gap: 1px; opacity: 1; }
+   .indicator-auto svg { width: 14px; height: 14px; fill: currentColor; }
+   
    /* =========================================
       2. BACKGROUND
       ========================================= */
@@ -157,8 +120,8 @@
    .loc-item:hover { background: rgba(0,0,0,.05); }
    .loc-item.active { color: var(--vrmwb-navy); background: rgba(18,32,83,.07); }
    
-   [data-theme="dark"] .loc-btn { background: rgba(255,255,255,.07); color: #E8EAED; }
-   [data-theme="dark"] .loc-btn:hover { background: rgba(255,255,255,.13); }
+   [data-theme="dark"] .loc-btn { background: var(--surface); color: var(--text-main); border: 1px solid var(--input-border); }
+   [data-theme="dark"] .loc-btn:hover { background: var(--input-bg); }
    [data-theme="dark"] .loc-ico { fill: var(--vrmwb-gold); }
    [data-theme="dark"] .loc-menu { background: #16181F; border-color: rgba(255,255,255,.09); box-shadow: 0 8px 32px rgba(0,0,0,.5); }
    [data-theme="dark"] .loc-item { color: #E8EAED; }

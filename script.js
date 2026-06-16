@@ -377,7 +377,10 @@ const fp = flatpickr(dateTrigger, {
             const leftList = document.getElementById('blok-selectie');
             ['ploeg-indeling','alarmen','mobiliteit','onderhoud','algemeen','evenementen'].forEach(id => {
                 const card = leftList.querySelector(`[data-id="${id}"]`);
-                if(card){ card.classList.remove('theme-card-light'); card.classList.add('sequence-card'); middleList.appendChild(card); }
+                if(card){ 
+                    card.classList.add('sequence-card'); 
+                    middleList.appendChild(card); 
+                }
             });
             document.getElementById('empty-state').style.display = 'none';
             showToast('Dagjournaal automatisch gevuld!');
